@@ -5,6 +5,13 @@
         <Company>Nerosoft Ltd.</Company>
         <Product>Starfish</Product>
         <Copyright>© 2018-$([System.DateTime]::Now.Year) Nerosoft. All Rights Reserved.</Copyright>
+
+        <Deterministic>false</Deterministic>
+        <NoWarn>CS7035;CS2002</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' != 'Debug'">
+        <AssemblyVersion>$([System.DateTime]::Now.Year).$([System.DateTime]::Now.Month).$([System.DateTime]::Now.Day).*</AssemblyVersion>
     </PropertyGroup>
 
     <PropertyGroup>

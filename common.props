@@ -1,0 +1,52 @@
+﻿<Project>
+    <Import Project="global.props" />
+    
+    <PropertyGroup>
+		<RootNamespace>Nerosoft.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+        <DeployDependsOn> $(DeployDependsOn); PrepareForBuild; Build </DeployDependsOn>
+		<IsPackable>false</IsPackable>
+		<EmbeddedResourceUseDependentUponConvention>False</EmbeddedResourceUseDependentUponConvention>
+	</PropertyGroup>
+    
+    <ItemGroup>
+        <Using Include="System"/>
+        <Using Include="System.Collections"/>
+        <Using Include="System.Collections.Generic"/>
+        <Using Include="System.Linq"/>
+        <Using Include="System.Text"/>
+        <Using Include="System.Threading"/>
+        <Using Include="System.Threading.Tasks"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Update="appsettings.*.json">
+            <DependentUpon>appsettings.json</DependentUpon>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Update="@(Content)">
+            <Visible Condition="'%(NuGetItemType)' == 'Content'">false</Visible>
+        </Content>
+    </ItemGroup>
+    
+    <!-- See Microsoft.Common.CurrentVersion.targets -->
+
+    <Target Name="GenerateResx" BeforeTargets="PrepareForBuild">
+
+        <GenerateResource Sources="@(EmbeddedResource)"
+                          ExecuteAsTool="false"
+                          StronglyTypedLanguage="C#"
+                          StronglyTypedClassName="%(Filename)"
+                          StronglyTypedNamespace="@(EmbeddedResource->'$(RootNamespace).Properties')"
+                          StronglyTypedFileName="@(EmbeddedResource->'%(RootDir)%(Directory)%(Filename).Designer.cs')"
+                          Condition="'%(EmbeddedResource.GenerateResource)' != 'false' and '%(EmbeddedResource.FileName)' == 'Resources'"
+                          PublicClass="false"
+                          MinimalRebuildFromTracking="false">
+            <Output TaskParameter="FilesWritten" ItemName="FileWrites"/>
+            <Output TaskParameter="StronglyTypedFileName" ItemName="Compile"/>
+            <Output TaskParameter="Sources" ItemName="_Temporary"/>
+        </GenerateResource>
+
+    </Target>
+</Project>
