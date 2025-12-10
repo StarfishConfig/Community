@@ -7,13 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Euonia.Bus.InMemory"/>
-        <PackageReference Include="Euonia.Bus.RabbitMq"/>
+        <PackageReference Include="Euonia.Bus.InMemory" />
+        <PackageReference Include="Euonia.Bus.RabbitMq" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Starfish.Business\Starfish.Business.csproj" />
-        <ProjectReference Include="..\Starfish.Contract\Starfish.Contract.csproj" />
         <ProjectReference Include="..\Starfish.Persist\Starfish.Persist.csproj" />
     </ItemGroup>
 

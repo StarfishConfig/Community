@@ -8,7 +8,7 @@ namespace Nerosoft.Starfish.Domain;
 /// 领域服务模块
 /// </summary>
 [DependsOn(typeof(AutomapperModule), typeof(ValidationModule))]
-internal class DomainServiceModule : ModuleContextBase
+public class DomainServiceModule : ModuleContextBase
 { 
 	
 }

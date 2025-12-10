@@ -1,6 +1,9 @@
+using Nerosoft.Starfish.Server;
 using Nerosoft.Starfish.Server.Components;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddModularityApplication<ServerStartupModule>(builder.Configuration);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

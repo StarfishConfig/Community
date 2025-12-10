@@ -10,6 +10,13 @@
         <NoWarn>CS7035;CS2002</NoWarn>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <RootNamespace>Nerosoft.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+        <DeployDependsOn> $(DeployDependsOn); PrepareForBuild; Build </DeployDependsOn>
+        <IsPackable>false</IsPackable>
+        <EmbeddedResourceUseDependentUponConvention>False</EmbeddedResourceUseDependentUponConvention>
+    </PropertyGroup>
+
     <PropertyGroup Condition="'$(Configuration)' != 'Debug'">
         <AssemblyVersion>$([System.DateTime]::Now.Year).$([System.DateTime]::Now.Month).$([System.DateTime]::Now.Day).*</AssemblyVersion>
     </PropertyGroup>

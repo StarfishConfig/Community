@@ -1,13 +1,20 @@
 ﻿<Project>
     <Import Project="global.props" />
     
-    <PropertyGroup>
-		<RootNamespace>Nerosoft.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
-        <DeployDependsOn> $(DeployDependsOn); PrepareForBuild; Build </DeployDependsOn>
-		<IsPackable>false</IsPackable>
-		<EmbeddedResourceUseDependentUponConvention>False</EmbeddedResourceUseDependentUponConvention>
-	</PropertyGroup>
-    
+    <PropertyGroup Condition=" '$(Configuration)'=='Debug' ">
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn)</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)'=='Release' ">
+        <DebugType>pdbonly</DebugType>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <NoWarn>1591;$(NoWarn)</NoWarn>
+    </PropertyGroup>
+
     <ItemGroup>
         <Using Include="System"/>
         <Using Include="System.Collections"/>
