@@ -268,7 +268,6 @@ internal abstract class BaseRepository<TContext, TEntity, TKey> : EfCoreReposito
 		}
 	}
 
-
 	/// <summary>
 	/// Deletes the specified entity and optionally raises a domain event produced by <paramref name="eventFactory"/>.
 	/// </summary>
@@ -310,8 +309,8 @@ internal abstract class BaseRepository<TContext, TEntity, TKey> : EfCoreReposito
 	/// Builds a base query for the repository by applying tracking behavior and include paths.
 	/// </summary>
 	/// <param name="query">The base queryable to modify.</param>
-	/// <param name="tracking">If <c>true</c>, the returned query will use change tracking via <see cref="Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.AsTracking{TEntity}(IQueryable{TEntity})"/>; otherwise <see cref="Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.AsNoTracking{TEntity}(IQueryable{TEntity})"/> is applied.</param>
-	/// <param name="properties">Array of navigation property names to include. Each entry is passed to <see cref="Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.Include{TEntity, TProperty}(IQueryable{TEntity}, string)"/>.</param>
+	/// <param name="tracking">If <c>true</c>, the returned query will use change tracking via <see cref="EntityFrameworkQueryableExtensions.AsTracking{TEntity}(IQueryable{TEntity})"/>; otherwise <see cref="Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.AsNoTracking{TEntity}(IQueryable{TEntity})"/> is applied.</param>
+	/// <param name="properties">Array of navigation property names to include. Each entry is passed to <see cref="EntityFrameworkQueryableExtensions.Include{TEntity}(IQueryable{TEntity}, string)"/>.</param>
 	/// <returns>The composed <see cref="IQueryable{TEntity}"/> with tracking and includes applied.</returns>
 	protected virtual IQueryable<TEntity> BuildQuery(IQueryable<TEntity> query, bool tracking, string[] properties)
 	{
