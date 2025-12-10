@@ -11,6 +11,7 @@
         <PackageReference Include="Euonia.Hosting" />
         <PackageReference Include="Euonia.Hosting.Serilog" />
         <PackageReference Include="Euonia.Modularity" />
+        <PackageReference Include="Grpc.AspNetCore" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
         <PackageReference Include="Microsoft.Extensions.ApiDescription.Server">
             <PrivateAssets>all</PrivateAssets>
