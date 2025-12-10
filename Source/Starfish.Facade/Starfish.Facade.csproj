@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\..\common.props" />
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Starfish.Business\Starfish.Business.csproj" />
+        <ProjectReference Include="..\Starfish.Contract\Starfish.Contract.csproj" />
+        <ProjectReference Include="..\Starfish.Persist\Starfish.Persist.csproj" />
+    </ItemGroup>
+
+</Project>

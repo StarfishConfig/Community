@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\..\common.props" />
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Euonia.Application" />
+        <PackageReference Include="Euonia.Bus" />
+        <PackageReference Include="Euonia.Bus.InMemory" />
+        <PackageReference Include="Euonia.Bus.RabbitMq" />
+        <PackageReference Include="Euonia.Domain" />
+        <PackageReference Include="Euonia.Mapping.Automapper" />
+        <PackageReference Include="Euonia.Modularity" />
+        <PackageReference Include="Euonia.Pipeline" />
+        <PackageReference Include="Euonia.Validation" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Starfish.Toolkit\Starfish.Toolkit.csproj" />
+    </ItemGroup>
+
+</Project>

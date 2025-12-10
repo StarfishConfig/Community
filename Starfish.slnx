@@ -1,8 +1,18 @@
 <Solution>
   <Folder Name="/Solution/">
+    <File Path="common.props" />
     <File Path="Directory.Packages.props" />
     <File Path="global.props" />
     <File Path="NuGet.config" />
     <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Source/">
+    <Project Path="Source/Starfish.Business/Starfish.Business.csproj" Id="e6614c11-5b43-4300-a787-1b724bae1682" />
+    <Project Path="Source/Starfish.Contract/Starfish.Contract.csproj" Id="df343678-0669-40d0-a1c3-14175e5c22b5" />
+    <Project Path="Source/Starfish.Domain/Starfish.Domain.csproj" Id="0cb27a3e-8c94-4a63-af86-fb78a9ecc702" />
+    <Project Path="Source/Starfish.Facade/Starfish.Facade.csproj" Id="02e7dae3-87ff-4d17-8cb4-a3eec751016b" />
+    <Project Path="Source/Starfish.Persist/Starfish.Persist.csproj" Id="b99c8e83-2a47-4906-82ee-0494bd8bbdd9" />
+    <Project Path="Source/Starfish.Server/Starfish.Server.csproj" Id="5a73dabc-8119-4648-b276-eb7167dbfab2" />
+    <Project Path="Source/Starfish.Toolkit/Starfish.Toolkit.csproj" Id="8bda4c45-f8de-4a7e-a4fa-5139538bde37" />
   </Folder>
 </Solution>
