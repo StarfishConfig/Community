@@ -1,0 +1,87 @@
+<Project>
+    <PropertyGroup>
+        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+        <EnablePackageVersionOverride>true</EnablePackageVersionOverride>
+        <EuoniaPackageVersion>10.0.12</EuoniaPackageVersion>
+        <FluentBlazorPackageVersion>4.12.0</FluentBlazorPackageVersion>
+        <RefitPackageVersion>9.0.2</RefitPackageVersion>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageVersion Include="Dapper" Version="2.1.66" />
+        <PackageVersion Include="Dapper.Contrib" Version="2.0.78" />
+        <PackageVersion Include="Dapper.SqlBuilder" Version="2.1.66" />
+        <PackageVersion Include="Google.Api.CommonProtos" Version="2.17.0" />
+        <PackageVersion Include="Grpc.Net.Client" Version="2.71.0" />
+        <PackageVersion Include="Grpc.AspNetCore" Version="2.71.0" />
+        <PackageVersion Include="Duende.IdentityModel" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.0" />
+        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
+        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0" />
+        <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="10.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration" Version="10.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.0" />
+        <PackageVersion Include="Microsoft.FeatureManagement.AspNetCore" Version="4.3.0" />
+        <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+        <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.0" />
+        <PackageVersion Include="Refit" Version="$(RefitPackageVersion)" />
+        <PackageVersion Include="Refit.HttpClientFactory" Version="$(RefitPackageVersion)" />
+        <PackageVersion Include="Refit.Newtonsoft.Json" Version="$(RefitPackageVersion)" />
+		<PackageVersion Include="Serilog.Extensions.Logging" Version="10.0.0" />
+        <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.0.1" />
+        <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
+		<PackageVersion Include="System.Reactive" Version="6.1.0" />
+    </ItemGroup>
+	<ItemGroup>
+		<PackageVersion Include="Euonia.Application" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Bus" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Bus.Abstract" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Bus.InMemory" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Bus.RabbitMq" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Business" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Caching" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Caching.Memory" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Caching.Redis" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Caching.Runtime" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Core" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Domain" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Hosting" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Hosting.Serilog" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Linq" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Mapping.Automapper" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Modularity" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Pipeline" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Validation" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Repository" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Repository.EfCore" Version="$(EuoniaPackageVersion)" />
+		<PackageVersion Include="Euonia.Threading.Redis" Version="$(EuoniaPackageVersion)" />
+	</ItemGroup>
+    <ItemGroup>
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+        <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+    </ItemGroup>
+    
+    <!-- Tests -->
+    <ItemGroup>
+        <PackageVersion Include="BenchmarkDotNet" Version="0.13.4" />
+        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+        <PackageVersion Include="xunit" Version="2.8.1" />
+        <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageVersion>
+        <PackageVersion Include="coverlet.collector" Version="6.0.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageVersion>
+        <PackageVersion Include="Xunit.DependencyInjection" Version="8.9.1" />
+        <PackageVersion Include="Xunit.DependencyInjection.Logging" Version="8.0.1" />
+        <PackageVersion Include="Moq" Version="4.20.72" />
+    </ItemGroup>
+</Project>
