@@ -5,6 +5,6 @@ namespace Nerosoft.Starfish.Domain.Aggregates;
 /// <summary>
 /// Represents a user role aggregate in the domain.
 /// </summary>
-internal class UserRole : Entity<long>
+public class UserRole : Entity<string>
 {
 }
