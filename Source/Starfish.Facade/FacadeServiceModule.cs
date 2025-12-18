@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Nerosoft.Euonia.Application;
+using Nerosoft.Euonia.Bus.InMemory;
+using Nerosoft.Euonia.Bus.RabbitMq;
 using Nerosoft.Euonia.Modularity;
 using Nerosoft.Starfish.Business;
 using Nerosoft.Starfish.Domain;
@@ -32,6 +34,7 @@ namespace Nerosoft.Starfish.Facade;
 /// <seealso cref="ModuleContextBase"/>
 [DependsOn(typeof(ApplicationModule))]
 [DependsOn(typeof(PersistServiceModule), typeof(BusinessServiceModule), typeof(DomainServiceModule))]
+[DependsOn(typeof(InMemoryBusModule), typeof(RabbitMqBusModule))]
 public class FacadeServiceModule : ModuleContextBase
 {
 	/// <inheritdoc/>

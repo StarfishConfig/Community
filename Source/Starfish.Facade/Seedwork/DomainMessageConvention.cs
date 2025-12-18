@@ -16,25 +16,25 @@ namespace Nerosoft.Starfish.Facade;
 internal class DomainMessageConvention : IMessageConvention
 {
 	/// <summary>
-	/// Determines whether the specified <paramref name="type"/> represents a command message type.
+	/// Determines whether the specified <paramref name="type"/> represents a unicast message type.
 	/// </summary>
 	/// <param name="type">The CLR <see cref="Type"/> to evaluate. Must not be <see langword="null"/>.</param>
 	/// <returns>
 	/// <see langword="true"/> if <paramref name="type"/> is assignable to <see cref="ICommand"/>; otherwise <see langword="false"/>.
 	/// </returns>
-	public bool IsCommandType(Type type)
+	public bool IsUnicastType(Type type)
 	{
 		return type.IsAssignableTo(typeof(ICommand));
 	}
 
 	/// <summary>
-	/// Determines whether the specified <paramref name="type"/> represents an event message type.
+	/// Determines whether the specified <paramref name="type"/> represents an event multicast type.
 	/// </summary>
 	/// <param name="type">The CLR <see cref="Type"/> to evaluate. Must not be <see langword="null"/>.</param>
 	/// <returns>
 	/// <see langword="true"/> if <paramref name="type"/> is assignable to <see cref="IEvent"/>; otherwise <see langword="false"/>.
 	/// </returns>
-	public bool IsEventType(Type type)
+	public bool IsMulticastType(Type type)
 	{
 		return type.IsAssignableTo(typeof(IEvent));
 	}

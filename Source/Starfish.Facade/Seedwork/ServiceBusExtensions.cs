@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nerosoft.Euonia.Bus;
-using Nerosoft.Euonia.Bus.InMemory;
-using Nerosoft.Euonia.Bus.RabbitMq;
 
 namespace Nerosoft.Starfish.Facade;
 
@@ -26,7 +24,7 @@ internal static class ServiceBusExtensions
 	/// </list>
 	/// Supported providers: InMemory, RabbitMq.
 	/// </remarks>
-	public static IServiceCollection AddServiceBus(this IServiceCollection services, IConfiguration configuration)
+	public static IBusConfigurator AddServiceBus(this IServiceCollection services, IConfiguration configuration)
 	{
 		var bus = services.AddServiceBus(config =>
 		{
@@ -35,6 +33,20 @@ internal static class ServiceBusExtensions
 				builder.Add<DefaultMessageConvention>();
 				builder.Add<AttributeMessageConvention>();
 				builder.Add<DomainMessageConvention>();
+			});
+			config.SetStrategy("in-memory", builder =>
+			{
+				builder.Add<LocalMessageTransportStrategy>();
+				builder.Add(new AttributeTransportStrategy(["in-memory"]));
+				builder.EvaluateIncoming(_ => true);
+				builder.EvaluateOutgoing(_ => true);
+			});
+			config.SetStrategy("rabbit-mq", builder =>
+			{
+				builder.Add<DistributedMessageTransportStrategy>();
+				builder.Add(new AttributeTransportStrategy(["rabbit-mq"]));
+				// builder.EvaluateIncoming(_ => true);
+				// builder.EvaluateOutgoing(_ => true);
 			});
 			config.SetIdentityProvider(jwt => JwtIdentityAccessor.Resolve(jwt, configuration));
 
@@ -47,59 +59,6 @@ internal static class ServiceBusExtensions
 			config.RegisterHandlers(registration.Assemblies.ToArray());
 		});
 
-		var name = configuration.GetValue<string>("ServiceBus:Provider")?.ToLower();
-		switch (name)
-		{
-			case null:
-			case "":
-			case ServiceBusProvider.InMemory:
-				bus.UseInMemory(opt => ConfigureInMemory(opt, configuration));
-				break;
-			case ServiceBusProvider.RabbitMq:
-				bus.UseRabbitMq(opt => ConfigureRabbitMq(opt, configuration));
-				break;
-			default:
-				throw new NotSupportedException($"The service bus provider '{name}' is not supported.");
-		}
-
-		return services;
-	}
-
-	///  <summary>
-	/// 		Apply InMemory service bus specific settings from configuration.
-	/// 		Reads the section identified by <see cref="ServiceBusProvider.ConfigurationSectionInMemory"/> and copies values into the provided options.
-	///  </summary>
-	///  <param name="options">The <see cref="InMemoryBusOptions"/> instance to configure.</param>
-	///  <param name="configuration"></param>
-	private static void ConfigureInMemory(InMemoryBusOptions options, IConfiguration configuration)
-	{
-		var section = configuration.GetSection(ServiceBusProvider.ConfigurationSectionInMemory).Get<InMemoryBusOptions>();
-		if (section == null)
-		{
-			return;
-		}
-
-		options.MultipleSubscriberInstance = section.MultipleSubscriberInstance;
-	}
-
-	///  <summary>
-	/// 		Apply RabbitMQ service bus specific settings from configuration.
-	/// 		Reads the section identified by <see cref="ServiceBusProvider.ConfigurationSectionRabbitMq"/> and copies values into the provided options.
-	///  </summary>
-	///  <param name="options">The <see cref="RabbitMqMessageBusOptions"/> instance to configure.</param>
-	///  <param name="configuration"></param>
-	private static void ConfigureRabbitMq(RabbitMqMessageBusOptions options, IConfiguration configuration)
-	{
-		var section = configuration.GetSection(ServiceBusProvider.ConfigurationSectionRabbitMq).Get<RabbitMqMessageBusOptions>();
-		if (section == null)
-		{
-			return;
-		}
-
-		options.Connection = section.Connection;
-		options.ExchangeName = section.ExchangeName;
-		options.ExchangeType = section.ExchangeType;
-		options.QueueName = section.QueueName;
-		options.TopicName = section.TopicName;
+		return bus;
 	}
 }

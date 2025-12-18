@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <EnablePackageVersionOverride>true</EnablePackageVersionOverride>
-        <EuoniaPackageVersion>10.0.14</EuoniaPackageVersion>
+        <EuoniaPackageVersion>10.1.6</EuoniaPackageVersion>
         <FluentBlazorPackageVersion>4.13.2</FluentBlazorPackageVersion>
         <RefitPackageVersion>9.0.2</RefitPackageVersion>
     </PropertyGroup>
@@ -54,7 +54,6 @@
         <PackageVersion Include="Euonia.Core" Version="$(EuoniaPackageVersion)" />
         <PackageVersion Include="Euonia.Domain" Version="$(EuoniaPackageVersion)" />
         <PackageVersion Include="Euonia.Hosting" Version="$(EuoniaPackageVersion)" />
-        <PackageVersion Include="Euonia.Hosting.Serilog" Version="$(EuoniaPackageVersion)" />
         <PackageVersion Include="Euonia.Linq" Version="$(EuoniaPackageVersion)" />
         <PackageVersion Include="Euonia.Mapping" Version="$(EuoniaPackageVersion)" />
         <PackageVersion Include="Euonia.Mapping.Automapper" Version="$(EuoniaPackageVersion)" />
