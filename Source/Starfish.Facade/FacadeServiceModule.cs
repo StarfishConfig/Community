@@ -40,9 +40,9 @@ public class FacadeServiceModule : ModuleContextBase
 	/// <inheritdoc/>
 	public override void AheadConfigureServices(ServiceConfigurationContext context)
 	{
-		Singleton<ServiceBusHandlerRegistration>.Get(() =>
+		Singleton<MessageBusHandlerRegistration>.Get(() =>
 		{
-			var registration = new ServiceBusHandlerRegistration();
+			var registration = new MessageBusHandlerRegistration();
 			registration.AddAssembly(typeof(FacadeServiceModule).Assembly);
 			registration.AddAssembly(typeof(BusinessServiceModule).Assembly);
 			registration.AddAssembly(typeof(PersistServiceModule).Assembly);

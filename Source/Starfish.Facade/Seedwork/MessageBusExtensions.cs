@@ -4,7 +4,7 @@ using Nerosoft.Euonia.Bus;
 
 namespace Nerosoft.Starfish.Facade;
 
-internal static class ServiceBusExtensions
+internal static class MessageBusExtensions
 {
 	/// <summary>
 	/// Adds and configures the service bus to the service collection.
@@ -26,37 +26,36 @@ internal static class ServiceBusExtensions
 	/// </remarks>
 	public static IBusConfigurator AddServiceBus(this IServiceCollection services, IConfiguration configuration)
 	{
-		var bus = services.AddServiceBus(config =>
+		var bus = services.AddEuoniaBus(config =>
 		{
-			config.SetConventions(builder =>
-			{
-				builder.Add<DefaultMessageConvention>();
-				builder.Add<AttributeMessageConvention>();
-				builder.Add<DomainMessageConvention>();
-			});
-			config.SetStrategy("in-memory", builder =>
-			{
-				builder.Add<LocalMessageTransportStrategy>();
-				builder.Add(new AttributeTransportStrategy(["in-memory"]));
-				builder.EvaluateIncoming(_ => true);
-				builder.EvaluateOutgoing(_ => true);
-			});
-			config.SetStrategy("rabbit-mq", builder =>
-			{
-				builder.Add<DistributedMessageTransportStrategy>();
-				builder.Add(new AttributeTransportStrategy(["rabbit-mq"]));
-				// builder.EvaluateIncoming(_ => true);
-				// builder.EvaluateOutgoing(_ => true);
-			});
-			config.SetIdentityProvider(jwt => JwtIdentityAccessor.Resolve(jwt, configuration));
-
-			var registration = Singleton<ServiceBusHandlerRegistration>.Instance;
+			var registration = Singleton<MessageBusHandlerRegistration>.Instance;
 			if (registration == null || registration.Assemblies.Count == 0)
 			{
 				throw new InvalidOperationException("No service bus handler assemblies registered.");
 			}
 
-			config.RegisterHandlers(registration.Assemblies.ToArray());
+			config.RegisterHandlers(registration.Assemblies.ToArray())
+			      .SetConventions(builder =>
+			      {
+				      builder.Add<DefaultMessageConvention>();
+				      builder.Add<AttributeMessageConvention>();
+				      builder.Add<DomainMessageConvention>();
+			      })
+			      .SetStrategy(MessageBusProvider.InMemory, builder =>
+			      {
+				      builder.Add<LocalMessageTransportStrategy>();
+				      builder.Add(new AttributeTransportStrategy([MessageBusProvider.InMemory]));
+				      builder.EvaluateIncoming(_ => true);
+				      builder.EvaluateOutgoing(_ => true);
+			      })
+			      .SetStrategy(MessageBusProvider.RabbitMq, builder =>
+			      {
+				      builder.Add<DistributedMessageTransportStrategy>();
+				      builder.Add(new AttributeTransportStrategy([MessageBusProvider.RabbitMq]));
+				      // builder.EvaluateIncoming(_ => true);
+				      // builder.EvaluateOutgoing(_ => true);
+			      })
+			      .SetIdentityProvider(jwt => JwtIdentityAccessor.Resolve(jwt, configuration));
 		});
 
 		return bus;

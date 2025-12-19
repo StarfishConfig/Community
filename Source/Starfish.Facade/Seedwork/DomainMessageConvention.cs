@@ -9,8 +9,8 @@ namespace Nerosoft.Starfish.Facade;
 /// </summary>
 /// <remarks>
 /// This convention maps domain marker interfaces to messaging concepts:
-/// - Types assignable to <c>ICommand</c> are considered queue (command) messages.
-/// - Types assignable to <c>IEvent</c> are considered topic (event) messages.
+/// - Types assignable to <c>ICommand</c> are considered unicast messages.
+/// - Types assignable to <c>IEvent</c> are considered multicast messages.
 /// - Types assignable to the generic <c>IRequest{TResponse}</c> are considered request messages.
 /// </remarks>
 internal class DomainMessageConvention : IMessageConvention
