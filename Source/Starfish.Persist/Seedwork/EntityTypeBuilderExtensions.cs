@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Nerosoft.Euonia.Domain;
+using Nerosoft.Euonia.Repository;
 using Nerosoft.Euonia.Repository.EfCore;
-using Nerosoft.Starfish.Domain;
 
 namespace Nerosoft.Starfish.Persist;
 
@@ -17,41 +16,41 @@ internal static class EntityTypeBuilderExtensions
 		where TEntity : class, IAuditable
 	{
 		builder.Property(t => t.CreatedAt)
-			   .HasColumnName("created_at")
-			   .HasValueGenerator<UtcTimeValueGenerator>()
-			   .ValueGeneratedOnAdd()
-			   .IsRequired();
+		       .HasColumnName("created_at")
+		       .HasValueGenerator<UtcTimeValueGenerator>()
+		       .ValueGeneratedOnAdd()
+		       .IsRequired();
 
 		builder.Property(t => t.UpdatedAt)
-			   .HasColumnName("updated_at")
-			   .HasValueGenerator<UtcTimeValueGenerator>()
-			   .ValueGeneratedOnAddOrUpdate()
-			   .IsRequired();
+		       .HasColumnName("updated_at")
+		       .HasValueGenerator<UtcTimeValueGenerator>()
+		       .ValueGeneratedOnAddOrUpdate()
+		       .IsRequired();
 
 		builder.Property(t => t.CreatedBy)
-			   .HasColumnName("created_by")
-			   .HasMaxLength(64)
-			   .IsRequired()
-			   .IsUnicode();
+		       .HasColumnName("created_by")
+		       .HasMaxLength(64)
+		       .IsRequired()
+		       .IsUnicode();
 
 		builder.Property(t => t.UpdatedBy)
-			   .HasColumnName("updated_by")
-			   .HasMaxLength(64)
-			   .IsRequired()
-			   .IsUnicode();
+		       .HasColumnName("updated_by")
+		       .HasMaxLength(64)
+		       .IsRequired()
+		       .IsUnicode();
 
 		builder.Property(t => t.IsDeleted)
-			   .HasColumnName("is_deleted")
-			   .HasDefaultValue(false)
-			   .IsRequired();
+		       .HasColumnName("is_deleted")
+		       .HasDefaultValue(false)
+		       .IsRequired();
 
 		builder.Property(t => t.DeletedAt)
-			   .HasColumnName("deleted_at");
+		       .HasColumnName("deleted_at");
 
 		builder.Property(t => t.DeletedBy)
-			   .HasColumnName("deleted_by")
-			   .HasMaxLength(64)
-			   .IsUnicode();
+		       .HasColumnName("deleted_by")
+		       .HasMaxLength(64)
+		       .IsUnicode();
 	}
 
 	/// <summary>
@@ -63,9 +62,9 @@ internal static class EntityTypeBuilderExtensions
 		where TEntity : class, ITombstone
 	{
 		builder.Property(t => t.IsDeleted)
-			   .HasColumnName("is_deleted")
-			   .HasDefaultValue(false)
-			   .IsRequired();
+		       .HasColumnName("is_deleted")
+		       .HasDefaultValue(false)
+		       .IsRequired();
 	}
 
 	/// <summary>
@@ -74,14 +73,14 @@ internal static class EntityTypeBuilderExtensions
 	/// <typeparam name="TEntity"></typeparam>
 	/// <param name="builder"></param>
 	public static void SnowflakeId<TEntity>(this EntityTypeBuilder<TEntity> builder)
-		where TEntity : class, IEntity<long>
+		where TEntity : class, IPersistent<long>
 	{
 		builder.HasKey(t => t.Id);
 		builder.Property(t => t.Id)
-			   .HasColumnName("id")
-			   .IsRequired()
-			   .HasValueGenerator<SnowflakeIdValueGenerator>()
-			   .ValueGeneratedOnAdd();
+		       .HasColumnName("id")
+		       .IsRequired()
+		       .HasValueGenerator<SnowflakeIdValueGenerator>()
+		       .ValueGeneratedOnAdd();
 	}
 
 	/// <summary>
@@ -90,14 +89,14 @@ internal static class EntityTypeBuilderExtensions
 	/// <param name="builder"></param>
 	/// <typeparam name="TEntity"></typeparam>
 	public static void ShortUniqueId<TEntity>(this EntityTypeBuilder<TEntity> builder)
-		where TEntity : class, IEntity<string>
+		where TEntity : class, IPersistent<string>
 	{
 		builder.HasKey(t => t.Id);
 		builder.Property(t => t.Id)
-			   .HasColumnName("id")
-			   .IsRequired()
-			   .HasValueGenerator<ShortUniqueIdValueGenerator>()
-			   .ValueGeneratedOnAdd();
+		       .HasColumnName("id")
+		       .IsRequired()
+		       .HasValueGenerator<ShortUniqueIdValueGenerator>()
+		       .ValueGeneratedOnAdd();
 	}
 
 	/// <summary>
@@ -109,10 +108,10 @@ internal static class EntityTypeBuilderExtensions
 		where TEntity : class, IHasCreateTime
 	{
 		builder.Property(t => t.CreatedAt)
-			   .HasColumnName("created_at")
-			   .HasValueGenerator<UtcTimeValueGenerator>()
-			   .ValueGeneratedOnAdd()
-			   .IsRequired();
+		       .HasColumnName("created_at")
+		       .HasValueGenerator<UtcTimeValueGenerator>()
+		       .ValueGeneratedOnAdd()
+		       .IsRequired();
 	}
 
 	/// <summary>
@@ -124,10 +123,10 @@ internal static class EntityTypeBuilderExtensions
 		where TEntity : class, IHasUpdateTime
 	{
 		builder.Property(t => t.UpdatedAt)
-			   .HasColumnName("updated_at")
-			   .HasValueGenerator<UtcTimeValueGenerator>()
-			   .ValueGeneratedOnAddOrUpdate()
-			   .IsRequired();
+		       .HasColumnName("updated_at")
+		       .HasValueGenerator<UtcTimeValueGenerator>()
+		       .ValueGeneratedOnAddOrUpdate()
+		       .IsRequired();
 	}
 
 	/// <summary>
@@ -140,6 +139,6 @@ internal static class EntityTypeBuilderExtensions
 		where TEntity : class, ITombstone
 	{
 		builder.HasIndex(t => t.IsDeleted)
-			   .HasDatabaseName($"{tableName ?? typeof(TEntity).Name.ToLower()}_idx_tombstone");
+		       .HasDatabaseName($"{tableName ?? typeof(TEntity).Name.ToLower()}_idx_tombstone");
 	}
 }

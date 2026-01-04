@@ -2,7 +2,7 @@
 using Nerosoft.Euonia.Claims;
 using Nerosoft.Euonia.Domain;
 
-namespace Nerosoft.Starfish.Business;
+namespace Nerosoft.Starfish.Domain;
 
 /// <summary>
 /// Base class for command objects that require access to a lazy service provider and the current user principal.

@@ -24,6 +24,7 @@ public class DomainServiceModule : ModuleContextBase
 	/// <param name="context"></param>
 	public override void ConfigureServices(ServiceConfigurationContext context)
 	{
+		context.Services.AddBusinessObject(typeof(DomainServiceModule).Assembly);
 		context.Services.AddTransient(typeof(ShortUniqueIdResolver<,>));
 	}
 }

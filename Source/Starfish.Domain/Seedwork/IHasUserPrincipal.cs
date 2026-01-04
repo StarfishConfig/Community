@@ -1,6 +1,6 @@
 ﻿using Nerosoft.Euonia.Claims;
 
-namespace Nerosoft.Starfish.Business;
+namespace Nerosoft.Starfish.Domain;
 
 /// <summary>
 /// Defines a contract for objects that have an associated user principal.

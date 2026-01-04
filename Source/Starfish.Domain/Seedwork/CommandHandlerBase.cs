@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Nerosoft.Euonia.Business;
 using Nerosoft.Euonia.Domain;
-using Nerosoft.Euonia.Repository;
+using Nerosoft.Euonia.Uow;
 
-namespace Nerosoft.Starfish.Business;
+namespace Nerosoft.Starfish.Domain;
 
 /// <summary>
 /// Base class for command handlers that encapsulates common execution patterns.
@@ -58,72 +58,6 @@ internal abstract class CommandHandlerBase
 	}
 
 	/// <summary>
-	/// Executes an asynchronous operation within a unit-of-work scope and returns a <see cref="CommandResponse"/>.
-	/// </summary>
-	/// <param name="messageId">A message identifier associated with the command response.</param>
-	/// <param name="action">The asynchronous action to execute. This parameter must not be <see langword="null"/>.</param>
-	/// <returns>
-	/// A <see cref="Task{CommandResponse}"/> that completes with a <see cref="CommandResponse"/>.
-	/// On success the response is marked successful; on exception the response is marked failed
-	/// and contains exception information.
-	/// </returns>
-	protected virtual async Task<CommandResponse> ExecuteAsync(string messageId, [NotNull] Func<Task> action)
-	{
-		var response = new CommandResponse(messageId);
-		try
-		{
-			using (var uow = UnitOfWork.Begin(true, true))
-			{
-				await action();
-				await uow.CommitAsync();
-			}
-
-			response.Success();
-		}
-		catch (Exception exception)
-		{
-			response.Failure(exception);
-		}
-
-		return response;
-	}
-
-	/// <summary>
-	/// Executes an asynchronous operation that returns a result within a unit-of-work scope
-	/// and returns a <see cref="CommandResponse{TResult}"/>.
-	/// </summary>
-	/// <typeparam name="TResult">The type of the result produced by the action.</typeparam>
-	/// <param name="messageId">A message identifier associated with the command response.</param>
-	/// <param name="action">The asynchronous action that produces a result. This parameter must not be <see langword="null"/>.</param>
-	/// <param name="cancellationToken"></param>
-	/// <returns>
-	/// A <see cref="Task{CommandResponse{TResult}}"/> that completes with a <see cref="CommandResponse{TResult}"/>.
-	/// On success the response is marked successful and contains the result; on exception the response is marked failed
-	/// and contains exception information.
-	/// </returns>
-	protected virtual async Task<CommandResponse<TResult>> ExecuteAsync<TResult>(string messageId, [NotNull] Func<Task<TResult>> action, CancellationToken cancellationToken = default)
-	{
-		var response = new CommandResponse<TResult>(messageId);
-		try
-		{
-			TResult result;
-			using (var uow = UnitOfWork.Begin(true, true))
-			{
-				result = await action();
-				await uow.CommitAsync(cancellationToken);
-			}
-
-			response.Success(result);
-		}
-		catch (Exception exception)
-		{
-			response.Failure(exception);
-		}
-
-		return response;
-	}
-
-	/// <summary>
 	/// Executes an asynchronous operation within a unit-of-work scope.
 	/// </summary>
 	/// <param name="action">The asynchronous action to execute. This parameter must not be <see langword="null"/>.</param>
@@ -138,7 +72,7 @@ internal abstract class CommandHandlerBase
 	{
 		using var uow = UnitOfWork.Begin(true, true);
 		await action();
-		await uow.CommitAsync(cancellationToken);
+		await uow.CompleteAsync(cancellationToken);
 	}
 
 	/// <summary>
@@ -159,7 +93,7 @@ internal abstract class CommandHandlerBase
 	{
 		using var uow = UnitOfWork.Begin(true, true);
 		var result = await action();
-		await uow.CommitAsync(cancellationToken);
+		await uow.CompleteAsync(cancellationToken);
 		next(result);
 	}
 }

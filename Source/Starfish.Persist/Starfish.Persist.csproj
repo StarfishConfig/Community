@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Euonia.Bus" />
         <PackageReference Include="Euonia.Linq" />
         <PackageReference Include="Euonia.Mapping" />
         <PackageReference Include="Euonia.Repository.EfCore" />

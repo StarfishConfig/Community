@@ -1,6 +1,6 @@
-﻿using Nerosoft.Euonia.Domain;
+﻿using Nerosoft.Euonia.Repository;
 
-namespace Nerosoft.Starfish.Domain;
+namespace Nerosoft.Starfish.Persist;
 
 /// <summary>
 /// Represents an interface for auditable entities.

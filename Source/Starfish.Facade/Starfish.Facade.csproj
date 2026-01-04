@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Starfish.Business\Starfish.Business.csproj" />
+        <ProjectReference Include="..\Starfish.Domain\Starfish.Domain.csproj" />
         <ProjectReference Include="..\Starfish.Persist\Starfish.Persist.csproj" />
     </ItemGroup>
 
