@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Nerosoft.Linkyou.Toolkit;
+namespace Nerosoft.Starfish.Toolkit;
 
 /// <summary>
 /// Helper utilities for creating, reading and inspecting JSON Web Tokens (JWT).

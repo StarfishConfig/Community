@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
 
-namespace Nerosoft.Linkyou.Toolkit;
+namespace Nerosoft.Starfish.Toolkit;
 
 /// <summary>
 /// Provides fast access to object properties using compiled expression trees and a shared cache.

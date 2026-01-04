@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Linkyou.Toolkit;
+﻿namespace Nerosoft.Starfish.Toolkit;
 
 /// <summary>
 /// Provides factory methods to create a <see cref="TokenGeneratorBuilder"/> prepopulated with common claims.

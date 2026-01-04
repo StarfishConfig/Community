@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace Nerosoft.Linkyou.Toolkit;
+namespace Nerosoft.Starfish.Toolkit;
 
 /// <summary>
 /// Provides extension methods for <see cref="JsonNode"/> to retrieve typed values by path.

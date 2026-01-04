@@ -1,6 +1,6 @@
 using System.IO.Compression;
 
-namespace Nerosoft.Linkyou.Toolkit;
+namespace Nerosoft.Starfish.Toolkit;
 
 /// <summary>
 /// Helper methods for compressing and decompressing strings using GZip and Base64 encoding.

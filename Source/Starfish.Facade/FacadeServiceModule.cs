@@ -11,7 +11,7 @@ using Nerosoft.Starfish.Persist;
 namespace Nerosoft.Starfish.Facade;
 
 /// <summary>
-/// Facade service module for the Linkyou application.
+/// Facade service module for the Starfish application.
 /// </summary>
 /// <remarks>
 /// <para>

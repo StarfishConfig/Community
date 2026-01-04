@@ -3,7 +3,7 @@ using System.Security.Claims;
 using Duende.IdentityModel;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Nerosoft.Linkyou.Toolkit;
+namespace Nerosoft.Starfish.Toolkit;
 
 /// <summary>
 /// Fluent builder for creating JWT access tokens for tests or runtime usage.

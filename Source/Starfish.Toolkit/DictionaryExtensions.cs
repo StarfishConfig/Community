@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Linkyou.Toolkit;
+﻿namespace Nerosoft.Starfish.Toolkit;
 
 /// <summary>
 /// Provides extension methods for working with <see cref="Dictionary{String,Object}"/>

@@ -5,7 +5,7 @@ namespace Nerosoft.Starfish.Domain.Aggregates;
 /// <summary>
 /// Represents a role assigned to a user.
 /// </summary>
-public class UserRole : Entity<string>, IHasCreateTime
+public class UserRole : Entity<string>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UserRole"/> class.

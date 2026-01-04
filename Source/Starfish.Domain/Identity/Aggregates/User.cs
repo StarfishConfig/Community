@@ -1,5 +1,5 @@
-﻿using Nerosoft.Linkyou.Toolkit;
-using Nerosoft.Starfish.Domain.Events;
+﻿using Nerosoft.Starfish.Domain.Events;
+using Nerosoft.Starfish.Toolkit;
 
 namespace Nerosoft.Starfish.Domain.Aggregates;
 

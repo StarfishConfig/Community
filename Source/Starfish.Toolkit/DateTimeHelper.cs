@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Linkyou.Toolkit;
+﻿namespace Nerosoft.Starfish.Toolkit;
 
 /// <summary>
 /// Provides helper methods to convert between Unix time (seconds since Unix epoch) and <see cref="DateTime"/>.

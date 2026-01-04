@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace Nerosoft.Linkyou.Toolkit;
+namespace Nerosoft.Starfish.Toolkit;
 
 /// <summary>
 /// A utility class for generating random numbers or strings.

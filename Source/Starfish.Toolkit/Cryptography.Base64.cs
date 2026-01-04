@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Linkyou.Toolkit;
+﻿namespace Nerosoft.Starfish.Toolkit;
 
 public partial class Cryptography
 {
