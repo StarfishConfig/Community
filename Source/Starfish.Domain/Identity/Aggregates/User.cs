@@ -104,10 +104,7 @@ internal sealed partial class User : EditableObjectBase<User, string>
 	/// <param name="actionType">The type of action triggering the password change.</param>
 	internal void SetPassword(string password, string actionType = null)
 	{
-		// var salt = RandomUtility.GenerateRandomString();
-		// var hash = Cryptography.DES.Encrypt(password, Encoding.UTF8.GetBytes(salt));
-		// PasswordHash = hash;
-		// PasswordSalt = salt;
+		
 		Password = password;
 		PasswordChangedTime = DateTime.Now;
 		if (!string.IsNullOrWhiteSpace(actionType))

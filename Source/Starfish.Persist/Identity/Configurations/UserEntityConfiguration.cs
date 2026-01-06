@@ -30,17 +30,21 @@ internal class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
 
 		builder.Property(x => x.Username)
 		       .HasColumnName("username")
+		       .HasMaxLength(255)
 		       .IsRequired()
 		       .IsUnicode();
 
 		builder.Property(x => x.PasswordHash)
+		       .HasMaxLength(512)
 		       .HasColumnName("password_hash");
 
 		builder.Property(x => x.PasswordSalt)
+		       .HasMaxLength(32)
 		       .HasColumnName("password_salt");
 
 		builder.Property(x => x.Nickname)
 		       .HasColumnName("nickname")
+		       .HasMaxLength(50)
 		       .IsUnicode();
 
 		builder.Property(x => x.Email)
@@ -64,6 +68,8 @@ internal class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
 		builder.CreatedAtUtc();
 
 		builder.UpdatedAtUtc();
+
+		builder.DeletedAtUtc();
 
 		builder.ConfigureTombstoneProperty();
 

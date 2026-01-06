@@ -1,5 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using Nerosoft.Euonia.Modularity;
+using Nerosoft.Euonia.Repository;
+
 namespace Nerosoft.Starfish.Persist;
 
-internal class IdentityDataContext
+[ConnectionString(Name = "Identity")]
+internal class IdentityDataContext : DataContextWithBus<IdentityDataContext>
 {
+	public IdentityDataContext(DbContextOptions<IdentityDataContext> options, IRequestContextAccessor request)
+		: base(options, request)
+	{
+	}
 }

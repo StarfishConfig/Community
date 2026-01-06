@@ -9,6 +9,8 @@ namespace Nerosoft.Starfish.Domain.Identity.Data;
 /// </remarks>
 public class UserData
 {
+	public string Id { get; set; }
+
 	public string Username { get; set; }
 
 	public string Nickname { get; set; }

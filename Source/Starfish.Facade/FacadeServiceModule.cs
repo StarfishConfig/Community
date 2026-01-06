@@ -95,8 +95,6 @@ public class FacadeServiceModule : ModuleContextBase
 			      {
 				      builder.Add<DistributedMessageTransportStrategy>();
 				      builder.Add(new AttributeTransportStrategy([MessageBusProvider.RabbitMq]));
-				      // builder.EvaluateIncoming(_ => true);
-				      // builder.EvaluateOutgoing(_ => true);
 			      })
 			      .SetIdentityProvider(jwt => JwtIdentityAccessor.Resolve(jwt, Configuration));
 		});

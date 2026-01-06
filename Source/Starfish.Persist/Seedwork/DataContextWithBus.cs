@@ -1,15 +1,10 @@
 ﻿using System.Diagnostics;
-using System.Reflection;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Nerosoft.Euonia.Bus;
-using Nerosoft.Euonia.Domain;
 using Nerosoft.Euonia.Modularity;
 using Nerosoft.Euonia.Repository;
 using Nerosoft.Euonia.Repository.EfCore;
-using Nerosoft.Starfish.Domain;
 
 namespace Nerosoft.Starfish.Persist;
 
@@ -20,68 +15,22 @@ internal abstract class DataContextWithBus<TContext> : DataContextBase<TContext>
 	where TContext : DbContext, IRepositoryContext
 {
 	private readonly List<object> _unchangedEntities = [];
-	private readonly IBus _bus;
 	private readonly IRequestContextAccessor _request;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DataContextWithBus{TContext}"/> class.
 	/// </summary>
 	/// <param name="options">The options for this context.</param>
-	/// <param name="bus">The <see cref="IBus"/> to publish domain events.</param>
 	/// <param name="request">The accessor to get current request information.</param>
-	protected DataContextWithBus(DbContextOptions<TContext> options, IBus bus, IRequestContextAccessor request)
+	protected DataContextWithBus(DbContextOptions<TContext> options, IRequestContextAccessor request)
 		: base(options)
 	{
-		_bus = bus;
 		_request = request;
 		ChangeTracker.DetectedEntityChanges += OnDetectedEntityChanges;
 	}
 
 	/// <inheritdoc/>
 	protected override bool AutoSetEntryValues => true;
-
-
-	/// <summary>
-	/// Gets the DateTimeKind used for date and time values.
-	/// </summary>
-	protected override DateTimeKind DateTimeKind => DateTimeKind.Utc;
-
-	/// <inheritdoc/>
-	protected override void OnModelCreating(ModelBuilder modelBuilder)
-	{
-		modelBuilder.ApplyConfigurationsFromAssembly(typeof(TContext).Assembly, type => type.GetCustomAttribute<DbContextAttribute>()?.ContextType == typeof(TContext));
-		modelBuilder.SetTombstoneQueryFilter();
-		base.OnModelCreating(modelBuilder);
-	}
-
-	/// <inheritdoc />
-	public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
-	{
-		var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-
-		ChangeTracker.AutoDetectChangesEnabled = false;
-
-		if (_bus != null)
-		{
-			var events = GetTrackedEvents();
-
-			if (result > 0 && events.Count > 0)
-			{
-				var options = new PublishOptions
-				{
-					RequestTraceId = _request?.Context?.TraceIdentifier
-				};
-				foreach (var @event in events)
-				{
-					await _bus.PublishAsync(@event, null, options, null, cancellationToken);
-				}
-			}
-		}
-
-		ChangeTracker.AutoDetectChangesEnabled = true;
-
-		return result;
-	}
 
 	protected override void SetEntryValues(IEnumerable<EntityEntry> entries)
 	{
@@ -92,14 +41,11 @@ internal abstract class DataContextWithBus<TContext> : DataContextBase<TContext>
 
 		foreach (var entry in entries)
 		{
-			if (entry.State == EntityState.Unchanged)
+			switch (entry.State)
 			{
-				continue;
-			}
-
-			if (entry.State == EntityState.Modified && _unchangedEntities.Contains(entry.CurrentValues["Id"]))
-			{
-				continue;
+				case EntityState.Unchanged:
+				case EntityState.Modified when _unchangedEntities.Contains(entry.CurrentValues["Id"]):
+					continue;
 			}
 
 			if (entry.Entity is not IAuditable auditable)
@@ -152,7 +98,7 @@ internal abstract class DataContextWithBus<TContext> : DataContextBase<TContext>
 			return null;
 		}
 
-		return principal.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? principal.Identity?.Name ?? null;
+		return principal.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? principal.Identity?.Name;
 	}
 
 	protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
@@ -162,24 +108,6 @@ internal abstract class DataContextWithBus<TContext> : DataContextBase<TContext>
 		                    .HaveConversion<UniversalTimeConverter>();
 		configurationBuilder.Properties<DateTime?>()
 		                    .HaveConversion<UniversalTimeConverter>();
-	}
-
-	private List<DomainEvent> GetTrackedEvents()
-	{
-		var entries = ChangeTracker.Entries<IHasDomainEvents>();
-
-		var events = new List<DomainEvent>();
-
-		foreach (var entry in entries)
-		{
-			var aggregate = entry.Entity;
-
-			aggregate.AttachToEvents();
-			events.AddRange(aggregate.GetEvents());
-			aggregate.ClearEvents();
-		}
-
-		return events;
 	}
 
 	public override void Dispose()

@@ -16,6 +16,16 @@ internal class UserRoleEntity : PersistentBase<string>, IHasCreateTime
 	}
 
 	/// <summary>
+	/// Initializes a new instance of the <see cref="UserRoleEntity"/> class with the specified role name.
+	/// </summary>
+	/// <param name="name"></param>
+	public UserRoleEntity(string name)
+		: this()
+	{
+		Name = name;
+	}
+
+	/// <summary>
 	/// Gets or sets the name of the role.
 	/// </summary>
 	public string Name { get; set; }

@@ -1,6 +1,11 @@
-﻿using Nerosoft.Euonia.Modularity;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Nerosoft.Euonia.Mapping;
+using Nerosoft.Euonia.Modularity;
 using Nerosoft.Euonia.Repository;
+using Nerosoft.Euonia.Repository.EfCore;
 using Nerosoft.Starfish.Domain;
+using Nerosoft.Starfish.Persist.Mappers;
 
 namespace Nerosoft.Starfish.Persist;
 
@@ -37,10 +42,20 @@ public class PersistServiceModule : ModuleContextBase
 	/// <inheritdoc />
 	public override void AheadConfigureServices(ServiceConfigurationContext context)
 	{
+		Configure<AutomapperOptions>(options =>
+		{
+			options.AddProfile<UserMapperProfile>();
+		});
 	}
 
 	/// <inheritdoc />
 	public override void ConfigureServices(ServiceConfigurationContext context)
 	{
+		context.Services.AddKeyedSingleton<ConnectionConfigurator>("inmemory", (builder, connectionString) => builder.UseInMemoryDatabase(connectionString));
+		context.Services.AddKeyedSingleton<ConnectionConfigurator>("sqlite", (builder, connectionString) => builder.UseSqlite(connectionString));
+		context.Services.AddKeyedSingleton<ConnectionConfigurator>("mssql", (builder, connectionString) => builder.UseSqlServer(connectionString));
+		context.Services.AddKeyedSingleton<ConnectionConfigurator>("pgsql", (builder, connectionString) => builder.UseNpgsql(connectionString));
+
+		context.Services.AddDataContextFactory<IdentityDataContext>();
 	}
 }

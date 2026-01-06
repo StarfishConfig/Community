@@ -129,6 +129,14 @@ internal static class EntityTypeBuilderExtensions
 		       .IsRequired();
 	}
 
+	public static void DeletedAtUtc<TEntity>(this EntityTypeBuilder<TEntity> builder)
+		where TEntity : class, IHasDeleteTime
+	{
+		builder.Property(t => t.DeletedAt)
+		       .HasColumnName("deleted_at")
+		       .HasValueGenerator<UtcTimeValueGenerator>();
+	}
+
 	/// <summary>
 	/// Configure tombstone index for entity type <typeparamref name="TEntity"/>.
 	/// </summary>

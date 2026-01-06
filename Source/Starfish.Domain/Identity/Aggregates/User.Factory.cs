@@ -58,6 +58,7 @@ internal partial class User
 		var repository = BusinessContext.GetRequiredService<IUserRepository>();
 		var data = new UserData
 		{
+			Id = Id,
 			Username = Username,
 			Password = Password,
 			Nickname = Nickname,
