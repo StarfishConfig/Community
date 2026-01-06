@@ -9,6 +9,7 @@
     <ItemGroup>
         <PackageReference Include="Euonia.Bus.InMemory" />
         <PackageReference Include="Euonia.Bus.RabbitMq" />
+        <PackageReference Include="FluentHttpClient" />
     </ItemGroup>
 
     <ItemGroup>

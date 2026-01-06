@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <EnablePackageVersionOverride>true</EnablePackageVersionOverride>
-        <EuoniaPackageVersion>10.2.1</EuoniaPackageVersion>
+        <EuoniaPackageVersion>10.2.2</EuoniaPackageVersion>
         <FluentBlazorPackageVersion>4.13.2</FluentBlazorPackageVersion>
         <RefitPackageVersion>9.0.2</RefitPackageVersion>
     </PropertyGroup>
@@ -10,10 +10,11 @@
         <PackageVersion Include="Dapper" Version="2.1.66" />
         <PackageVersion Include="Dapper.Contrib" Version="2.0.78" />
         <PackageVersion Include="Dapper.SqlBuilder" Version="2.1.66" />
-        <PackageVersion Include="Google.Api.CommonProtos" Version="2.17.0" />
-        <PackageVersion Include="Grpc.Net.Client" Version="2.71.0" />
-        <PackageVersion Include="Grpc.AspNetCore" Version="2.71.0" />
         <PackageVersion Include="Duende.IdentityModel" Version="8.0.0" />
+        <PackageVersion Include="Google.Api.CommonProtos" Version="2.17.0" />
+        <PackageVersion Include="Grpc.Net.Client" Version="2.76.0" />
+        <PackageVersion Include="Grpc.AspNetCore" Version="2.76.0" />
+        <PackageVersion Include="FluentHttpClient" Version="5.0.1" />
         <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components" Version="$(FluentBlazorPackageVersion)" />
         <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="$(FluentBlazorPackageVersion)" />
         <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components.Emoji" Version="$(FluentBlazorPackageVersion)" />
