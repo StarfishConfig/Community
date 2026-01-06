@@ -1,4 +1,4 @@
-namespace Nerosoft.Starfish.Domain.Constants;
+namespace Nerosoft.Starfish.Shared;
 
 /// <summary>
 /// Contains constants for role names used in the system.

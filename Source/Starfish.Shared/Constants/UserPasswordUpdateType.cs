@@ -1,4 +1,4 @@
-namespace Nerosoft.Starfish.Domain.Constants;
+namespace Nerosoft.Starfish.Shared;
 
 /// <summary>
 /// Represents the types of user password updates.
