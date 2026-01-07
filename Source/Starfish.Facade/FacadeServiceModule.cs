@@ -50,6 +50,10 @@ public class FacadeServiceModule : ModuleContextBase
 			registration.AddAssembly(typeof(RepositoryServiceModule).Assembly);
 			return registration;
 		});
+
+		context.Services.AddOptions<MessageBusOptions>()
+		       .BindConfiguration("Euonia:Bus")
+		       .ValidateOnStart();
 	}
 
 	/// <summary>

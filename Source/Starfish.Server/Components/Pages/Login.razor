@@ -1,0 +1,10 @@
+@page "/login"
+@using Nerosoft.Starfish.Facade.Interfaces
+@layout MainLayout
+@inject IAuthApplicationService Service
+
+<h3>Login</h3>
+<button type="submit" @onclick="@OnLoginAsync">login</button>
+@code {
+    
+}
