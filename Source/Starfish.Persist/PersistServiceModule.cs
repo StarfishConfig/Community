@@ -1,5 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Nerosoft.Euonia.Caching;
+using Nerosoft.Euonia.Caching.Memory;
+using Nerosoft.Euonia.Caching.Redis;
+using Nerosoft.Euonia.Caching.Runtime;
 using Nerosoft.Euonia.Mapping;
 using Nerosoft.Euonia.Modularity;
 using Nerosoft.Euonia.Repository;
@@ -46,6 +50,9 @@ public class PersistServiceModule : ModuleContextBase
 		{
 			options.AddProfile<UserMapperProfile>();
 		});
+		Configure<RedisCacheOptions>(Configuration.GetSection("Euonia:Caching:Redis"));
+		Configure<MemoryCacheOptions>(Configuration.GetSection("Euonia:Caching:Memory"));
+		Configure<RuntimeCacheOptions>(Configuration.GetSection("Euonia:Caching:Runtime"));
 	}
 
 	/// <inheritdoc />
@@ -57,5 +64,10 @@ public class PersistServiceModule : ModuleContextBase
 		context.Services.AddKeyedSingleton<ConnectionConfigurator>("pgsql", (builder, connectionString) => builder.UseNpgsql(connectionString));
 
 		context.Services.AddDataContextFactory<IdentityDataContext>();
+
+		context.Services.AddKeyedSingleton<ICacheService, RedisCacheService>("Redis");
+		context.Services.AddKeyedSingleton<ICacheService, MemoryCacheService>("Memory");
+		context.Services.AddKeyedSingleton<ICacheService, RuntimeCacheService>("Runtime");
+		context.Services.AddTransient<ICacheService, HybridCacheService>();
 	}
 }
