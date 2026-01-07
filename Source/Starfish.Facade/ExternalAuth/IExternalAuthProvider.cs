@@ -1,4 +1,4 @@
-namespace Nerosoft.Starfish.Facade.Auth;
+namespace Nerosoft.Starfish.Facade.ExternalAuth;
 
 /// <summary>
 /// Defines a contract for external authentication providers that exchange an authorization code

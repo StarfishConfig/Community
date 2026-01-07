@@ -1,5 +1,5 @@
 using Nerosoft.Euonia.Application;
-using Nerosoft.Starfish.Facade.Dtos;
+using Nerosoft.Starfish.Facade.Transit;
 
 namespace Nerosoft.Starfish.Facade.Interfaces;
 

@@ -8,10 +8,10 @@ public class UserPasswordUpdateType
 	/// <summary>
 	/// Represents a password reset initiated by an administrator.
 	/// </summary>
-	public const string Reset = "Reset";
+	public const string Reset = "reset";
 
 	/// <summary>
 	/// Represents a password change initiated by the user.
 	/// </summary>
-	public const string Change = "Change";
+	public const string Change = "change";
 }

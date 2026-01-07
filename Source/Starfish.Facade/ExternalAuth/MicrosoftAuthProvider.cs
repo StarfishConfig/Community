@@ -2,9 +2,9 @@ using System.Text.Json.Nodes;
 using FluentHttpClient;
 using Microsoft.Extensions.Configuration;
 
-namespace Nerosoft.Starfish.Facade.Auth;
+namespace Nerosoft.Starfish.Facade.ExternalAuth;
 
-internal class GoogleAuthProvider(IConfiguration configuration) : BaseAuthProvider(configuration)
+internal class MicrosoftAuthProvider(IConfiguration configuration) : BaseAuthProvider(configuration)
 {
 	public override async Task<ExternalAuthResult> AuthenticateAsync(string authCode, CancellationToken cancellationToken = default)
 	{
@@ -13,18 +13,19 @@ internal class GoogleAuthProvider(IConfiguration configuration) : BaseAuthProvid
 
 		var result = new ExternalAuthResult();
 
-		ReadJsonValue(user, "sub", id => result.Id = id);
-		ReadJsonValue(user, "email", email => result.Username = email);
-		ReadJsonValue(user, "name", name => result.Nickname = name);
-		ReadJsonValue(user, "picture", avatarUrl => result.AvatarUrl = avatarUrl);
+		ReadJsonValue(user, "id", id => result.Id = id);
+		ReadJsonValue(user, "userPrincipalName", login => result.Username = login);
+		ReadJsonValue(user, "displayName", name => result.Nickname = name);
+		ReadJsonValue(user, "email", email => result.Email = email);
+		ReadJsonValue(user, "mobilePhone", avatarUrl => result.Phone = avatarUrl);
 
 		return result;
 	}
 
-	private async Task<JsonObject> GetUserAsync(string token, CancellationToken cancellationToken = default)
+	private async ValueTask<JsonObject> GetUserAsync(string token, CancellationToken cancellationToken = default)
 	{
 		using var client = new HttpClient();
-		return await client.UsingRoute("https://www.googleapis.com/oauth2/v3/userinfo")
+		return await client.UsingRoute("https://graph.microsoft.com/v1.0/me")
 		                   .WithHeader("User-Agent", "Linkyou")
 		                   .WithHeader("Accept", "application/json")
 		                   .WithOAuthBearerToken(token)
@@ -34,12 +35,12 @@ internal class GoogleAuthProvider(IConfiguration configuration) : BaseAuthProvid
 
 	private async Task<string> GetTokenAsync(string code, CancellationToken cancellationToken = default)
 	{
-		var secret = Configuration.GetValue<string>("OAuth:Google:ClientSecret");
-		var clientId = Configuration.GetValue<string>("OAuth:Google:ClientId");
+		var secret = Configuration.GetValue<string>("OAuth:Microsoft:ClientSecret");
+		var clientId = Configuration.GetValue<string>("OAuth:Microsoft:ClientId");
 		var redirectUri = Configuration.GetValue<string>("OAuth:RedirectUri");
 
 		using var client = new HttpClient();
-		client.BaseAddress = new Uri("https://oauth2.googleapis.com");
+		client.BaseAddress = new Uri("https://login.microsoftonline.com");
 
 		var formContent = new Dictionary<string, string>
 		{
@@ -47,22 +48,23 @@ internal class GoogleAuthProvider(IConfiguration configuration) : BaseAuthProvid
 			{ "client_secret", secret },
 			{ "code", code },
 			{ "redirect_uri", redirectUri },
-			{ "grant_type", "authorization_code" }
+			{ "grant_type", "authorization_code" },
+			{ "scope", "User.Read Mail.Read" }
 		};
 
-		var response = await client.UsingRoute("/token")
+		var response = await client.UsingRoute("/consumers/oauth2/v2.0/token")
 		                           .WithHeader("Accept", "application/json")
 		                           .WithContent(new FormUrlEncodedContent(formContent))
 		                           .PostAsync(cancellationToken)
 		                           .ReadJsonObjectAsync(cancellationToken);
 		if (response == null)
 		{
-			throw new BadGatewayException("Failed to get token from Google.");
+			throw new BadGatewayException("Failed to get token from Microsoft.");
 		}
 
 		if (response.TryGetPropertyValue("access_token", out var token) == false || token == null)
 		{
-			throw new BadGatewayException("Failed to get access token from Google.");
+			throw new BadGatewayException("Failed to get access token from Microsoft.");
 		}
 
 		return token.GetValue<string>();

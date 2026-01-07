@@ -1,4 +1,4 @@
-namespace Nerosoft.Starfish.Facade.Auth;
+namespace Nerosoft.Starfish.Facade.ExternalAuth;
 
 /// <summary>
 /// Represents the result of an external authentication process.

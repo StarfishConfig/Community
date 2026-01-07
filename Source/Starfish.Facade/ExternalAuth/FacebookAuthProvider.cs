@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 using FluentHttpClient;
 using Microsoft.Extensions.Configuration;
 
-namespace Nerosoft.Starfish.Facade.Auth;
+namespace Nerosoft.Starfish.Facade.ExternalAuth;
 
 internal class FacebookAuthProvider(IConfiguration configuration) : BaseAuthProvider(configuration)
 {

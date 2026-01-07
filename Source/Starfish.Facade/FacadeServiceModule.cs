@@ -6,7 +6,7 @@ using Nerosoft.Euonia.Bus.RabbitMq;
 using Nerosoft.Euonia.Modularity;
 using Nerosoft.Euonia.Uow;
 using Nerosoft.Starfish.Domain;
-using Nerosoft.Starfish.Facade.Auth;
+using Nerosoft.Starfish.Facade.ExternalAuth;
 using Nerosoft.Starfish.Repository;
 using Nerosoft.Starfish.Shared;
 

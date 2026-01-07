@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.Configuration;
 
-namespace Nerosoft.Starfish.Facade.Auth;
+namespace Nerosoft.Starfish.Facade.ExternalAuth;
 
 internal abstract class BaseAuthProvider(IConfiguration configuration) : IExternalAuthProvider
 {

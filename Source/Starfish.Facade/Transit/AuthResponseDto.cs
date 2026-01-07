@@ -1,4 +1,4 @@
-namespace Nerosoft.Starfish.Facade.Dtos;
+namespace Nerosoft.Starfish.Facade.Transit;
 
 /// <summary>
 /// Defines the user authentication result data transfer object.
