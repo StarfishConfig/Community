@@ -5,7 +5,7 @@ namespace Nerosoft.Starfish.Domain.Repositories;
 /// <summary>
 /// Defines the contract for user repository operations.
 /// </summary>
-public interface IUserRepository
+internal interface IUserRepository
 {
 	/// <summary>
 	/// Retrieves user data by username.

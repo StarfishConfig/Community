@@ -3,7 +3,7 @@ namespace Nerosoft.Starfish.Persistent;
 /// <summary>
 /// Represents token data for authentication and authorization purposes.
 /// </summary>
-public class TokenData
+internal class TokenData
 {
 	/// <summary>
 	/// Gets or sets the token type (e.g., access_token, refresh_token).
