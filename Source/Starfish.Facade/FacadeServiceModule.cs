@@ -6,7 +6,9 @@ using Nerosoft.Euonia.Bus.RabbitMq;
 using Nerosoft.Euonia.Modularity;
 using Nerosoft.Euonia.Uow;
 using Nerosoft.Starfish.Domain;
+using Nerosoft.Starfish.Facade.Auth;
 using Nerosoft.Starfish.Repository;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Facade;
 
@@ -99,6 +101,10 @@ public class FacadeServiceModule : ModuleContextBase
 			      .SetIdentityProvider(jwt => JwtIdentityAccessor.Resolve(jwt, Configuration));
 		});
 
-		
+		context.Services
+		       .AddKeyedTransient<IExternalAuthProvider, GoogleAuthProvider>(AuthProvider.Google)
+		       .AddKeyedTransient<IExternalAuthProvider, GithubAuthProvider>(AuthProvider.Github)
+		       .AddKeyedTransient<IExternalAuthProvider, FacebookAuthProvider>(AuthProvider.Facebook)
+		       .AddKeyedTransient<IExternalAuthProvider, MicrosoftAuthProvider>(AuthProvider.Microsoft);
 	}
 }

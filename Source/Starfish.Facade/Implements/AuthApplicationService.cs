@@ -5,6 +5,7 @@ using Nerosoft.Euonia.Bus;
 using Nerosoft.Euonia.Domain;
 using Nerosoft.Starfish.Facade.Auth;
 using Nerosoft.Starfish.Facade.Dtos;
+using Nerosoft.Starfish.Facade.Events;
 using Nerosoft.Starfish.Facade.Interfaces;
 using Nerosoft.Starfish.Repository.Models;
 using Nerosoft.Starfish.Repository.Requests;
@@ -16,7 +17,7 @@ namespace Nerosoft.Starfish.Facade.Implements;
 internal class AuthApplicationService(IConfiguration configuration) : BaseApplicationService, IAuthApplicationService
 {
 	private const string JWT_AUTH_SECTION = "JwtAuthenticationOptions";
-	
+
 	public async Task<AuthResponseDto> GrantAsync(AuthRequestDto data, CancellationToken cancellationToken = default)
 	{
 		var events = new List<ApplicationEvent>();
@@ -27,17 +28,45 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 			var user = await Bus.CallAsync(request, cancellationToken);
 			var result = GenerateAccessToken(user);
 
+			@events.Add(new UserAuthSuccessEvent
+			{
+				AuthType = data.Provider,
+				RefreshToken = result.RefreshToken,
+				UserId = result.UserId,
+				Username = result.Username,
+				TokenIssueTime = DateTimeHelper.GetDateTimeFromUnixTime(result.IssueAt)
+			});
+
+			if (string.Equals(data.Provider, AuthProvider.RefreshToken, StringComparison.OrdinalIgnoreCase))
+			{
+				@events.Add(new TokenRefreshedEvent
+				{
+					OriginToken = data.Password
+				});
+			}
+
+
 			return result;
 		}
 		catch (Exception exception)
 		{
+			events.Add(new UserAuthFailureEvent
+			{
+				AuthType = data.Provider,
+				Data = new Dictionary<string, string>
+				{
+					{ "Username", data.Username ?? string.Empty },
+					{ "Password", data.Password != null ? "******" : string.Empty },
+				},
+				Error = exception.Message,
+			});
 			throw;
 		}
 		finally
 		{
 			if (events.Count > 0)
 			{
-				await Bus.PublishAsync(events, cancellationToken);
+				await Parallel.ForEachAsync(events, cancellationToken, async (@event, token) => await Bus.PublishAsync(@event, token));
 			}
 		}
 	}
@@ -48,7 +77,6 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 		{
 			case null or "":
 				throw new ArgumentException("Provider must be specified for authentication.", nameof(data));
-				;
 			case AuthProvider.Username:
 			case AuthProvider.Password:
 				return new AuthenticateWithUsernameRequest(data.Username, data.Password);
@@ -81,7 +109,7 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 				throw new NotSupportedException($"The authentication provider '{data.Provider}' is not supported.");
 		}
 	}
-	
+
 	private AuthResponseDto GenerateAccessToken(UserAuthQueryModel user)
 	{
 		//var roles = user.Roles?.Select(r => r.Name);
