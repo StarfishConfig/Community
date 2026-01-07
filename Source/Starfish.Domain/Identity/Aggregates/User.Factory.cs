@@ -1,5 +1,5 @@
 using Nerosoft.Euonia.Business;
-using Nerosoft.Starfish.Domain.Identity.Data;
+using Nerosoft.Starfish.Persistent;
 using Nerosoft.Starfish.Domain.Repositories;
 
 namespace Nerosoft.Starfish.Domain.Aggregates;

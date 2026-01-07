@@ -6,7 +6,7 @@ using Nerosoft.Euonia.Bus.RabbitMq;
 using Nerosoft.Euonia.Modularity;
 using Nerosoft.Euonia.Uow;
 using Nerosoft.Starfish.Domain;
-using Nerosoft.Starfish.Persist;
+using Nerosoft.Starfish.Repository;
 
 namespace Nerosoft.Starfish.Facade;
 
@@ -22,7 +22,7 @@ namespace Nerosoft.Starfish.Facade;
 /// <para>- Act as a central registration point for application services.</para>
 /// <para>- Provide a place to add initialization logic related to application functionality.</para>
 /// Dependencies:
-/// <para>- Depends on <see cref="ApplicationModule"/>, <see cref="UnitOfWorkModule"/>, <see cref="PersistServiceModule"/>,
+/// <para>- Depends on <see cref="ApplicationModule"/>, <see cref="UnitOfWorkModule"/>, <see cref="RepositoryServiceModule"/>,
 ///   and <see cref="DomainServiceModule"/> to ensure required services are registered
 ///   before this module initializes.
 /// </para>
@@ -33,7 +33,7 @@ namespace Nerosoft.Starfish.Facade;
 /// </remarks>
 /// <seealso cref="ModuleContextBase"/>
 [DependsOn(typeof(ApplicationModule), typeof(UnitOfWorkModule))]
-[DependsOn(typeof(PersistServiceModule), typeof(DomainServiceModule))]
+[DependsOn(typeof(RepositoryServiceModule), typeof(DomainServiceModule))]
 [DependsOn(typeof(InMemoryBusModule), typeof(RabbitMqBusModule))]
 public class FacadeServiceModule : ModuleContextBase
 {
@@ -45,7 +45,7 @@ public class FacadeServiceModule : ModuleContextBase
 			var registration = new MessageBusHandlerRegistration();
 			registration.AddAssembly(typeof(FacadeServiceModule).Assembly);
 			registration.AddAssembly(typeof(DomainServiceModule).Assembly);
-			registration.AddAssembly(typeof(PersistServiceModule).Assembly);
+			registration.AddAssembly(typeof(RepositoryServiceModule).Assembly);
 			return registration;
 		});
 	}
@@ -98,5 +98,7 @@ public class FacadeServiceModule : ModuleContextBase
 			      })
 			      .SetIdentityProvider(jwt => JwtIdentityAccessor.Resolve(jwt, Configuration));
 		});
+
+		
 	}
 }
