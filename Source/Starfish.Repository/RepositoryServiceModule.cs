@@ -50,6 +50,7 @@ public class RepositoryServiceModule : ModuleContextBase
 		Configure<AutomapperOptions>(options =>
 		{
 			options.AddProfile<UserMapperProfile>();
+			options.AddProfile<TokenMapperProfile>();
 		});
 		Configure<RedisCacheOptions>(Configuration.GetSection("Euonia:Caching:Redis"));
 		Configure<MemoryCacheOptions>(Configuration.GetSection("Euonia:Caching:Memory"));
