@@ -23,12 +23,12 @@ internal class AuthenticationRequestHandler : IHandler<AuthenticateWithUsernameR
 	{
 		if (string.IsNullOrWhiteSpace(message.Username))
 		{
-			throw new BadRequestException("Username cannot be empty.");
+			throw new BadRequestException(IdentityResources.IDS_ERROR_USERNAME_REQUIRED);
 		}
 
 		if (string.IsNullOrWhiteSpace(message.Password))
 		{
-			throw new BadRequestException("Password cannot be empty.");
+			throw new BadRequestException(IdentityResources.IDS_ERROR_PASSWORD_REQUIRED);
 		}
 
 		var specification = UserSpecification.UsernameEquals(message.Username);
@@ -36,18 +36,18 @@ internal class AuthenticationRequestHandler : IHandler<AuthenticateWithUsernameR
 		var user = await _context.Set<User>().FirstOrDefaultAsync(predicate, cancellationToken);
 		if (user == null)
 		{
-			throw new AuthenticationException("Invalid username or password.");
+			throw new AuthenticationException(IdentityResources.IDS_ERROR_INVALID_USERNAME_PASSWORD);
 		}
 
 		var passwordHash = Cryptography.DES.Encrypt(message.Password, Encoding.UTF8.GetBytes(user.PasswordSalt));
 		if (!string.Equals(passwordHash, user.PasswordHash, StringComparison.Ordinal))
 		{
-			throw new AuthenticationException("Invalid username or password.");
+			throw new AuthenticationException(IdentityResources.IDS_ERROR_INVALID_USERNAME_PASSWORD);
 		}
 
 		if (user.LockoutEnd > DateTime.UtcNow)
 		{
-			throw new AuthenticationException("User account is locked.");
+			throw new AuthenticationException(IdentityResources.IDS_ERROR_USER_LOCKED);
 		}
 
 		var result = TypeAdapter.ProjectedAs<UserAuthQueryModel>(user);
