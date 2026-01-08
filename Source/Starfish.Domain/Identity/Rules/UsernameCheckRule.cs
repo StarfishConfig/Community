@@ -33,7 +33,7 @@ internal sealed class UsernameCheckRule(IPropertyInfo property) : RuleBase(prope
 
 		if (string.IsNullOrWhiteSpace(value))
 		{
-			context.AddErrorResult("Username is required.");
+			context.AddErrorResult(IdentityResources.IDS_ERROR_USERNAME_REQUIRED);
 		}
 		else
 		{
@@ -46,7 +46,7 @@ internal sealed class UsernameCheckRule(IPropertyInfo property) : RuleBase(prope
 			if (reserved?.Contains(value, StringComparer.InvariantCultureIgnoreCase) == true)
 			{
 				// Add an error result if the username is reserved.
-				context.AddErrorResult($"Username '{value}' is unavailable.");
+				context.AddErrorResult(string.Format(IdentityResources.IDS_ERROR_USERNAME_UNAVAILABLE, value));
 				return;
 			}
 
@@ -57,7 +57,7 @@ internal sealed class UsernameCheckRule(IPropertyInfo property) : RuleBase(prope
 			if (exists)
 			{
 				// Add an error result if the username already exists.
-				context.AddErrorResult($"Username '{value}' is unavailable.");
+				context.AddErrorResult(string.Format(IdentityResources.IDS_ERROR_USERNAME_UNAVAILABLE, value));
 			}
 		}
 	}

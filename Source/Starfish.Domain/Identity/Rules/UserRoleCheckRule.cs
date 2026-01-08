@@ -26,7 +26,7 @@ internal sealed class UserRoleCheckRule(IPropertyInfo property)
 					continue;
 				}
 
-				context.AddErrorResult($"Role '{value}' is invalid.");
+				context.AddErrorResult(string.Format(IdentityResources.IDS_ERROR_ROLE_NAME_INVALID, value));
 			}
 		}
 

@@ -2,6 +2,7 @@
 using Nerosoft.Euonia.Business;
 using Nerosoft.Starfish.Domain.Events;
 using Nerosoft.Starfish.Domain.Rules;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Domain.Aggregates;
 
@@ -104,7 +105,6 @@ internal sealed partial class User : EditableObjectBase<User, string>
 	/// <param name="actionType">The type of action triggering the password change.</param>
 	internal void SetPassword(string password, string actionType = null)
 	{
-		
 		Password = password;
 		PasswordChangedTime = DateTime.Now;
 		if (!string.IsNullOrWhiteSpace(actionType))

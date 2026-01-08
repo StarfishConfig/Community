@@ -46,7 +46,7 @@ internal sealed class EmailAddressCheckRule(IPropertyInfo property)
 		if (exists)
 		{
 			// Add an error result if the email address is unavailable.
-			context.AddErrorResult($"Email address '{value}' is unavailable.");
+			context.AddErrorResult(string.Format(IdentityResources.IDS_ERROR_EMAIL_ADDRESS_UNAVAILABLE, value));
 		}
 	}
 }

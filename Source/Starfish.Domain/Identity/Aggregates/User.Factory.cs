@@ -22,7 +22,7 @@ internal partial class User
 
 		if (data == null)
 		{
-			throw new NotFoundException("User not found.");
+			throw new NotFoundException(IdentityResources.IDS_ERROR_USER_NOT_FOUND);
 		}
 
 		LoadProperty(UsernameProperty, data.Username);

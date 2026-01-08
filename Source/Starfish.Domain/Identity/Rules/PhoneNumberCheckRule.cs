@@ -43,7 +43,7 @@ internal sealed class PhoneNumberCheckRule(IPropertyInfo property) : RuleBase(pr
 		if (exists)
 		{
 			// Add an error result if the phone number is unavailable.
-			context.AddErrorResult($"Phone number '{value}' is unavailable.");
+			context.AddErrorResult(string.Format(IdentityResources.IDS_ERROR_PHONE_NUMBER_UNAVAILABLE, value));
 		}
 	}
 }

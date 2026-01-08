@@ -42,20 +42,20 @@ internal sealed class PasswordStrengthRule(IPropertyInfo property)
 			if (string.IsNullOrWhiteSpace(value))
 			{
 				// Add an error result if the password is required but missing.
-				context.AddErrorResult("Password is required.");
+				context.AddErrorResult(IdentityResources.IDS_ERROR_PASSWORD_REQUIRED);
 			}
 			// Check if the password matches the strength requirements.
 			else if (!Regex.IsMatch(value, REGEX_PATTERN))
 			{
-				// Add an error result if the password does not meet the strength requirements.
-				context.AddErrorResult("Password does not meet strength requirements.");
+				// Add an error result if the password does not matches the strength requirements.
+				context.AddErrorResult(IdentityResources.IDS_ERROR_PASSWORD_NOT_MATCH_RULE);
 			}
 		}
 		// Validate the password during user updates.
 		else if (target.IsChanged && !string.IsNullOrEmpty(value) && !Regex.IsMatch(value, REGEX_PATTERN))
 		{
-			// Add an error result if the updated password does not meet the strength requirements.
-			context.AddErrorResult("Password does not meet strength requirements.");
+			// Add an error result if the updated password does not matches the strength requirements.
+			context.AddErrorResult(IdentityResources.IDS_ERROR_PASSWORD_NOT_MATCH_RULE);
 		}
 
 		// Complete the task.
