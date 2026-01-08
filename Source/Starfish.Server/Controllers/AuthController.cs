@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nerosoft.Starfish.Facade.Interfaces;
@@ -23,7 +24,7 @@ public class AuthController(IAuthApplicationService service) : ControllerBase
 	[Produces(typeof(AuthResponseDto))]
 	public async Task<IActionResult> GrantTokenAsync([FromBody] AuthRequestDto request)
 	{
-		var result = await service.GrantAsync(request, HttpContext.RequestAborted);
+		var result = await service.GrantAsync(JwtConstants.TokenType, request, HttpContext.RequestAborted);
 		return Ok(result);
 	}
 }

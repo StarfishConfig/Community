@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Nerosoft.Euonia.Application;
 using Nerosoft.Starfish.Facade.Transit;
 
@@ -11,8 +12,9 @@ public interface IAuthApplicationService : IApplicationService
 	/// <summary>
 	/// Grants the access token based on the specified authentication request data.
 	/// </summary>
+	/// <param name="authenticationType">The authentication type.</param>
 	/// <param name="data">The authentication request data transfer object containing the required credentials.</param>
 	/// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
 	/// <returns>A task that represents the asynchronous operation. The task result contains the authentication response data transfer object.</returns>
-	Task<AuthResponseDto> GrantAsync(AuthRequestDto data, CancellationToken cancellationToken = default);
+	Task<ClaimsPrincipal> GrantAsync(string authenticationType, AuthRequestDto data, CancellationToken cancellationToken = default);
 }

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Duende.IdentityModel;
 using Microsoft.Extensions.Configuration;
 using Nerosoft.Euonia.Application;
@@ -18,7 +19,7 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 {
 	private const string JWT_AUTH_SECTION = "JwtAuthenticationOptions";
 
-	public async Task<AuthResponseDto> GrantAsync(AuthRequestDto data, CancellationToken cancellationToken = default)
+	public async Task<ClaimsPrincipal> GrantAsync(string authenticationType, AuthRequestDto data, CancellationToken cancellationToken = default)
 	{
 		var events = new List<ApplicationEvent>();
 
@@ -45,8 +46,18 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 				});
 			}
 
+			var identity = new ClaimsIdentity(authenticationType);
+			identity.AddClaim(new Claim(JwtClaimTypes.Subject, result.UserId));
+			identity.AddClaim(new Claim(JwtClaimTypes.Name, result.Username));
+			identity.AddClaim(new Claim(JwtClaimTypes.Email, user.Email ?? string.Empty));
+			identity.AddClaim(new Claim(JwtClaimTypes.PhoneNumber, user.Phone));
+			identity.AddClaim(new Claim(JwtClaimTypes.NickName, user.Nickname ?? string.Empty));
+			foreach (var role in user.Roles)
+			{
+				identity.AddClaim(new Claim(ClaimTypes.Role, role));
+			}
 
-			return result;
+			return new ClaimsPrincipal(identity);
 		}
 		catch (Exception exception)
 		{
