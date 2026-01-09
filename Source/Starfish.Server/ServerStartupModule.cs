@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.FluentUI.AspNetCore.Components;
 using Nerosoft.Euonia.Hosting;
 using Nerosoft.Euonia.Modularity;
 using Nerosoft.Starfish.Facade;
@@ -17,6 +18,7 @@ internal class ServerStartupModule : ModuleContextBase
 	/// <param name="context"></param>
 	public override void ConfigureServices(ServiceConfigurationContext context)
 	{
+		context.Services.AddFluentUIComponents();
 		context.Services.AddControllers();
 		context.Services.AddHealthChecks();
 		context.Services.AddSwaggerDocumentation();
@@ -40,7 +42,11 @@ internal class ServerStartupModule : ModuleContextBase
 		});
 
 		context.Services.AddRazorComponents()
-		       .AddInteractiveServerComponents();
+		       .AddInteractiveServerComponents()
+		       .AddCircuitOptions(options =>
+		       {
+			       options.DetailedErrors = true;
+		       });
 	}
 
 	public override void OnApplicationInitialization(ApplicationInitializationContext context)
@@ -51,7 +57,7 @@ internal class ServerStartupModule : ModuleContextBase
 		app.UseSerilogRequestLogging();
 		app.UseForwardedHeaders();
 		app.UseHttpsRedirection();
-		
+
 		app.UseAuthentication();
 		app.UseRouting()
 		   .UseCors(config =>
@@ -60,6 +66,7 @@ internal class ServerStartupModule : ModuleContextBase
 		   });
 		app.UseAuthorization();
 		app.UseDefaultRequestContextAccessor();
+		app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 		app.UseAntiforgery();
 		app.UseEndpoints(endpoints =>
 		{
@@ -71,8 +78,6 @@ internal class ServerStartupModule : ModuleContextBase
 			         .AddInteractiveServerRenderMode();
 		});
 		
-		app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
-
 		app.UseExceptionHandler(new ExceptionHandlerOptions
 		{
 			AllowStatusCode404Response = true,
