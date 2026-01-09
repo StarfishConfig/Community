@@ -5,7 +5,8 @@ using Nerosoft.Starfish.Facade.Events;
 
 namespace Nerosoft.Starfish.Facade.Subscribers;
 
-internal sealed class TokenEventSubscriber : IHandler<UserAuthSuccessEvent>, IHandler<TokenRefreshedEvent>
+internal sealed class TokenEventSubscriber : IHandler<TokenGeneratedEvent>,
+                                             IHandler<TokenRefreshedEvent>
 {
 	private readonly IBus _bus;
 
@@ -18,15 +19,15 @@ internal sealed class TokenEventSubscriber : IHandler<UserAuthSuccessEvent>, IHa
 		_bus = bus;
 	}
 
-	public Task HandleAsync(UserAuthSuccessEvent message, MessageContext context, CancellationToken cancellationToken = default)
+	public Task HandleAsync(TokenGeneratedEvent message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		var command = new TokenCreateCommand
 		{
 			Type = OidcConstants.TokenTypes.RefreshToken,
 			Token = message.RefreshToken,
-			Issues = message.TokenIssueTime,
+			Issues = message.GrantTime,
 			Subject = message.UserId,
-			Expires = message.TokenIssueTime.AddDays(180)
+			Expires = message.GrantTime.AddDays(180)
 		};
 		return _bus.SendAsync(command, null, cancellationToken);
 	}

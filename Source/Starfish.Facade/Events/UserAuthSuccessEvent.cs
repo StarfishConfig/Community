@@ -17,12 +17,12 @@ internal class UserAuthSuccessEvent : ApplicationEvent
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UserAuthSuccessEvent"/> class.
 	/// </summary>
-	/// <param name="authType"></param>
+	/// <param name="grantType"></param>
 	/// <param name="userId"></param>
 	/// <param name="data"></param>
-	public UserAuthSuccessEvent(string authType, string userId, Dictionary<string, string> data)
+	public UserAuthSuccessEvent(string grantType, string userId, Dictionary<string, string> data)
 	{
-		AuthType = authType;
+		GrantType = grantType;
 		Data = data;
 		UserId = userId;
 	}
@@ -30,7 +30,7 @@ internal class UserAuthSuccessEvent : ApplicationEvent
 	/// <summary>
 	/// Gets or sets the auth type.
 	/// </summary>
-	public string AuthType { get; set; }
+	public string GrantType { get; set; }
 
 	/// <summary>
 	/// Gets or sets the additional data.
@@ -48,12 +48,7 @@ internal class UserAuthSuccessEvent : ApplicationEvent
 	public string Username { get; set; }
 
 	/// <summary>
-	/// Gets or sets the refresh token.
-	/// </summary>
-	public string RefreshToken { get; set; }
-
-	/// <summary>
 	/// Gets or sets the token issue time.
 	/// </summary>
-	public DateTime TokenIssueTime { get; set; }
+	public DateTime GrantTime { get; set; }
 }

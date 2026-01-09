@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using Duende.IdentityModel;
-using Microsoft.Extensions.Configuration;
 using Nerosoft.Euonia.Application;
 using Nerosoft.Euonia.Bus;
 using Nerosoft.Euonia.Domain;
@@ -11,21 +10,18 @@ using Nerosoft.Starfish.Facade.Transit;
 using Nerosoft.Starfish.Repository.Models;
 using Nerosoft.Starfish.Repository.Requests;
 using Nerosoft.Starfish.Shared;
-using Nerosoft.Starfish.Toolkit;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxTokenParser;
 
 namespace Nerosoft.Starfish.Facade.Implements;
 
 /// <summary>
 /// Provides authentication services for handling user authentication through various providers.
 /// </summary>
-/// <param name="configuration">The application configuration instance.</param>
-internal class AuthApplicationService(IConfiguration configuration) : BaseApplicationService, IAuthApplicationService
+internal class AuthApplicationService : BaseApplicationService, IAuthApplicationService
 {
 	/// <summary>
 	/// Authenticates a user and grants access by creating a claims principal.
 	/// </summary>
-	/// <param name="authenticationType">The authentication scheme type used for creating the claims identity.</param>
+	/// <param name="authenticationType">The authentication scheme type used for creating the claims' identity.</param>
 	/// <param name="data">The authentication request data containing provider information and credentials.</param>
 	/// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
 	/// <returns>A <see cref="ClaimsPrincipal"/> containing the authenticated user's claims including subject, name, email, phone, nickname, and roles.</returns>
@@ -51,36 +47,48 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 			var request = await GetRequestAsync(data, cancellationToken);
 			var user = await Bus.CallAsync(request, cancellationToken);
 
+			var issueAt = DateTime.UtcNow;
+
 			@events.Add(new UserAuthSuccessEvent
 			{
-				AuthType = data.Provider,
-				RefreshToken = result.RefreshToken,
-				UserId = result.UserId,
-				Username = result.Username,
-				TokenIssueTime = DateTimeHelper.GetDateTimeFromUnixTime(result.IssueAt)
+				GrantType = data.GrantType,
+				UserId = user.Id,
+				Username = user.Username,
+				GrantTime = issueAt //DateTimeHelper.GetDateTimeFromUnixTime(result.IssueAt)
 			});
-
-			if (string.Equals(data.Provider, AuthProvider.RefreshToken, StringComparison.OrdinalIgnoreCase))
-			{
-				@events.Add(new TokenRefreshedEvent
-				{
-					OriginToken = data.Password
-				});
-			}
 
 			var identity = new ClaimsIdentity(authenticationType);
 			switch (authenticationType)
 			{
 				case "JWT" or "Bearer":
-					identity.AddClaim(new Claim(JwtClaimTypes.Subject, result.UserId));
-					identity.AddClaim(new Claim(JwtClaimTypes.Name, result.Username));
+				{
+					var refreshTokenId = Guid.NewGuid().ToString("N");
+
+					identity.AddClaim(new Claim(JwtClaimTypes.Subject, user.Id));
+					identity.AddClaim(new Claim(JwtClaimTypes.Name, user.Username));
 					identity.AddClaim(new Claim(JwtClaimTypes.Email, user.Email ?? string.Empty));
 					identity.AddClaim(new Claim(JwtClaimTypes.PhoneNumber, user.Phone));
 					identity.AddClaim(new Claim(JwtClaimTypes.NickName, user.Nickname ?? string.Empty));
+					identity.AddClaim(new Claim(JwtClaimTypes.ReferenceTokenId, refreshTokenId));
+					events.Add(new TokenGeneratedEvent
+					{
+						UserId = user.Id,
+						Username = user.Username,
+						RefreshToken = refreshTokenId,
+						GrantTime = issueAt
+					});
+					if (string.Equals(data.GrantType, AuthProvider.RefreshToken, StringComparison.OrdinalIgnoreCase))
+					{
+						@events.Add(new TokenRefreshedEvent
+						{
+							OriginToken = data.Password
+						});
+					}
+				}
 					break;
 				case "Cookies":
-					identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, result.UserId));
-					identity.AddClaim(new Claim(ClaimTypes.Name, result.Username));
+					identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
+					identity.AddClaim(new Claim(ClaimTypes.Name, user.Username));
 					identity.AddClaim(new Claim(ClaimTypes.Email, user.Email ?? string.Empty));
 					identity.AddClaim(new Claim(ClaimTypes.MobilePhone, user.Phone));
 					identity.AddClaim(new Claim("nickname", user.Nickname ?? string.Empty));
@@ -98,7 +106,7 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 		{
 			events.Add(new UserAuthFailureEvent
 			{
-				AuthType = data.Provider,
+				AuthType = data.GrantType,
 				Data = new Dictionary<string, string>
 				{
 					{ "Username", data.Username ?? string.Empty },
@@ -139,7 +147,7 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 	/// <exception cref="BadGatewayException">Thrown when external authentication with a third-party provider fails.</exception>
 	private async Task<IRequest<UserAuthQueryModel>> GetRequestAsync(AuthRequestDto data, CancellationToken cancellationToken = default)
 	{
-		switch (data.Provider?.ToLowerInvariant())
+		switch (data.GrantType?.ToLowerInvariant())
 		{
 			case null or "":
 				throw new ArgumentException(IdentityResources.IDS_ERROR_AUTH_PROVIDER_REQUIRED, nameof(data));
@@ -152,27 +160,27 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 			case AuthProvider.Google:
 			case AuthProvider.Github:
 			case AuthProvider.Facebook:
+			{
+				var provider = LazyServiceProvider.GetKeyedService<IExternalAuthProvider>(data.GrantType.ToLowerInvariant());
+				if (provider == null)
 				{
-					var provider = LazyServiceProvider.GetKeyedService<IExternalAuthProvider>(data.Provider.ToLowerInvariant());
-					if (provider == null)
-					{
-						throw new NotSupportedException();
-					}
-
-					var auth = await provider.AuthenticateAsync(data.Username, cancellationToken);
-
-					if (auth == null)
-					{
-						throw new BadGatewayException(IdentityResources.IDS_ERROR_EXTERNAL_AUTH_FAILED);
-					}
-
-					{
-					}
-
-					return new AuthenticateWithExternalProviderRequest(data.Provider, auth.Id);
+					throw new NotSupportedException();
 				}
+
+				var auth = await provider.AuthenticateAsync(data.Username, cancellationToken);
+
+				if (auth == null)
+				{
+					throw new BadGatewayException(IdentityResources.IDS_ERROR_EXTERNAL_AUTH_FAILED);
+				}
+
+				{
+				}
+
+				return new AuthenticateWithExternalProviderRequest(data.GrantType, auth.Id);
+			}
 			default:
-				throw new NotSupportedException(string.Format(IdentityResources.IDS_ERROR_AUTH_PROVIDER_NOT_SUPPORT, data.Provider)); ;
+				throw new NotSupportedException(string.Format(IdentityResources.IDS_ERROR_AUTH_PROVIDER_NOT_SUPPORT, data.GrantType));
 		}
 	}
 }

@@ -1,4 +1,3 @@
-using System.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Duende.IdentityModel;
@@ -6,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nerosoft.Starfish.Facade.Interfaces;
 using Nerosoft.Starfish.Facade.Transit;
-using Nerosoft.Starfish.Repository.Models;
 using Nerosoft.Starfish.Shared;
 using Nerosoft.Starfish.Toolkit;
 
@@ -53,19 +51,22 @@ public class AuthController(IAuthApplicationService service, IConfiguration conf
 		var expiresAt = issueTime.AddDays(1);
 
 		var builder = TokenGenerator.From(principal)
-									.WithSigningKey(configuration.GetValue<string>($"{JWT_AUTH_SECTION}:SigningKey"))
-									.WithIssuer(configuration.GetValue<string>($"{JWT_AUTH_SECTION}:Issuer:0"))
-									.IssuedAt(issueTime);
+		                            .WithSigningKey(configuration.GetValue<string>($"{JWT_AUTH_SECTION}:SigningKey"))
+		                            .WithIssuer(configuration.GetValue<string>($"{JWT_AUTH_SECTION}:Issuer:0"))
+		                            .IssuedAt(issueTime);
 
 		var accessToken = builder.Build();
+
+		var username = principal.FindFirstValue(JwtClaimTypes.Name);
+		var userId = principal.FindFirstValue(JwtClaimTypes.Subject);
 
 		return new AuthResponseDto
 		{
 			AccessToken = accessToken,
 			RefreshToken = ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N"),
 			TokenType = TokenType.Bearer,
-			Username = user.Username,
-			UserId = user.Id,
+			Username = username,
+			UserId = userId,
 			IssueAt = new DateTimeOffset(issueTime).ToUnixTimeSeconds(),
 			ExpiresIn = (long)(expiresAt - issueTime).TotalSeconds
 		};

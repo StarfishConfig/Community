@@ -16,10 +16,10 @@ public class AuthRequestDto
 	public string Password { get; set; }
 
 	/// <summary>
-	/// Gets or sets the grant provider.
+	/// Gets or sets the grant type.
 	/// </summary>
 	/// <value>Username/Email/Phone/Github/Microsoft/Google etc.</value>
-	public string Provider { get; set; }
+	public string GrantType { get; set; }
 
 	/// <summary>
 	/// Gets or sets the request ID for the authentication request.
