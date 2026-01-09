@@ -20,7 +20,7 @@ public partial class Login : ComponentBase
 
 	private async Task OnLoginAsync(MouseEventArgs args)
 	{
-		var result = await Service.GrantAsync(new AuthRequestDto { Username = Username, Password = Password, Provider = "username" });
+		var result = await Service.GrantAsync("Cookies", new AuthRequestDto { Username = Username, Password = Password, GrantType = "username" });
 		await HttpContext.SignInAsync("Cookies", new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { })));
 		HttpContext.Response.Redirect(ReturnUrl);
 	}
