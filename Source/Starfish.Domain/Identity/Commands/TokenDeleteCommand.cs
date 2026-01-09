@@ -5,7 +5,7 @@ namespace Nerosoft.Starfish.Domain.Commands;
 /// <summary>
 /// Represents a command to delete a token.
 /// </summary>
-internal class TokenDeleteCommand : Command
+public class TokenDeleteCommand : Command
 {
 	/// <summary>
 	/// Gets or sets the type of the token to be deleted.
