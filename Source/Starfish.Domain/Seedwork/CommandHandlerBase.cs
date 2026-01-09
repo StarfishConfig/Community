@@ -1,6 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.DependencyInjection;
+using Nerosoft.Euonia.Bus;
 using Nerosoft.Euonia.Business;
 using Nerosoft.Euonia.Domain;
+using Nerosoft.Euonia.Modularity;
 using Nerosoft.Euonia.Uow;
 
 namespace Nerosoft.Starfish.Domain;
@@ -35,6 +38,20 @@ internal abstract class CommandHandlerBase
 	/// </remarks>
 	protected virtual IObjectFactory Factory { get; }
 
+	protected virtual Actuator Actuator { get; }
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="CommandHandlerBase"/> class
+	/// with the specified service provider.
+	/// </summary>
+	/// <param name="provider">The service provider used to resolve dependencies.</param>
+	protected CommandHandlerBase(IServiceProvider provider)
+	{
+		UnitOfWork = provider.GetService<IUnitOfWorkManager>();
+		Factory = provider.GetService<IObjectFactory>();
+		Actuator = new Actuator(Factory, UnitOfWork);
+	}
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="CommandHandlerBase"/> class
 	/// with the specified unit-of-work manager.
@@ -55,6 +72,7 @@ internal abstract class CommandHandlerBase
 		: this(unitOfWork)
 	{
 		Factory = factory;
+		Actuator = new Actuator(Factory, UnitOfWork);
 	}
 
 	/// <summary>
@@ -95,5 +113,91 @@ internal abstract class CommandHandlerBase
 		var result = await action();
 		await uow.CompleteAsync(cancellationToken);
 		next(result);
+	}
+
+	protected virtual async Task ExecuteAsync<TTarget>([NotNull] Func<IObjectFactory, Task<TTarget>> factory, Action<TTarget> actuator, CancellationToken cancellationToken = default)
+		where TTarget : EditableObject<TTarget>
+	{
+		var target = await factory(Factory);
+		//target.Saved += OnSaved;
+
+		using var uow = UnitOfWork.Begin(true, true);
+		actuator(target);
+		if (target.IsNew || target.IsDeleted)
+		{
+			await target.SaveAsync(false, cancellationToken);
+		}
+		else
+		{
+			await target.SaveAsync(true, cancellationToken);
+		}
+		await uow.CompleteAsync(cancellationToken);
+
+		if (target is IHasDomainEvents domain)
+		{
+			var events = domain.GetEvents();
+			if (events?.Any() == true)
+			{
+				var bus = target.BusinessContext.GetService<IBus>();
+				var request = target.BusinessContext.GetService<IRequestContextAccessor>();
+				var options = new PublishOptions
+				{
+					RequestTraceId = request?.Context?.TraceIdentifier
+				};
+
+				foreach (var @event in events)
+				{
+					await bus.PublishAsync(@event, null, options, null, cancellationToken);
+				}
+
+				//await Parallel.ForEachAsync(events, async @event => await bus.PublishAsync(@event, cancellationToken), cancellationToken);
+			}
+		}
+
+		void OnSaved(object? sender, SavedEventArgs args)
+		{
+
+		}
+	}
+
+	protected virtual async Task ExecuteAsync<TTarget, TResult>([NotNull] Func<IObjectFactory, Task<TTarget>> factory, Func<TTarget, Task<TResult>> actuator, Action<TResult> next, CancellationToken cancellationToken = default)
+		where TTarget : EditableObject<TTarget>
+	{
+		var target = await factory(Factory);
+		//target.Saved += OnSaved;
+		using var uow = UnitOfWork.Begin(true, true);
+		var result = await actuator(target);
+		if (target.IsNew || target.IsDeleted)
+		{
+			await target.SaveAsync(false, cancellationToken);
+		}
+		else
+		{
+			await target.SaveAsync(true, cancellationToken);
+		}
+		await uow.CompleteAsync(cancellationToken);
+		if (target is IHasDomainEvents domain)
+		{
+			var events = domain.GetEvents();
+			if (events?.Any() == true)
+			{
+				var bus = target.BusinessContext.GetService<IBus>();
+				var request = target.BusinessContext.GetService<IRequestContextAccessor>();
+				var options = new PublishOptions
+				{
+					RequestTraceId = request?.Context?.TraceIdentifier
+				};
+				foreach (var @event in events)
+				{
+					await bus.PublishAsync(@event, null, options, null, cancellationToken);
+				}
+			}
+		}
+
+		next(result);
+
+		void OnSaved(object? sender, SavedEventArgs args)
+		{
+		}
 	}
 }

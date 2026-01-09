@@ -13,19 +13,21 @@ internal sealed class TokenCommandHandler(IUnitOfWorkManager unitOfWork, IObject
 {
 	public Task HandleAsync(TokenCreateCommand message, MessageContext context, CancellationToken cancellationToken = default)
 	{
-		return ExecuteAsync(async () =>
-		{
-			var aggregate = await Factory.CreateAsync<Token>(message, cancellationToken);
-			aggregate.MarkAsNew();
-			await aggregate.SaveAsync(false, cancellationToken);
-		}, cancellationToken);
+		return Actuator.For<Token>()
+				 .Create(message, cancellationToken)
+				 .HandleAsync(async target => target.MarkAsNew())
+				 .ExecuteAsync(cancellationToken);
 	}
 
 	public Task HandleAsync(TokenDeleteCommand message, MessageContext context, CancellationToken cancellationToken = default)
 	{
-		return ExecuteAsync(async () =>
-		{
-			await Factory.DeleteAsync<Token>(message, cancellationToken);
-		}, cancellationToken);
+		//return ExecuteAsync(async () =>
+		//{
+		//	await Factory.DeleteAsync<Token>(message, cancellationToken);
+		//}, cancellationToken);
+
+		return Actuator.For<Token>()
+					 .Delete(message, cancellationToken)
+					 .ExecuteAsync(cancellationToken);
 	}
 }
