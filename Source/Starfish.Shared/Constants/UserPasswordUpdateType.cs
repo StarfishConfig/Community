@@ -14,4 +14,9 @@ public class UserPasswordUpdateType
 	/// Represents a password change initiated by the user.
 	/// </summary>
 	public const string Change = "change";
+
+	/// <summary>
+	/// Represents a password creation when a new user is registered.
+	/// </summary>
+	public const string Create = "create";
 }

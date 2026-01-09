@@ -1,6 +1,9 @@
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Nerosoft.Euonia.Business;
 using Nerosoft.Starfish.Domain.Repositories;
+using Nerosoft.Starfish.Shared;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Nerosoft.Starfish.Domain.Rules;
 
@@ -31,34 +34,39 @@ internal sealed class UsernameCheckRule(IPropertyInfo property) : RuleBase(prope
 
 		var value = target.ReadProperty(Property)?.ToString();
 
-		if (string.IsNullOrWhiteSpace(value))
+		// Use PriorityValueFinder to check various conditions for username validity.
+		var error = await PriorityValueFinder.FindAsync<string>(queue =>
 		{
-			context.AddErrorResult(IdentityResources.IDS_ERROR_USERNAME_REQUIRED);
-		}
-		else
-		{
-			var configuration = target.BusinessContext.GetRequiredService<IConfiguration>();
-
-			// Retrieve the list of reserved usernames from the configuration.
-			var reserved = configuration.GetValue<List<string>>("ReservedUsernames");
-
+			// Check if the username is null or whitespace.
+			queue.Enqueue(() => Task.FromResult(string.IsNullOrWhiteSpace(value) ? IdentityResources.IDS_ERROR_USERNAME_REQUIRED : null), 1);
+			// Check if the username is matches the format rules
+			queue.Enqueue(() => Task.FromResult(!Regex.IsMatch(value, RegexPattern.Username) ? string.Format(IdentityResources.IDS_ERROR_USERNAME_UNAVAILABLE, value) : null), 2);
 			// Check if the username is in the reserved list.
-			if (reserved?.Contains(value, StringComparer.InvariantCultureIgnoreCase) == true)
+			queue.Enqueue(async () =>
 			{
-				// Add an error result if the username is reserved.
-				context.AddErrorResult(string.Format(IdentityResources.IDS_ERROR_USERNAME_UNAVAILABLE, value));
-				return;
-			}
+				var configuration = target.BusinessContext.GetRequiredService<IConfiguration>();
+				// Retrieve the list of reserved usernames from the configuration.
+				var reserved = configuration.GetValue<List<string>>("ReservedUsernames");
 
-			var repository = target.BusinessContext.GetRequiredService<IUserRepository>();
-
+				return reserved?.Contains(value, StringComparer.InvariantCultureIgnoreCase) == true ? string.Format(IdentityResources.IDS_ERROR_USERNAME_UNAVAILABLE, value) : null;
+			}, 3);
 			// Check if the username already exists in the repository.
-			var exists = await repository.ExistsUsernameAsync(value, cancellationToken);
-			if (exists)
+			queue.Enqueue(async () =>
 			{
-				// Add an error result if the username already exists.
-				context.AddErrorResult(string.Format(IdentityResources.IDS_ERROR_USERNAME_UNAVAILABLE, value));
-			}
+				// Get the user repository from the business context.
+				var repository = target.BusinessContext.GetRequiredService<IUserRepository>();
+
+				// Check if the username already exists in the repository.
+				var exists = await repository.ExistsUsernameAsync(value, cancellationToken);
+
+				// Return an error result if the username already exists.
+				return exists ? string.Format(IdentityResources.IDS_ERROR_USERNAME_UNAVAILABLE, value) : null;
+			}, 4);
+		}, v => !string.IsNullOrEmpty(v));
+
+		if (!string.IsNullOrEmpty(error))
+		{
+			context.AddErrorResult(error);
 		}
 	}
 }

@@ -7,10 +7,9 @@ namespace Nerosoft.Starfish.Domain.Aggregates;
 internal partial class User
 {
 	[FactoryCreate]
-	private async Task CreateAsync(string username, string password, CancellationToken cancellationToken = default)
+	private async Task CreateAsync(string username, CancellationToken cancellationToken = default)
 	{
 		Username = username;
-		SetPassword(password);
 		await Task.CompletedTask;
 	}
 
@@ -47,7 +46,8 @@ internal partial class User
 			Phone = Phone,
 			AccessFailedCount = AccessFailedCount,
 			PasswordChangedTime = PasswordChangedTime,
-			LockoutEnd = LockoutEnd
+			LockoutEnd = LockoutEnd,
+			Roles = [.. Roles]
 		};
 		return repository.SaveAsync(data, cancellationToken);
 	}
@@ -66,7 +66,8 @@ internal partial class User
 			Phone = Phone,
 			AccessFailedCount = AccessFailedCount,
 			PasswordChangedTime = PasswordChangedTime,
-			LockoutEnd = LockoutEnd
+			LockoutEnd = LockoutEnd,
+			Roles = [.. Roles]
 		};
 		return repository.SaveAsync(data, cancellationToken);
 	}

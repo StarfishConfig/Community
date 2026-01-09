@@ -165,7 +165,7 @@ internal sealed partial class User : EditableObjectBase<User, string>
 	/// Sets the roles for the user.
 	/// </summary>
 	/// <param name="roles">The roles to set.</param>
-	internal void SetRoles(params string[] roles)
+	internal void AssignRoles(params string[] roles)
 	{
 		if (roles?.Any() != true)
 		{
