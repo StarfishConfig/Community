@@ -1,10 +1,53 @@
 @page "/login"
 @using Nerosoft.Starfish.Facade.Interfaces
-@layout MainLayout
+@layout EmptyLayout
 @inject IAuthApplicationService Service
 
-<h3>Login</h3>
-<button type="submit" @onclick="@OnLoginAsync">login</button>
+<PageTitle>@LoginResources.IDS_PAGE_TITLE</PageTitle>
+
+<div class="main" style="width: 368px; margin: 50px auto auto;">
+
+	<FluentStack Orientation="Orientation.Vertical">
+		<div style="text-align:center;margin:32px auto;box-shadow:none;line-height: 36px;">
+			<div class="header" style="display: flex; align-items: center;gap: 10px;">
+				<img alt="logo" class="logo" src="logo.svg">
+				<span class="title" style="color:#fcab66; font-size: 24px;">Starfish</span>
+			</div>
+			@* <div class="desc">@(Resources.IDS_COMMON_SUBTITLE)</div> *@
+		</div>
+		<FluentCard>
+			<FluentEditForm OnSubmit="OnSubmitAsync" EditContext="editContext" FormName="form">
+				<DataAnnotationsValidator />
+				<FluentValidationSummary />
+				<FluentStack Orientation="Orientation.Vertical" VerticalGap="12" HorizontalAlignment="HorizontalAlignment.Center">
+					<FluentBodyContent>
+						<FluentTabs Size="TabSize.Large">
+							<FluentTab Label="Password" Id="Tab-Password" Style="padding:16px 0">
+								<FluentStack Orientation="Orientation.Vertical">
+									<FluentTextField Name="Model.Username" @bind-Value="Model.Username" AutoComplete="off" Required="true" Placeholder="name@example.com" Style="width: 100%">
+										<FluentIcon Value="@(new Icons.Regular.Size24.Person())" Slot="start" Color="Color.Neutral" />
+									</FluentTextField>
+									<FluentTextField @bind-Value="Model.Password" Style="width: 100%" TextFieldType="TextFieldType.Password">
+										<FluentIcon Value="@(new Icons.Regular.Size24.ShieldKeyhole())" Slot="start" Color="Color.Neutral" />
+									</FluentTextField>
+								</FluentStack>
+							</FluentTab>
+						</FluentTabs>
+					</FluentBodyContent>
+					<div style="width: 100%; display: flex;align-items: center;">
+						<FluentButton Style="width: 100px;" Loading="Loading" Appearance="Appearance.Accent" Type="ButtonType.Submit">@LoginResources.IDS_BUTTON_TEXT_LOGIN</FluentButton>
+						<FluentSpacer />
+						<a href="">@LoginResources.IDS_LINK_TEXT_FORGOT_PASSWORD</a>
+					</div>
+				</FluentStack>
+			</FluentEditForm>
+
+		</FluentCard>
+	</FluentStack>
+
+
+</div>
+
 @code {
-    
+
 }
