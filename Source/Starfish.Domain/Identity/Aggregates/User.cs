@@ -2,7 +2,6 @@
 using Nerosoft.Euonia.Business;
 using Nerosoft.Starfish.Domain.Events;
 using Nerosoft.Starfish.Domain.Rules;
-using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Domain.Aggregates;
 

@@ -40,7 +40,7 @@ internal class ServerStartupModule : ModuleContextBase
 			options.ResponseCompressionLevel = System.IO.Compression.CompressionLevel.SmallestSize;
 			options.ResponseCompressionAlgorithm = "gzip";
 		});
-
+		context.Services.AddCascadingAuthenticationState();
 		context.Services.AddRazorComponents()
 		       .AddInteractiveServerComponents()
 		       .AddCircuitOptions(options =>
