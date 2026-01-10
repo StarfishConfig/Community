@@ -6,13 +6,13 @@ using Nerosoft.Starfish.Repository.Entities;
 namespace Nerosoft.Starfish.Repository.Configurations;
 
 /// <summary>
-/// Configures the entity of type <see cref="Domain.Aggregates.User"/>.
+/// Configures the entity of type <see cref="User"/>.
 /// </summary>
 [DbContext(typeof(IdentityDataContext))]
 internal class UserEntityConfiguration : IEntityTypeConfiguration<User>
 {
 	/// <summary>
-	/// Configures the entity of type <see cref="Domain.Aggregates.User"/>.
+	/// Configures the entity of type <see cref="User"/>.
 	/// </summary>
 	/// <param name="builder"></param>
 	public void Configure(EntityTypeBuilder<User> builder)
