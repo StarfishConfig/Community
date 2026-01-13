@@ -1,4 +1,7 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
+using Duende.IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,11 +13,34 @@ namespace Nerosoft.Starfish.Server;
 internal static class AuthenticationExtensions
 {
 	private const string AUTHENTICATION_SECTION = "Authentication";
+	private const string AUTHENTICATION_SECTION_USE_POLICY = AUTHENTICATION_SECTION + ":UsePolicy";
 	private const string AUTHENTICATION_SECTION_SCHEME = AUTHENTICATION_SECTION + ":Scheme";
-	private const string AUTHENTICATION_SECTION_COOKIES = AUTHENTICATION_SECTION + ":Cookies";
+	private const string AUTHENTICATION_SECTION_BEARER = AUTHENTICATION_SECTION + ":Bearer";
+	private const string AUTHENTICATION_SECTION_COOKIE = AUTHENTICATION_SECTION + ":Cookie";
 
 	public static IServiceCollection AddAuthenticationHandlers(this IServiceCollection services, IConfiguration configuration)
 	{
+		JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+		var usePolicy = configuration.GetValue(AUTHENTICATION_SECTION_USE_POLICY, false);
+
+		if (usePolicy)
+		{
+			services.AddAuthorizationBuilder()
+			        .AddPolicy(JwtBearerDefaults.AuthenticationScheme, policy =>
+			        {
+				        policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
+				        policy.RequireClaim(JwtClaimTypes.Subject);
+				        policy.RequireClaim(JwtClaimTypes.Name);
+			        })
+			        .AddPolicy(CookieAuthenticationDefaults.AuthenticationScheme, policy =>
+			        {
+				        policy.AddAuthenticationSchemes(CookieAuthenticationDefaults.AuthenticationScheme);
+				        policy.RequireClaim(ClaimTypes.NameIdentifier);
+				        policy.RequireClaim(ClaimTypes.Name);
+			        });
+		}
+
 		services.AddAuthentication(options =>
 		        {
 			        switch (configuration.GetValue<string>(AUTHENTICATION_SECTION_SCHEME)?.Trim())
@@ -39,18 +65,18 @@ internal static class AuthenticationExtensions
 		        })
 		        .AddCookie(options =>
 		        {
-			        options.LoginPath = configuration[$"{AUTHENTICATION_SECTION_COOKIES}:LoginPath"];
+			        options.LoginPath = configuration[$"{AUTHENTICATION_SECTION_COOKIE}:LoginPath"];
 			        options.ExpireTimeSpan = TimeSpan.FromDays(1);
-			        options.LogoutPath = configuration[$"{AUTHENTICATION_SECTION_COOKIES}:LogoutPath"];
-			        options.AccessDeniedPath = configuration[$"{AUTHENTICATION_SECTION_COOKIES}:AccessDeniedPath"];
+			        options.LogoutPath = configuration[$"{AUTHENTICATION_SECTION_COOKIE}:LogoutPath"];
+			        options.AccessDeniedPath = configuration[$"{AUTHENTICATION_SECTION_COOKIE}:AccessDeniedPath"];
 			        options.Cookie.SameSite = SameSiteMode.Strict;
 			        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 			        options.Cookie.IsEssential = true;
-			        options.SlidingExpiration = configuration.GetValue($"{AUTHENTICATION_SECTION_COOKIES}:SlidingExpiration", true);
+			        options.SlidingExpiration = configuration.GetValue($"{AUTHENTICATION_SECTION_COOKIE}:SlidingExpiration", true);
 		        })
 		        .AddJwtBearer(options =>
 		        {
-			        var bearerOptions = configuration.GetSection(AUTHENTICATION_SECTION).Get<JwtAuthenticationOptions>();
+			        var bearerOptions = configuration.GetSection(AUTHENTICATION_SECTION_BEARER).Get<JwtAuthenticationOptions>();
 
 			        options.Authority = bearerOptions.Authority;
 			        options.RequireHttpsMetadata = bearerOptions.RequireHttpsMetadata;
