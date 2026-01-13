@@ -2,6 +2,8 @@
 @inject IDialogService DialogService
 @inject IMessageService MessageService
 
+@rendermode InteractiveServer
+
 <FluentButton BackgroundColor="var(--neutral-layer-4)" OnClick="OpenNotificationCenterAsync"
               Title="Notification center">
     @if (MessageService.Count("MESSAGES_NOTIFICATION_CENTER") > 0)

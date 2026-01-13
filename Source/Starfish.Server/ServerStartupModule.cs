@@ -40,7 +40,14 @@ internal class ServerStartupModule : ModuleContextBase
 			options.ResponseCompressionLevel = System.IO.Compression.CompressionLevel.SmallestSize;
 			options.ResponseCompressionAlgorithm = "gzip";
 		});
-		context.Services.AddCascadingAuthenticationState();
+		context.Services
+		       .AddAuthenticationHandlers(Configuration)
+		       .AddCascadingAuthenticationState()
+			// .AddScoped<AuthenticationStateProvider, PersistentAuthenticationStateProvider>()
+			// .AddScoped<CircuitServicesAccessor>()
+			// .AddScoped<CircuitHandler, ServicesAccessorCircuitHandler>()
+			;
+
 		context.Services.AddRazorComponents()
 		       .AddInteractiveServerComponents()
 		       .AddCircuitOptions(options =>
@@ -77,7 +84,7 @@ internal class ServerStartupModule : ModuleContextBase
 			endpoints.MapRazorComponents<App>()
 			         .AddInteractiveServerRenderMode();
 		});
-		
+
 		app.UseExceptionHandler(new ExceptionHandlerOptions
 		{
 			AllowStatusCode404Response = true,

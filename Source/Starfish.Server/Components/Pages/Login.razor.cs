@@ -1,46 +1,57 @@
-using System.Net;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Build.Framework;
 using Nerosoft.Starfish.Facade.Transit;
+
 
 namespace Nerosoft.Starfish.Server.Components.Pages;
 
 public partial class Login : ComponentBase
 {
 	[CascadingParameter]
-	private HttpContext? HttpContext { get; set; }
+	private HttpContext HttpContext { get; set; }
 
-	private EditContext editContext = default!;
+	private EditContext _editContext;
 
-	private string ReturnUrl => HttpContext?.Request.Query["returnUrl"] ?? "/";
+	[SupplyParameterFromQuery]
+	private string ReturnUrl { get; set; } // => HttpContext?.Request.Query["returnUrl"] ?? "/";
 
 	[SupplyParameterFromForm]
-	private LoginModel Model { get; set; } = default;
-
+	private LoginModel Model { get; set; }
+	
 	private bool Loading { get; set; } = false;
 
+	/// <summary>
+	/// Initializes the component.
+	/// </summary>
 	protected override async Task OnInitializedAsync()
 	{
 		Model ??= new LoginModel();
-		editContext = new EditContext(Model);
-	}
-
-	private async Task OnLoginAsync(MouseEventArgs args)
-	{
-		var result = await Service.GrantAsync("Cookies", new AuthRequestDto { Username = Model.Username, Password = Model.Password, GrantType = "username" });
-		await HttpContext.SignInAsync("Cookies", new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { })));
-		HttpContext.Response.Redirect(ReturnUrl);
+		_editContext = new EditContext(Model);
+		await base.OnInitializedAsync();
 	}
 
 	private async Task OnSubmitAsync(EditContext context)
 	{
-		var result = await Service.GrantAsync("Cookies", new AuthRequestDto { Username = Model.Username, Password = Model.Password, GrantType = "username" });
-		await HttpContext.SignInAsync("Cookies", new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { })));
-		HttpContext.Response.Redirect(ReturnUrl);
+		var dto = new TokenGrantRequestDto
+		{
+			Username = Model.Username, Password = Model.Password, GrantType = "password"
+		};
+		if (HttpContext == null)
+		{
+			var result = await Service.GrantAsync(dto);
+			await LocalStorage.SetAsync(IdentityConstants.BearerScheme, result);
+			Navigation.NavigateTo(ReturnUrl);
+		}
+		else
+		{
+			var result = await Service.SignInAsync(dto);
+			await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, result);
+			HttpContext.Response.Redirect(ReturnUrl);
+		}
 	}
 
 	private class LoginModel
