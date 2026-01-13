@@ -28,17 +28,19 @@ builder.Host.UseDefaultServiceProvider((_, options) =>
 
 builder.Services.AddModularityApplication<ServerStartupModule>(builder.Configuration);
 
-builder.Services.AddAuthentication(options =>
-	   {
-		   options.DefaultAuthenticateScheme = "Cookies";
-		   options.DefaultSignInScheme = "Cookies";
-		   options.DefaultChallengeScheme = "Cookies";
-	   })
-	   .AddCookie("Cookies", options =>
-	   {
-		   options.LoginPath = "/login";
-		   options.LogoutPath = "/logout";
-	   });
+// builder.Services.AddAuthentication(options =>
+//        {
+// 	       options.DefaultScheme = IdentityConstants.ApplicationScheme;
+// 	       options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+// 		   options.DefaultAuthenticateScheme = "Cookies";
+// 		   //options.DefaultSignInScheme = "Cookies";
+// 		   options.DefaultChallengeScheme = "Cookies";
+// 	   })
+// 	   .AddCookie("Cookies", options =>
+// 	   {
+// 		   options.LoginPath = "/login";
+// 		   options.LogoutPath = "/logout";
+// 	   });
 
 var app = builder.Build();
 
