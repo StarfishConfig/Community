@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <EnablePackageVersionOverride>true</EnablePackageVersionOverride>
-        <EuoniaPackageVersion>10.2.6</EuoniaPackageVersion>
+        <EuoniaPackageVersion>10.2.7</EuoniaPackageVersion>
         <FluentBlazorPackageVersion>4.13.2</FluentBlazorPackageVersion>
         <RefitPackageVersion>9.0.2</RefitPackageVersion>
     </PropertyGroup>
@@ -70,11 +70,11 @@
         <PackageVersion Include="Euonia.Threading.Redis" Version="$(EuoniaPackageVersion)" />
     </ItemGroup>
     <ItemGroup>
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
-        <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.1" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.1" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.1" />
+        <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
     </ItemGroup>
     <!-- Tests -->
     <ItemGroup>
