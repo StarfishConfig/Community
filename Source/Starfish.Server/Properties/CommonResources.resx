@@ -151,7 +151,7 @@
     <value>Submit</value>
   </data>
   <data name="IDS_COMMON_SUBTITLE" xml:space="preserve">
-    <value>Configuration management &amp;amp; service discovery</value>
+    <value>Configuration management &amp; service discovery</value>
   </data>
   <data name="IDS_COMMON_TITLE" xml:space="preserve">
     <value>Starfish</value>
