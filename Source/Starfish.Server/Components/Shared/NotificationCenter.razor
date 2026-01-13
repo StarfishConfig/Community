@@ -4,29 +4,19 @@
 
 @rendermode InteractiveServer
 
-<FluentButton BackgroundColor="var(--neutral-layer-4)" OnClick="OpenNotificationCenterAsync"
-              Title="Notification center">
-    @if (MessageService.Count("MESSAGES_NOTIFICATION_CENTER") > 0)
-    {
-        <FluentCounterBadge Count="@MessageService.Count("MESSAGES_NOTIFICATION_CENTER")"
-                            Max="9"
-                            ShowOverflow="true"
-                            BackgroundColor="@Color.Error"
-                            Color="Color.Fill"
-                            Appearance="Appearance.Accent">
-            <ChildContent>
-                @NotificationIcon()
-            </ChildContent>
-        </FluentCounterBadge>
-    }
-    else
-    {
-        @NotificationIcon()
-    }
-</FluentButton>
+<FluentCounterBadge Count="@MessageService.Count("MESSAGES_NOTIFICATION_CENTER")"
+                    BackgroundColor="@Color.Error"
+                    Appearance="Appearance.Accent"
+                    Color="Color.Fill"
+                    Max="9"
+                    ShowOverflow="true">
+    <FluentButton BackgroundColor="var(--neutral-layer-4)" Appearance="Appearance.Accent" OnClick="OpenNotificationCenterAsync" Title="消息中心">
+        <FluentIcon Value="@(new Icons.Regular.Size24.Alert())" Color="@Color.Neutral"/>
+    </FluentButton>
+</FluentCounterBadge>
 
 @code {
-    private IDialogReference? _dialog;
+    private IDialogReference _dialog;
 
     protected override void OnInitialized()
     {
@@ -37,9 +27,6 @@
     {
         InvokeAsync(StateHasChanged);
     }
-
-    private RenderFragment NotificationIcon() =>
-        @<FluentIcon Value="@(new Icons.Regular.Size20.Alert())" Color="Color.Neutral" Title="Notification center"/>;
 
     private async Task OpenNotificationCenterAsync()
     {
