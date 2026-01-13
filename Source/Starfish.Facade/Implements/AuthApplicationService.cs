@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Duende.IdentityModel;
+using Microsoft.Extensions.Configuration;
 using Nerosoft.Euonia.Application;
 using Nerosoft.Euonia.Bus;
 using Nerosoft.Euonia.Domain;
@@ -10,18 +11,20 @@ using Nerosoft.Starfish.Facade.Transit;
 using Nerosoft.Starfish.Repository.Models;
 using Nerosoft.Starfish.Repository.Requests;
 using Nerosoft.Starfish.Shared;
+using Nerosoft.Starfish.Toolkit;
 
 namespace Nerosoft.Starfish.Facade.Implements;
 
 /// <summary>
 /// Provides authentication services for handling user authentication through various providers.
 /// </summary>
-internal class AuthApplicationService : BaseApplicationService, IAuthApplicationService
+internal class AuthApplicationService(IConfiguration configuration) : BaseApplicationService, IAuthApplicationService
 {
+	private const string JWT_AUTH_SECTION = "JwtAuthenticationOptions";
+
 	/// <summary>
 	/// Authenticates a user and grants access by creating a claims principal.
 	/// </summary>
-	/// <param name="authenticationType">The authentication scheme type used for creating the claims' identity.</param>
 	/// <param name="data">The authentication request data containing provider information and credentials.</param>
 	/// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
 	/// <returns>A <see cref="ClaimsPrincipal"/> containing the authenticated user's claims including subject, name, email, phone, nickname, and roles.</returns>
@@ -38,7 +41,7 @@ internal class AuthApplicationService : BaseApplicationService, IAuthApplication
 	/// <exception cref="ArgumentException">Thrown when the authentication provider is not specified.</exception>
 	/// <exception cref="NotSupportedException">Thrown when the specified authentication provider is not supported.</exception>
 	/// <exception cref="BadGatewayException">Thrown when external authentication fails.</exception>
-	public async Task<ClaimsPrincipal> GrantAsync(string authenticationType, AuthRequestDto data, CancellationToken cancellationToken = default)
+	public async Task<TokenGrantResponseDto> GrantAsync(TokenGrantRequestDto data, CancellationToken cancellationToken = default)
 	{
 		var events = new List<ApplicationEvent>();
 
@@ -57,49 +60,91 @@ internal class AuthApplicationService : BaseApplicationService, IAuthApplication
 				GrantTime = issueAt //DateTimeHelper.GetDateTimeFromUnixTime(result.IssueAt)
 			});
 
-			var identity = new ClaimsIdentity(authenticationType);
-			switch (authenticationType)
+			var refreshTokenId = ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N");
+
+			var identity = BuildClaims("Jwt", user);
+			events.Add(new TokenGeneratedEvent
 			{
-				case "JWT" or "Bearer":
+				UserId = user.Id,
+				Username = user.Username,
+				RefreshToken = refreshTokenId,
+				GrantTime = issueAt
+			});
+			if (string.Equals(data.GrantType, AuthProvider.RefreshToken, StringComparison.OrdinalIgnoreCase))
+			{
+				@events.Add(new TokenRefreshedEvent
 				{
-					var refreshTokenId = Guid.NewGuid().ToString("N");
-
-					identity.AddClaim(new Claim(JwtClaimTypes.Subject, user.Id));
-					identity.AddClaim(new Claim(JwtClaimTypes.Name, user.Username));
-					identity.AddClaim(new Claim(JwtClaimTypes.Email, user.Email ?? string.Empty));
-					identity.AddClaim(new Claim(JwtClaimTypes.PhoneNumber, user.Phone));
-					identity.AddClaim(new Claim(JwtClaimTypes.NickName, user.Nickname ?? string.Empty));
-					identity.AddClaim(new Claim(JwtClaimTypes.ReferenceTokenId, refreshTokenId));
-					events.Add(new TokenGeneratedEvent
-					{
-						UserId = user.Id,
-						Username = user.Username,
-						RefreshToken = refreshTokenId,
-						GrantTime = issueAt
-					});
-					if (string.Equals(data.GrantType, AuthProvider.RefreshToken, StringComparison.OrdinalIgnoreCase))
-					{
-						@events.Add(new TokenRefreshedEvent
-						{
-							OriginToken = data.Password
-						});
-					}
-				}
-					break;
-				case "Cookies":
-					identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
-					identity.AddClaim(new Claim(ClaimTypes.Name, user.Username));
-					identity.AddClaim(new Claim(ClaimTypes.Email, user.Email ?? string.Empty));
-					identity.AddClaim(new Claim(ClaimTypes.MobilePhone, user.Phone));
-					identity.AddClaim(new Claim("nickname", user.Nickname ?? string.Empty));
-					break;
+					OriginToken = data.Password
+				});
 			}
 
-			foreach (var role in user.Roles)
+			//var roles = user.Roles?.Select(r => r.Name);
+
+			//var jti = ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N");
+
+			var issueTime = DateTime.UtcNow;
+			var expiresAt = issueTime.AddDays(1);
+
+			var builder = TokenGenerator.From(identity)
+			                            .WithSigningKey(configuration.GetValue<string>($"{JWT_AUTH_SECTION}:SigningKey"))
+			                            .WithIssuer(configuration.GetValue<string>($"{JWT_AUTH_SECTION}:Issuer:0"))
+			                            .IssuedAt(issueTime);
+
+			var accessToken = builder.Build();
+
+			return new TokenGrantResponseDto
 			{
-				identity.AddClaim(new Claim(ClaimTypes.Role, role));
+				AccessToken = accessToken,
+				RefreshToken = ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N"),
+				TokenType = TokenType.Bearer,
+				Username = user.Username,
+				UserId = user.Id,
+				IssueAt = new DateTimeOffset(issueTime).ToUnixTimeSeconds(),
+				ExpiresIn = (long)(expiresAt - issueTime).TotalSeconds
+			};
+		}
+		catch (Exception exception)
+		{
+			events.Add(new UserAuthFailureEvent
+			{
+				AuthType = data.GrantType,
+				Data = new Dictionary<string, string>
+				{
+					{ "Username", data.Username ?? string.Empty },
+					{ "Password", data.Password != null ? "******" : string.Empty },
+				},
+				Error = exception.Message,
+			});
+			throw;
+		}
+		finally
+		{
+			if (events.Count > 0)
+			{
+				await Parallel.ForEachAsync(events, cancellationToken, async (@event, token) => await Bus.PublishAsync(@event, token));
 			}
+		}
+	}
 
+	public async Task<ClaimsPrincipal> SignInAsync(TokenGrantRequestDto data, CancellationToken cancellationToken = default)
+	{
+		var events = new List<ApplicationEvent>();
+		try
+		{
+			var request = await GetRequestAsync(data, cancellationToken);
+			var user = await Bus.CallAsync(request, cancellationToken);
+
+			var issueAt = DateTime.UtcNow;
+
+			@events.Add(new UserAuthSuccessEvent
+			{
+				GrantType = data.GrantType,
+				UserId = user.Id,
+				Username = user.Username,
+				GrantTime = issueAt //DateTimeHelper.GetDateTimeFromUnixTime(result.IssueAt)
+			});
+
+			var identity = BuildClaims("Cookies", user);
 			return new ClaimsPrincipal(identity);
 		}
 		catch (Exception exception)
@@ -125,6 +170,36 @@ internal class AuthApplicationService : BaseApplicationService, IAuthApplication
 		}
 	}
 
+	private static ClaimsIdentity BuildClaims(string authenticationType, UserAuthQueryModel user)
+	{
+		var identity = new ClaimsIdentity(authenticationType);
+
+		switch (authenticationType)
+		{
+			case "Jwt":
+				identity.AddClaim(new Claim(JwtClaimTypes.Subject, user.Id));
+				identity.AddClaim(new Claim(JwtClaimTypes.Name, user.Username));
+				identity.AddClaim(new Claim(JwtClaimTypes.Email, user.Email ?? string.Empty));
+				identity.AddClaim(new Claim(JwtClaimTypes.PhoneNumber, user.Phone));
+				identity.AddClaim(new Claim(JwtClaimTypes.NickName, user.Nickname ?? string.Empty));
+				break;
+			case "Cookies":
+				identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
+				identity.AddClaim(new Claim(ClaimTypes.Name, user.Username));
+				identity.AddClaim(new Claim(ClaimTypes.Email, user.Email ?? string.Empty));
+				identity.AddClaim(new Claim(ClaimTypes.MobilePhone, user.Phone));
+				identity.AddClaim(new Claim("nickname", user.Nickname ?? string.Empty));
+				break;
+		}
+
+		foreach (var role in user.Roles)
+		{
+			identity.AddClaim(new Claim(ClaimTypes.Role, role));
+		}
+
+		return identity;
+	}
+
 	/// <summary>
 	/// Creates an authentication request based on the specified provider type.
 	/// </summary>
@@ -145,7 +220,7 @@ internal class AuthApplicationService : BaseApplicationService, IAuthApplication
 	/// <exception cref="ArgumentException">Thrown when the provider is null or empty.</exception>
 	/// <exception cref="NotSupportedException">Thrown when the specified authentication provider is not supported or the external provider service is not available.</exception>
 	/// <exception cref="BadGatewayException">Thrown when external authentication with a third-party provider fails.</exception>
-	private async Task<IRequest<UserAuthQueryModel>> GetRequestAsync(AuthRequestDto data, CancellationToken cancellationToken = default)
+	private async Task<IRequest<UserAuthQueryModel>> GetRequestAsync(TokenGrantRequestDto data, CancellationToken cancellationToken = default)
 	{
 		switch (data.GrantType?.ToLowerInvariant())
 		{

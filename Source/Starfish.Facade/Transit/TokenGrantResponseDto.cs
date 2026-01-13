@@ -3,7 +3,7 @@ namespace Nerosoft.Starfish.Facade.Transit;
 /// <summary>
 /// Defines the user authentication result data transfer object.
 /// </summary>
-public class AuthResponseDto
+public class TokenGrantResponseDto
 {
 	/// <summary>
 	/// Gets or sets the access token.

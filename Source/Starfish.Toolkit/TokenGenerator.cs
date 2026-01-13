@@ -70,4 +70,19 @@ public static class TokenGenerator
 		}
 		return builder;
 	}
+	
+	/// <summary>
+	/// Creates a new <see cref="TokenGeneratorBuilder"/> from an existing <see cref="ClaimsIdentity"/>.
+	/// </summary>
+	/// <param name="identity">The <see cref="ClaimsIdentity"/> containing the claims to copy.</param>
+	/// <returns>A configured <see cref="TokenGeneratorBuilder"/> instance with all claims from the identity.</returns>
+	public static TokenGeneratorBuilder From(ClaimsIdentity identity)
+	{
+		var builder = new TokenGeneratorBuilder();
+		foreach (var claim in identity.Claims)
+		{
+			builder.AddClaim(claim.Type, claim.Value, claim.ValueType);
+		}
+		return builder;
+	}
 }
