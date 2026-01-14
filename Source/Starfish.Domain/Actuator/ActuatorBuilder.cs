@@ -6,9 +6,9 @@ namespace Nerosoft.Starfish.Domain;
 internal class ActuatorBuilder<TTarget>(IObjectFactory factory, IUnitOfWorkManager unitOfWork)
 	where TTarget : EditableObject<TTarget>
 {
-	public bool UnitOfWorkEnabled { get; set; } = true;
+	public bool UnitOfWorkEnabled { get; private set; } = true;
 
-	public bool Transactional { get; set; } = false;
+	public bool Transactional { get; private set; }
 
 	public IUnitOfWorkManager UnitOfWorkManager => unitOfWork;
 
