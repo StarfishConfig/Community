@@ -3,6 +3,7 @@ using Nerosoft.Euonia.Application;
 using Nerosoft.Euonia.Bus;
 using Nerosoft.Euonia.Bus.InMemory;
 using Nerosoft.Euonia.Bus.RabbitMq;
+using Nerosoft.Euonia.Mapping;
 using Nerosoft.Euonia.Modularity;
 using Nerosoft.Euonia.Uow;
 using Nerosoft.Starfish.Domain;
@@ -51,6 +52,12 @@ public class FacadeServiceModule : ModuleContextBase
 			return registration;
 		});
 
+		Configure<AutomapperOptions>(options =>
+		{
+			options.AddMaps(typeof(RepositoryServiceModule).Assembly);
+			options.AddMaps(typeof(FacadeServiceModule).Assembly);
+		});
+
 		context.Services.AddOptions<MessageBusOptions>()
 		       .BindConfiguration("Euonia:Bus")
 		       .ValidateOnStart();
@@ -76,34 +83,35 @@ public class FacadeServiceModule : ModuleContextBase
 		context.Services.Register<FacadeServiceContext>();
 
 		context.Services.AddEuoniaBus(config =>
-		       {
-			       var registration = Singleton<MessageBusHandlerRegistration>.Instance;
-			       if (registration == null || registration.Assemblies.Count == 0)
-			       {
-				       throw new InvalidOperationException("No service bus handler assemblies registered.");
-			       }
+		{
+			var registration = Singleton<MessageBusHandlerRegistration>.Instance;
+			if (registration == null || registration.Assemblies.Count == 0)
+			{
+				throw new InvalidOperationException("No service bus handler assemblies registered.");
+			}
 
-			       config.RegisterHandlers(registration.Assemblies.ToArray())
-			             .SetConventions(builder =>
-			             {
-				             builder.Add<DefaultMessageConvention>();
-				             builder.Add<AttributeMessageConvention>();
-				             builder.Add<DomainMessageConvention>();
-			             })
-			             .SetStrategy(MessageBusProvider.InMemory, builder =>
-			             {
-				             builder.Add<LocalMessageTransportStrategy>();
-				             builder.Add(new AttributeTransportStrategy([MessageBusProvider.InMemory]));
-				             builder.EvaluateIncoming(_ => true);
-				             builder.EvaluateOutgoing(_ => true);
-			             })
-			             .SetStrategy(MessageBusProvider.RabbitMq, builder =>
-			             {
-				             builder.Add<DistributedMessageTransportStrategy>();
-				             builder.Add(new AttributeTransportStrategy([MessageBusProvider.RabbitMq]));
-			             })
-			             .SetIdentityProvider(jwt => JwtIdentityAccessor.Resolve(jwt, Configuration));
-		       });
+			config.RegisterHandlers(registration.Assemblies.ToArray())
+			      .SetConventions(builder =>
+			      {
+				      builder.Add<DefaultMessageConvention>();
+				      builder.Add<AttributeMessageConvention>();
+				      builder.Add<DomainMessageConvention>();
+			      })
+			      .SetStrategy(MessageBusProvider.InMemory, builder =>
+			      {
+				      builder.Add<LocalMessageTransportStrategy>();
+				      builder.Add(new AttributeTransportStrategy([MessageBusProvider.InMemory]));
+				      builder.EvaluateIncoming(_ => true);
+				      builder.EvaluateOutgoing(_ => true);
+			      })
+			      .SetStrategy(MessageBusProvider.RabbitMq, builder =>
+			      {
+				      builder.Add<DistributedMessageTransportStrategy>();
+				      builder.Add(new AttributeTransportStrategy([MessageBusProvider.RabbitMq]));
+			      })
+			      .SetIdentityProvider<HybridIdentityProvider>();
+			//.SetIdentityProvider(jwt => JwtIdentityAccessor.Resolve(jwt, Configuration));
+		});
 
 		context.Services
 		       .AddKeyedTransient<IExternalAuthProvider, GoogleAuthProvider>(AuthProvider.Google)

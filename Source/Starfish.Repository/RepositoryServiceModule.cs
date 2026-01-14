@@ -47,11 +47,11 @@ public class RepositoryServiceModule : ModuleContextBase
 	/// <inheritdoc />
 	public override void AheadConfigureServices(ServiceConfigurationContext context)
 	{
-		Configure<AutomapperOptions>(options =>
-		{
-			options.AddProfile<UserMapperProfile>();
-			options.AddProfile<TokenMapperProfile>();
-		});
+		// Configure<AutomapperOptions>(options =>
+		// {
+		// 	options.AddProfile<UserMapperProfile>();
+		// 	options.AddProfile<TokenMapperProfile>();
+		// });
 		Configure<RedisCacheOptions>(Configuration.GetSection("Euonia:Caching:Redis"));
 		Configure<MemoryCacheOptions>(Configuration.GetSection("Euonia:Caching:Memory"));
 		Configure<RuntimeCacheOptions>(Configuration.GetSection("Euonia:Caching:Runtime"));

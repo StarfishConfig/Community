@@ -51,5 +51,11 @@ internal class UserMapperProfile : Profile
 			{
 				data.Roles = entity.Roles?.Select(r => r.Name).ToHashSet() ?? [];
 			});
+
+		CreateMap<User, UserDetailQueryModel>()
+			.AfterMap((entity, data, _) =>
+			{
+				data.Roles = entity.Roles?.Select(r => r.Name).ToHashSet() ?? [];
+			});
 	}
 }
