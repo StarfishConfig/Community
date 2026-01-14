@@ -9,13 +9,13 @@
     </HeaderTemplate>
     <ChildContent>
         <div style="width: 250px; height: 80px">
-            <FluentLabel Typo="@Typography.Header" Style="font-weight: bold;">Bill Gates</FluentLabel>
             <FluentLabel>@Email</FluentLabel>
             <FluentLabel>@Phone</FluentLabel>
         </div>
     </ChildContent>
     <FooterTemplate>
         <FluentStack>
+            <FluentAnchor Appearance="Appearance.Accent" Href="/profile">Profile</FluentAnchor>
             <FluentSpacer/>
             <FluentAnchor Appearance="@Appearance.Hypertext" Href="/auth/logout">Logout</FluentAnchor>
         </FluentStack>
@@ -29,21 +29,17 @@
 
     private UserPrincipal Identity { get; set; }
 
-    private string Title => string.Collapse(Identity?.FindClaim("nickname").Value, Identity?.Username, "Starfish");
+    private string Title => string.Collapse(Identity?.FindClaim("nickname")?.Value, Identity?.Username, "Starfish");
 
-    private string Email => Identity?.FindClaim(ClaimTypes.Email).Value;
+    private string Email => Identity?.FindClaim(ClaimTypes.Email)?.Value;
 
-    private string Phone => Identity?.FindClaim(ClaimTypes.MobilePhone).Value;
+    private string Phone => Identity?.FindClaim(ClaimTypes.MobilePhone)?.Value;
 
     protected override async Task OnInitializedAsync()
     {
         var state = await AuthenticationState;
         Identity = new UserPrincipal(state.User);
         StateHasChanged();
-
-        // Authentication.AuthenticationStateChanged += OnAuthenticationStateChanged;
-        //
-        // Recipient.Subscribe(OnExceptionReceived);
     }
 
 }

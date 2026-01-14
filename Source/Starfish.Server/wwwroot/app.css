@@ -364,7 +364,13 @@ nav fluent-anchor::part(control) {
 
 .main-layout-footer {
     height: 40px;
+    padding: 0 1rem;
     color: white;
     font-size: var(--type-ramp-minus-1-font-size);
     line-height: var(--type-ramp-base-line-height);
+    background-color: var(--neutral-layer-4);
+    /*border-top: calc(var(--stroke-width) * 2px) solid var(--accent-fill-rest);*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
