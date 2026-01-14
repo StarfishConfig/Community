@@ -20,7 +20,7 @@ namespace Nerosoft.Starfish.Facade.Implements;
 /// </summary>
 internal class AuthApplicationService(IConfiguration configuration) : BaseApplicationService, IAuthApplicationService
 {
-	private const string JWT_AUTH_SECTION = "JwtAuthenticationOptions";
+	private const string JWT_AUTH_SECTION = "Authentication:Bearer";
 
 	/// <summary>
 	/// Authenticates a user and grants access by creating a claims principal.
@@ -54,6 +54,7 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 
 			@events.Add(new UserAuthSuccessEvent
 			{
+				Source = "Bearer",
 				GrantType = data.GrantType,
 				UserId = user.Id,
 				Username = user.Username,
@@ -61,8 +62,8 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 			});
 
 			var refreshTokenId = ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N");
-
-			var identity = BuildClaims("Jwt", user);
+			
+			var identity = BuildClaims("Bearer", user);
 			events.Add(new TokenGeneratedEvent
 			{
 				UserId = user.Id,
@@ -107,13 +108,15 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 		{
 			events.Add(new UserAuthFailureEvent
 			{
-				AuthType = data.GrantType,
+				Source = "Bearer",
+				GrantType = data.GrantType,
+				GrantTime = DateTime.UtcNow,
 				Data = new Dictionary<string, string>
 				{
 					{ "Username", data.Username ?? string.Empty },
 					{ "Password", data.Password != null ? "******" : string.Empty },
 				},
-				Error = exception.Message,
+				Error = exception.Message
 			});
 			throw;
 		}
@@ -138,26 +141,29 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 
 			@events.Add(new UserAuthSuccessEvent
 			{
+				Source = "Cookie",
 				GrantType = data.GrantType,
 				UserId = user.Id,
 				Username = user.Username,
 				GrantTime = issueAt //DateTimeHelper.GetDateTimeFromUnixTime(result.IssueAt)
 			});
 
-			var identity = BuildClaims("Cookies", user);
+			var identity = BuildClaims("Cookie", user);
 			return new ClaimsPrincipal(identity);
 		}
 		catch (Exception exception)
 		{
 			events.Add(new UserAuthFailureEvent
 			{
-				AuthType = data.GrantType,
+				Source = "Cookie",
+				GrantType = data.GrantType,
+				GrantTime = DateTime.UtcNow,
 				Data = new Dictionary<string, string>
 				{
 					{ "Username", data.Username ?? string.Empty },
 					{ "Password", data.Password != null ? "******" : string.Empty },
 				},
-				Error = exception.Message,
+				Error = exception.Message
 			});
 			throw;
 		}
@@ -177,13 +183,14 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 		switch (authenticationType)
 		{
 			case "Jwt":
+			case "Bearer":
 				identity.AddClaim(new Claim(JwtClaimTypes.Subject, user.Id));
 				identity.AddClaim(new Claim(JwtClaimTypes.Name, user.Username));
 				identity.AddClaim(new Claim(JwtClaimTypes.Email, user.Email ?? string.Empty));
 				identity.AddClaim(new Claim(JwtClaimTypes.PhoneNumber, user.Phone));
 				identity.AddClaim(new Claim(JwtClaimTypes.NickName, user.Nickname ?? string.Empty));
 				break;
-			case "Cookies":
+			case "Cookie":
 				identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
 				identity.AddClaim(new Claim(ClaimTypes.Name, user.Username));
 				identity.AddClaim(new Claim(ClaimTypes.Email, user.Email ?? string.Empty));
