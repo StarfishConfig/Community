@@ -29,7 +29,7 @@ internal partial class User
 		LoadProperty(EmailProperty, data.Email);
 		LoadProperty(PhoneProperty, data.Phone);
 		LoadProperty(AccessFailedCountProperty, data.AccessFailedCount);
-		LoadProperty(PasswordChangedTimeProperty, data.PasswordChangedTime);
+		LoadProperty(PasswordChangedAtProperty, data.PasswordChangedAt);
 		LoadProperty(LockoutEndProperty, data.LockoutEnd);
 	}
 
@@ -45,7 +45,7 @@ internal partial class User
 			Email = Email,
 			Phone = Phone,
 			AccessFailedCount = AccessFailedCount,
-			PasswordChangedTime = PasswordChangedTime,
+			PasswordChangedAt = PasswordChangedAt,
 			LockoutEnd = LockoutEnd,
 			Roles = [.. Roles]
 		};
@@ -65,7 +65,7 @@ internal partial class User
 			Email = Email,
 			Phone = Phone,
 			AccessFailedCount = AccessFailedCount,
-			PasswordChangedTime = PasswordChangedTime,
+			PasswordChangedAt = PasswordChangedAt,
 			LockoutEnd = LockoutEnd,
 			Roles = [.. Roles]
 		};

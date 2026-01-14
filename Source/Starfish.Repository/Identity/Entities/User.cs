@@ -71,7 +71,7 @@ internal class User : Entity<string>,
 	/// <summary>
 	/// Gets or sets the time when the password was last changed.
 	/// </summary>
-	public DateTime? PasswordChangedTime { get; set; }
+	public DateTime? PasswordChangedAt { get; set; }
 
 	/// <summary>
 	/// Gets or sets the roles associated with the user.

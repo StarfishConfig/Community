@@ -23,7 +23,7 @@ internal class UserData
 
 	public int AccessFailedCount { get; set; }
 
-	public DateTime? PasswordChangedTime { get; set; }
+	public DateTime? PasswordChangedAt { get; set; }
 
 	public DateTime? LockoutEnd { get; set; }
 

@@ -16,7 +16,7 @@ internal sealed partial class User : EditableObjectBase<User, string>
 	public static readonly PropertyInfo<string> EmailProperty = RegisterProperty<string>(p => p.Email);
 	public static readonly PropertyInfo<string> PhoneProperty = RegisterProperty<string>(p => p.Phone);
 	public static readonly PropertyInfo<int> AccessFailedCountProperty = RegisterProperty<int>(p => p.AccessFailedCount);
-	public static readonly PropertyInfo<DateTime?> PasswordChangedTimeProperty = RegisterProperty<DateTime?>(p => p.PasswordChangedTime);
+	public static readonly PropertyInfo<DateTime?> PasswordChangedAtProperty = RegisterProperty<DateTime?>(p => p.PasswordChangedAt);
 	public static readonly PropertyInfo<DateTime?> LockoutEndProperty = RegisterProperty<DateTime?>(p => p.LockoutEnd);
 	public static readonly PropertyInfo<ObservableCollection<string>> RolesProperty = RegisterProperty<ObservableCollection<string>>(p => p.Roles, nameof(Roles), []);
 
@@ -77,10 +77,10 @@ internal sealed partial class User : EditableObjectBase<User, string>
 	/// <summary>
 	/// Gets or sets the time when the password was last changed.
 	/// </summary>
-	public DateTime? PasswordChangedTime
+	public DateTime? PasswordChangedAt
 	{
-		get => GetProperty(PasswordChangedTimeProperty);
-		private set => SetProperty(PasswordChangedTimeProperty, value);
+		get => GetProperty(PasswordChangedAtProperty);
+		private set => SetProperty(PasswordChangedAtProperty, value);
 	}
 
 	/// <summary>
@@ -100,15 +100,15 @@ internal sealed partial class User : EditableObjectBase<User, string>
 	/// <summary>
 	/// Sets the password for the user.
 	/// </summary>
-	/// <param name="password">The new password.</param>
+	/// <param name="newPassword">The new password.</param>
 	/// <param name="actionType">The type of action triggering the password change.</param>
-	internal void SetPassword(string password, string actionType = null)
+	internal void SetPassword(string newPassword, string actionType = null)
 	{
-		Password = password;
-		PasswordChangedTime = DateTime.Now;
+		Password = newPassword;
+		PasswordChangedAt = DateTime.Now;
 		if (!string.IsNullOrWhiteSpace(actionType))
 		{
-			RaiseEvent(new UserPasswordChangedEvent(Id, actionType, PasswordChangedTime.Value));
+			RaiseEvent(new UserPasswordChangedEvent(Id, actionType, PasswordChangedAt.Value));
 		}
 	}
 
