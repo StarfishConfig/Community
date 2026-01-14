@@ -5,6 +5,7 @@ using Nerosoft.Euonia.Bus.InMemory;
 using Nerosoft.Euonia.Bus.RabbitMq;
 using Nerosoft.Euonia.Mapping;
 using Nerosoft.Euonia.Modularity;
+using Nerosoft.Euonia.Pipeline;
 using Nerosoft.Euonia.Uow;
 using Nerosoft.Starfish.Domain;
 using Nerosoft.Starfish.Facade.ExternalAuth;
@@ -81,6 +82,8 @@ public class FacadeServiceModule : ModuleContextBase
 	public override void ConfigureServices(ServiceConfigurationContext context)
 	{
 		context.Services.Register<FacadeServiceContext>();
+
+		context.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(RequestInfoBehavior<,>));
 
 		context.Services.AddEuoniaBus(config =>
 		{

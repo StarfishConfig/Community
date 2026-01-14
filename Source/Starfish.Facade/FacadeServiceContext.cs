@@ -6,4 +6,6 @@ internal class FacadeServiceContext : ServiceContextBase
 {
 	/// <inheritdoc/>
 	public override bool AutoRegisterApplicationService => true;
+
+	public override bool AutoRegisterPipelineBehaviors => false;
 }
