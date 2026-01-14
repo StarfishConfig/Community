@@ -361,3 +361,10 @@ nav fluent-anchor::part(control) {
 .fluent-nav-link.notactive .fluent-nav-text {
     font-weight: 600 !important;
 }
+
+.main-layout-footer {
+    height: 40px;
+    color: white;
+    font-size: var(--type-ramp-minus-1-font-size);
+    line-height: var(--type-ramp-base-line-height);
+}

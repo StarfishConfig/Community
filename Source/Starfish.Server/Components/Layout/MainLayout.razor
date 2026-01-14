@@ -1,5 +1,4 @@
-﻿@using System.Runtime.InteropServices
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 
 @inject NavigationManager NavigationManager
 
@@ -13,8 +12,6 @@
             </div>
         </a>
         <FluentSpacer/>
-
-
 
         @* <div class="search"> *@
         @*     <DemoSearch/> *@
@@ -33,64 +30,48 @@
             <SiteSettings/>
             <Avatar @rendermode="InteractiveServer"/>
         </div>
-        @* <FluentPersona Name="@(string.Collapse(Identity?.FindClaim("nickname").Value, Identity?.Username, "User"))" *@
-        @*                Id="persona" *@
-        @*                ImageSize="36px" *@
-        @*                Image="https://s.gravatar.com/avatar/38a519cc759f85fc814868d0656c0c18?s=480" *@
-        @*                Status="PresenceStatus.Available" *@
-        @*                StatusSize="PresenceBadgeSize.Small"/> *@
 
     </FluentHeader>
 
     <FluentStack Class="body-stack" Orientation="Orientation.Horizontal" Width="100%" HorizontalGap="0">
-        
-        <MainMenuPanel />
-        
+
+        <CascadingValue Value="Identity">
+            <MainMenuPanel/>
+        </CascadingValue>
+
         <FluentBodyContent id="body-content" Style="height: calc(100dvh - 90px);">
             <div class="content">
                 <article id="article">
-
-                    <FluentMessageBarProvider Section="TOP" ClearAfterNavigation="true"/>
-
                     <CascadingValue Value="@OnRefreshTableOfContents">
                         @Body
                     </CascadingValue>
 
                 </article>
 
-                @if (NavigationManager.Uri != NavigationManager.BaseUri)
-                {
-                    @* <aside> *@
-                    @*     <TableOfContents @ref=_toc/> *@
-                    @*     <ConsoleLog/> *@
-                    @* </aside> *@
-                }
-
-
+                <FluentMessageBarProvider Section="TOP" ClearAfterNavigation="true" @rendermode="InteractiveServer"/>
+                <FluentToastProvider MaxToastCount="10" @rendermode="InteractiveServer"/>
+                <FluentDialogProvider @rendermode="InteractiveServer"/>
+                <FluentTooltipProvider @rendermode="InteractiveServer"/>
+                <FluentKeyCodeProvider @rendermode="InteractiveServer"/>
+                <FluentMenuProvider @rendermode="InteractiveServer"/>
             </div>
         </FluentBodyContent>
     </FluentStack>
 
-    <FluentFooter
-        Style="@("height: 40px; color: white;  font-size: var(--type-ramp-minus-1-font-size); line-height: var(--type-ramp-base-line-height);")">
+    <FluentFooter Class="main-layout-footer">
         <div class="version">
-            @* Version: @_version *@
-            &nbsp;-&nbsp;
-            <a href="https://dotnet.microsoft.com/en-us/learn/aspnet/what-is-aspnet-core">Powered
-                by @RuntimeInformation.FrameworkDescription</a>
+            <a href="/term">Term</a>
+            <span>|</span>
+            <a target="_blank" href="https://github.com/StarfishConfig/Community/blob/main/LICENSE">License</a>
+            <span>|</span>
+            <a target="_blank" href="https://github.com/NerosoftDev/Euonia">Powered by Euonia</a>
         </div>
         <FluentSpacer/>
         <div class="copy">
-            © 2025, Nerosoft, All rights reserved.
+            © 2025 Nerosoft, All rights reserved.
         </div>
     </FluentFooter>
 </FluentLayout>
-
-<FluentToastProvider MaxToastCount="10" @rendermode="InteractiveServer"/>
-<FluentDialogProvider @rendermode="InteractiveServer"/>
-<FluentTooltipProvider @rendermode="InteractiveServer"/>
-<FluentKeyCodeProvider @rendermode="InteractiveServer"/>
-<FluentMenuProvider @rendermode="InteractiveServer"/>
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
