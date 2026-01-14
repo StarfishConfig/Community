@@ -9,7 +9,7 @@ namespace Nerosoft.Starfish.Repository.Configurations;
 /// Configures the entity of type <see cref="User"/>.
 /// </summary>
 [DbContext(typeof(IdentityDataContext))]
-internal class UserEntityConfiguration : IEntityTypeConfiguration<User>
+internal class UserConfiguration : IEntityTypeConfiguration<User>
 {
 	/// <summary>
 	/// Configures the entity of type <see cref="User"/>.
@@ -26,7 +26,7 @@ internal class UserEntityConfiguration : IEntityTypeConfiguration<User>
 		builder.HasTombstoneIndex();
 
 		builder.ShortUniqueId();
-
+		
 		builder.Property(x => x.Username)
 		       .HasColumnName("username")
 		       .HasMaxLength(255)

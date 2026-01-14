@@ -6,7 +6,7 @@ using Nerosoft.Starfish.Repository.Entities;
 namespace Nerosoft.Starfish.Repository.Configurations;
 
 [DbContext(typeof(IdentityDataContext))]
-internal sealed class UserRoleEntityConfiguration : IEntityTypeConfiguration<UserRole>
+internal sealed class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
 {
 	public void Configure(EntityTypeBuilder<UserRole> builder)
 	{

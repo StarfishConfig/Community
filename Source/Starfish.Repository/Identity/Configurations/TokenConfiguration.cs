@@ -6,7 +6,7 @@ using Nerosoft.Starfish.Repository.Entities;
 namespace Nerosoft.Starfish.Repository.Configurations;
 
 [DbContext(typeof(IdentityDataContext))]
-internal class TokenEntityConfiguration : IEntityTypeConfiguration<Token>
+internal class TokenConfiguration : IEntityTypeConfiguration<Token>
 {
 	public void Configure(EntityTypeBuilder<Token> builder)
 	{
