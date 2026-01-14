@@ -73,6 +73,24 @@ internal static class AuthenticationExtensions
 			        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 			        options.Cookie.IsEssential = true;
 			        options.SlidingExpiration = configuration.GetValue($"{AUTHENTICATION_SECTION_COOKIE}:SlidingExpiration", true);
+			        options.Events = new CookieAuthenticationEvents()
+			        {
+				        OnRedirectToLogin = async context =>
+				        {
+					        // If the request is for an API endpoint, return 401 Unauthorized instead of redirecting
+					        if (context.Request.Path.Value?.StartsWith("/api") == true)
+					        {
+						        context.Response.Clear();
+						        context.Response.StatusCode = 401;
+					        }
+					        else
+					        {
+						        context.Response.Redirect(context.RedirectUri);
+					        }
+
+					        await Task.CompletedTask;
+				        }
+			        };
 		        })
 		        .AddJwtBearer(options =>
 		        {

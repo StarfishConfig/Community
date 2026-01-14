@@ -1,0 +1,49 @@
+@using System.Security.Claims
+<FluentProfileMenu Initials="BG" @rendermode="InteractiveServer"
+                   Image="https://s.gravatar.com/avatar/38a519cc759f85fc814868d0656c0c18?s=480">
+    <StartTemplate>
+        <span style="color: white">@Title</span>
+    </StartTemplate>
+    <HeaderTemplate>
+        <FluentLabel Typo="@Typography.Header">@Identity.Username</FluentLabel>
+    </HeaderTemplate>
+    <ChildContent>
+        <div style="width: 250px; height: 80px">
+            <FluentLabel Typo="@Typography.Header" Style="font-weight: bold;">Bill Gates</FluentLabel>
+            <FluentLabel>@Email</FluentLabel>
+            <FluentLabel>@Phone</FluentLabel>
+        </div>
+    </ChildContent>
+    <FooterTemplate>
+        <FluentStack>
+            <FluentSpacer/>
+            <FluentAnchor Appearance="@Appearance.Hypertext" Href="/auth/logout">Logout</FluentAnchor>
+        </FluentStack>
+    </FooterTemplate>
+</FluentProfileMenu>
+
+@code {
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; }
+
+    private UserPrincipal Identity { get; set; }
+
+    private string Title => string.Collapse(Identity?.FindClaim("nickname").Value, Identity?.Username, "Starfish");
+
+    private string Email => Identity?.FindClaim(ClaimTypes.Email).Value;
+
+    private string Phone => Identity?.FindClaim(ClaimTypes.MobilePhone).Value;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthenticationState;
+        Identity = new UserPrincipal(state.User);
+        StateHasChanged();
+
+        // Authentication.AuthenticationStateChanged += OnAuthenticationStateChanged;
+        //
+        // Recipient.Subscribe(OnExceptionReceived);
+    }
+
+}

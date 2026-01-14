@@ -7,7 +7,7 @@ using Microsoft.Build.Framework;
 using Nerosoft.Starfish.Facade.Transit;
 
 
-namespace Nerosoft.Starfish.Server.Components.Pages;
+namespace Nerosoft.Starfish.Server.Components.Pages.Auth;
 
 public partial class Login : ComponentBase
 {

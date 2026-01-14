@@ -1,0 +1,17 @@
+@page "/auth/logout"
+@using Microsoft.AspNetCore.Authentication
+
+@layout EmptyLayout
+
+@code {
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await HttpContext.SignOutAsync();
+        HttpContext.Response.Redirect("/");
+    }
+
+}
