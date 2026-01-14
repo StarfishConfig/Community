@@ -61,7 +61,7 @@ internal class UserEntityConfiguration : IEntityTypeConfiguration<User>
 		builder.Property(x => x.LockoutEnd)
 		       .HasColumnName("lockout_end");
 
-		builder.Property(x => x.PasswordChangedTime)
+		builder.Property(x => x.PasswordChangedAt)
 		       .HasColumnName("password_changed_at");
 
 		builder.CreatedAtUtc();

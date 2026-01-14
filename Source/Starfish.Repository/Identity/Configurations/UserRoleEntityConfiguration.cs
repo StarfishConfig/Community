@@ -27,5 +27,7 @@ internal sealed class UserRoleEntityConfiguration : IEntityTypeConfiguration<Use
 		       .HasColumnName("name")
 		       .HasMaxLength(100)
 		       .IsRequired();
+
+		builder.CreatedAtUtc();
 	}
 }
