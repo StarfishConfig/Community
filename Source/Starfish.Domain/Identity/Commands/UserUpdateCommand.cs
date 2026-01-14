@@ -8,9 +8,18 @@ namespace Nerosoft.Starfish.Domain.Commands;
 public class UserUpdateCommand : Command
 {
 	/// <summary>
+	/// Initializes a new instance of the <see cref="UserUpdateCommand"/> class.
+	/// </summary>
+	/// <param name="id"></param>
+	public UserUpdateCommand(string id)
+	{
+		Id = id;
+	}
+
+	/// <summary>
 	/// Gets or sets the unique identifier of the user to be updated.
 	/// </summary>
-	public string Id { get; set; }
+	public string Id { get; init; }
 
 	/// <summary>
 	/// Gets or sets the new nickname for the user.
