@@ -10,7 +10,12 @@ internal class UserAuthFailureEvent : ApplicationEvent
 	/// <summary>
 	/// Gets or sets the auth type.
 	/// </summary>
-	public string AuthType { get; set; }
+	public string GrantType { get; set; }
+
+	/// <summary>
+	/// Gets or sets the time when the grant was attempted.
+	/// </summary>
+	public DateTime GrantTime { get; set; }
 
 	/// <summary>
 	/// Gets or sets the additional data.
@@ -21,4 +26,9 @@ internal class UserAuthFailureEvent : ApplicationEvent
 	/// Gets or sets the error message.
 	/// </summary>
 	public string Error { get; set; }
+
+	/// <summary>
+	/// Gets or sets the source of the authentication failure.
+	/// </summary>
+	public string Source { get; set; }
 }

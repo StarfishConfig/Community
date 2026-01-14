@@ -51,4 +51,9 @@ internal class UserAuthSuccessEvent : ApplicationEvent
 	/// Gets or sets the token issue time.
 	/// </summary>
 	public DateTime GrantTime { get; set; }
+
+	/// <summary>
+	/// Gets or sets the source of the authentication failure.
+	/// </summary>
+	public string Source { get; set; }
 }
