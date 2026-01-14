@@ -58,6 +58,11 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>LoginResources.resx</DependentUpon>
         </Compile>
+        <Compile Update="Properties\ProfileResources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>ProfileResources.resx</DependentUpon>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>
@@ -76,6 +81,10 @@
         <EmbeddedResource Update="Properties\LoginResources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>LoginResources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Properties\ProfileResources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>ProfileResources.Designer.cs</LastGenOutput>
         </EmbeddedResource>
     </ItemGroup>
 
