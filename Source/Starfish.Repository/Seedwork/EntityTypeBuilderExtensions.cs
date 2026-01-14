@@ -94,6 +94,7 @@ internal static class EntityTypeBuilderExtensions
 		builder.HasKey(t => t.Id);
 		builder.Property(t => t.Id)
 		       .HasColumnName("id")
+		       .HasMaxLength(20)
 		       .IsRequired()
 		       .HasValueGenerator<ShortUniqueIdValueGenerator>()
 		       .ValueGeneratedOnAdd();
