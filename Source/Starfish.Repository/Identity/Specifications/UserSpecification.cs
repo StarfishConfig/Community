@@ -5,6 +5,11 @@ namespace Nerosoft.Starfish.Repository.Specifications;
 
 internal static class UserSpecification
 {
+	public static ISpecification<User> IdEquals(string id)
+	{
+		return new DirectSpecification<User>(x => x.Id == id);
+	}
+
 	public static ISpecification<User> UsernameEquals(string username)
 	{
 		username = username.Normalize(TextCaseType.Lower);
