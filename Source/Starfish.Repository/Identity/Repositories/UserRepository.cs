@@ -16,7 +16,7 @@ internal class UserRepository(IdentityDataContext context) : IUserRepository, IT
 			var entity = TypeAdapter.ProjectedAs<User>(data);
 			await context.Set<User>().AddAsync(entity, cancellationToken);
 			await context.SaveChangesAsync(cancellationToken);
-			data.Id = entity.Id;
+			//data.Id = entity.Id;
 		}
 		else
 		{

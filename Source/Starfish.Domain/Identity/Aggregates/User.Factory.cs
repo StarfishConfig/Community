@@ -56,9 +56,8 @@ internal partial class User
 	protected override Task UpdateAsync(CancellationToken cancellationToken = default)
 	{
 		var repository = BusinessContext.GetRequiredService<IUserRepository>();
-		var data = new UserData
+		var data = new UserData(Id)
 		{
-			Id = Id,
 			Username = Username,
 			Password = Password,
 			Nickname = Nickname,

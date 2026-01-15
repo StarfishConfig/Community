@@ -9,6 +9,13 @@ namespace Nerosoft.Starfish.Persistent;
 /// </remarks>
 internal class UserData : Persistent<string>
 {
+	public UserData()
+	{ }
+
+	public UserData(string id)
+		: base(id)
+	{ }
+
 	public string Username { get; set; }
 
 	public string Nickname { get; set; }
