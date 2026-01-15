@@ -17,7 +17,7 @@ internal class TokenConfiguration : IEntityTypeConfiguration<Token>
 		       .IsUnique()
 		       .HasDatabaseName("token_idx_unique");
 
-		builder.ShortUniqueId();
+		builder.SnowflakeId();
 
 		builder.Property(x => x.Type)
 		       .HasColumnName("type")

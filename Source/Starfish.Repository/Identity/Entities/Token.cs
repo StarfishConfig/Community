@@ -5,7 +5,7 @@ namespace Nerosoft.Starfish.Repository.Entities;
 /// <summary>
 /// Represents a token entity used for authentication and authorization purposes.
 /// </summary>
-internal sealed class Token : Entity<string>
+internal sealed class Token : Entity<long>
 {
 	/// <summary>
 	/// Gets or sets the token type (e.g., access_token, refresh_token).
