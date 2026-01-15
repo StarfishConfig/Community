@@ -41,6 +41,23 @@ internal class UserRequestHandler : IHandler<UserPasswordVerifyRequest, bool>,
 		                    .Include(t => t.Roles)
 		                    .Where(predicate);
 		var user = await query.FirstOrDefaultAsync(cancellationToken);
-		return TypeAdapter.ProjectedAs<UserDetailQueryModel>(user);
+
+		if (user == null)
+		{
+			return null;
+		}
+
+		var model = TypeAdapter.ProjectedAs<UserDetailQueryModel>(user);
+
+		var authlog = await _context.Set<Authlog>()
+		                            .OrderByDescending(x => x.Timestamp)
+		                            .Where(x => x.Username == user.Username && x.Success)
+		                            .FirstOrDefaultAsync(cancellationToken);
+		if (authlog != null)
+		{
+			model.LastLoginAt = authlog.Timestamp;
+		}
+
+		return model;
 	}
 }
