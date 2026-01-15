@@ -7,7 +7,7 @@ using Microsoft.Build.Framework;
 using Nerosoft.Starfish.Facade.Transit;
 
 
-namespace Nerosoft.Starfish.Server.Components.Pages.Auth;
+namespace Nerosoft.Starfish.Server.Components.Pages.Identity;
 
 public partial class Login : ComponentBase
 {
@@ -21,7 +21,7 @@ public partial class Login : ComponentBase
 
 	[SupplyParameterFromForm]
 	private LoginModel Model { get; set; }
-	
+
 	private bool Loading { get; set; } = false;
 
 	/// <summary>

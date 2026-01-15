@@ -148,14 +148,14 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 				GrantTime = issueAt //DateTimeHelper.GetDateTimeFromUnixTime(result.IssueAt)
 			});
 
-			var identity = BuildClaims("Cookie", user);
+			var identity = BuildClaims("Cookies", user);
 			return new ClaimsPrincipal(identity);
 		}
 		catch (Exception exception)
 		{
 			events.Add(new UserAuthFailureEvent
 			{
-				Source = "Cookie",
+				Source = "Cookies",
 				GrantType = data.GrantType,
 				GrantTime = DateTime.UtcNow,
 				Data = new Dictionary<string, string>
@@ -190,7 +190,7 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 				identity.AddClaim(new Claim(JwtClaimTypes.PhoneNumber, user.Phone));
 				identity.AddClaim(new Claim(JwtClaimTypes.NickName, user.Nickname ?? string.Empty));
 				break;
-			case "Cookie":
+			case "Cookies":
 				identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
 				identity.AddClaim(new Claim(ClaimTypes.Name, user.Username));
 				identity.AddClaim(new Claim(ClaimTypes.Email, user.Email ?? string.Empty));
