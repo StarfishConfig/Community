@@ -4,11 +4,9 @@ using Nerosoft.Euonia.Caching;
 using Nerosoft.Euonia.Caching.Memory;
 using Nerosoft.Euonia.Caching.Redis;
 using Nerosoft.Euonia.Caching.Runtime;
-using Nerosoft.Euonia.Mapping;
 using Nerosoft.Euonia.Modularity;
 using Nerosoft.Euonia.Repository;
 using Nerosoft.Euonia.Repository.EfCore;
-using Nerosoft.Starfish.Repository.Mappers;
 
 namespace Nerosoft.Starfish.Repository;
 
@@ -64,6 +62,10 @@ public class RepositoryServiceModule : ModuleContextBase
 		context.Services.AddKeyedSingleton<ConnectionConfigurator>("sqlite", (builder, connectionString) => builder.UseSqlite(connectionString));
 		context.Services.AddKeyedSingleton<ConnectionConfigurator>("mssql", (builder, connectionString) => builder.UseSqlServer(connectionString));
 		context.Services.AddKeyedSingleton<ConnectionConfigurator>("pgsql", (builder, connectionString) => builder.UseNpgsql(connectionString));
+		context.Services.AddKeyedSingleton<ConnectionConfigurator>("mysql", (builder, connectionString) => builder.UseMySQL(connectionString, mySqlOptions =>
+		{
+			mySqlOptions.EnableRetryOnFailure();
+		}));
 
 		context.Services.AddDataContextFactory<IdentityDataContext>();
 
