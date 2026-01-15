@@ -1,0 +1,15 @@
+﻿<FluentPaginator State="@State" Style="width:100%;">
+    <SummaryTemplate>
+        @((MarkupString)string.Format(CommonResources.IDS_PAGINATOR_TOTAL_FORMAT, State.TotalItemCount ?? 0))
+    </SummaryTemplate>
+    <PaginationTextTemplate>
+        <strong>@(State.CurrentPageIndex + 1)</strong> / <strong>@(State.LastPageIndex + 1)</strong>
+    </PaginationTextTemplate>
+</FluentPaginator>
+
+@code {
+
+    [Parameter]
+    public PaginationState State { get; set; }
+
+}

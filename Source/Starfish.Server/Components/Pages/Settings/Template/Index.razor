@@ -1,82 +1,81 @@
-@page "/settings/message/template"
+@page "/system/template"
 @using Nerosoft.Starfish.Shared
 @rendermode InteractiveServer
 
 @inject ITemplateAppService Service
 
-<FluentAccordion>
-    <FluentAccordionItem Heading="Filter(s)" Expanded="true">
-        <FluentIcon Value="@(new Icons.Regular.Size20.FilterAdd())" Color="@Color.Neutral" Slot="start"/>
-        <FluentGrid Spacing="1" Justify="JustifyContent.FlexStart" Style="padding: 5px;">
-            <FluentGridItem xs="12" sm="6" md="3">
-                <FluentTextField @bind-Value="Keyword" Label="关键字"
-                                 Style="width: 100%"/>
-            </FluentGridItem>
-            <FluentGridItem xs="12" sm="6" md="3">
-                <FluentSelect TOption="Option<TemplateType>"
-                              Items="@MessageTemplateTypes"
-                              OptionValue="@(i => i.Value.ToString())"
-                              OptionText="@(i => i.Text)"
-                              Label="模板类型"
-                              @bind-SelectedOption="@SelectedType"/>
-            </FluentGridItem>
-        </FluentGrid>
-        <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End">
-            <FluentAnchor IconStart="@(new Icons.Regular.Size16.Add())"
-                          Appearance="Appearance.Lightweight"
-                          Href="/settings/message/template/edit">
-                新建模板
-            </FluentAnchor>
-            <FluentButton IconStart="@(new Icons.Regular.Size16.Broom())"
-                          Disabled="@Loading"
-                          OnClick="@OnClearClicked">
-                清除条件
-            </FluentButton>
-            <FluentButton IconStart="@(new Icons.Regular.Size16.Search())"
-                          Appearance="Appearance.Accent"
-                          Loading="@Loading"
-                          OnClick="@OnSearchClicked">
-                搜索
-            </FluentButton>
-        </FluentStack>
-    </FluentAccordionItem>
-</FluentAccordion>
+<PageTitle>@SystemResources.IDS_TEMPLATE_INDEX_TITLE</PageTitle>
 
-<!--
-<FluentDataGrid TItem="MessageTemplateListDto"
-                 @ref="_dataGrid"
-                 DataSource="@_dataSource"
-                 Pageable="true"
-                 PageSizeOptions="[5,10,20,50]"
-                 Loading="loading"
-                 PaginationState="@PaginationState">
-    <FluentDataGridColumn TItem="MessageTemplateListDto" Field="@(e => e.Name)" Title="Name" Sortable="true" />
-    <FluentDataGridColumn TItem="MessageTemplateListDto" Field="@(e => e.Code)" Title="Code" Sortable="true" />
-    <FluentDataGridColumn TItem="MessageTemplateListDto" Field="@(e => e.State)" Title="State" Sortable="true" />
-    <FluentDataGridColumn TItem="MessageTemplateListDto" Field="@(e => e.CreatedAt)" Title="Created At" Sortable="true" />
-</FluentDataGrid>
--->
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="16" Style="width: 100%">
+    <FluentLabel Typo="Typography.Header">@SystemResources.IDS_TEMPLATE_INDEX_TITLE</FluentLabel>
 
-<FluentDataGrid @ref="_dataGrid"
-                TGridItem="TemplateListDto"
-                Items="_dataSource"
-                GenerateHeader="GenerateHeaderOption.Sticky"
-                Loading="Loading"
-                Pagination="Pagination"
-                RefreshItems="@RefreshItemsAsync">
-    <PropertyColumn Title="Name" Property="p => p.Name"/>
-    <PropertyColumn Title="Code" Property="p => p.Code"/>
-    <TemplateColumn Title="Type" Width="100px">
-        <label>@context.Type.ToString()</label>
-    </TemplateColumn>
-    <PropertyColumn Title="Language" Property="p=>p.Language"
-                    Width="100px"/>
-    <PropertyColumn Title="Subject" Property="p=>p.Subject"/>
-    <PropertyColumn Title="Default" Property="p => p.Default"
-                    Width="100px"/>
-</FluentDataGrid>
+    <FluentAccordion Style="width: 100%">
+        <FluentAccordionItem Heading="Filter(s)" Expanded="true">
+            <FluentIcon Value="@(new Icons.Regular.Size20.FilterAdd())" Color="@Color.Neutral" Slot="start" />
+            <FluentGrid Spacing="1" Justify="JustifyContent.FlexStart" Style="padding: 5px;">
+                <FluentGridItem xs="12" sm="6" md="3">
+                    <FluentTextField @bind-Value="Keyword" Label="关键字"
+                                     Style="width: 100%"
+                                     Placeholder="@CommonResources.IDS_COMMON_PLACEHOLDER_KEYWORD" />
+                </FluentGridItem>
+                <FluentGridItem xs="12" sm="6" md="3">
+                    <FluentSelect TOption="Option<TemplateType>"
+                                  Items="@MessageTemplateTypes"
+                                  OptionValue="@(i => i.Value.ToString())"
+                                  OptionText="@(i => i.Text)"
+                                  Label="模板类型"
+                                  @bind-SelectedOption="@SelectedType" />
+                </FluentGridItem>
+            </FluentGrid>
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End">
+                <FluentAnchor IconStart="@(new Icons.Regular.Size16.Add())"
+                              Appearance="Appearance.Lightweight"
+                              Href="/system/template/edit">
+                    新建模板
+                </FluentAnchor>
+                <FluentButton IconStart="@(new Icons.Regular.Size16.Broom())"
+                              Disabled="@Loading"
+                              OnClick="@OnClearClicked">
+                    清除条件
+                </FluentButton>
+                <FluentButton IconStart="@(new Icons.Regular.Size16.Search())"
+                              Appearance="Appearance.Accent"
+                              Loading="@Loading"
+                              OnClick="@OnSearchClicked">
+                    搜索
+                </FluentButton>
+            </FluentStack>
+        </FluentAccordionItem>
+    </FluentAccordion>
 
-<FluentPaginator State="@Pagination"/>
+    <FluentDataGrid @ref="_dataGrid"
+                    Style="width: 100%"
+                    TGridItem="TemplateListDto"
+                    Items="_dataSource" RowSize="DataGridRowSize.Large"
+                    GenerateHeader="GenerateHeaderOption.Sticky"
+                    Loading="Loading"
+                    Pagination="Pagination"
+                    RefreshItems="@RefreshItemsAsync">
+        <PropertyColumn Title="Name" Property="p => p.Name" />
+        <PropertyColumn Title="Code" Property="p => p.Code" />
+        <TemplateColumn Title="Type" Width="100px">
+            <label>@context.Type.ToString()</label>
+        </TemplateColumn>
+        <PropertyColumn Title="Language" Property="p => p.Language"
+                        Width="100px" />
+        <PropertyColumn Title="Subject" Property="p => p.Subject" />
+        <PropertyColumn Title="Default" Property="p => p.Default"
+                        Width="100px" />
+        <TemplateColumn Title="@CommonResources.IDS_COMMON_COLUMN_ACTIONS" Align="@Align.Center">
+            <FluentStack Orientation="Orientation.Horizontal">
+                <FluentAnchor Href="@($"/system/template/edit/{context.Id}")">编辑</FluentAnchor>
+                <FluentButton OnClick="@(() => OnDeleteClicked(context.Id, context.Name))" Style="color: orangered">删除</FluentButton>
+            </FluentStack>
+        </TemplateColumn>
+    </FluentDataGrid>
+
+    <FluentDataGridPaginator State="@Pagination" />
+</FluentStack>
 
 @code {
     private FluentDataGrid<TemplateListDto> _dataGrid;
@@ -103,7 +102,7 @@
 
         await InvokeAsync(StateHasChanged);
 
-        var result = await Service.SearchAsync(SelectedType.Value, Keyword, 0, Pagination.ItemsPerPage);
+        var result = await Service.SearchAsync(SelectedType?.Value ?? TemplateType.None, Keyword, 0, Pagination.ItemsPerPage);
 
         _dataSource = result.AsQueryable();
 
@@ -121,6 +120,11 @@
     private async Task OnSearchClicked(MouseEventArgs args)
     {
         await _dataGrid.RefreshDataAsync(true);
+    }
+
+    private async Task OnDeleteClicked(long id, string name)
+    {
+
     }
 
 }

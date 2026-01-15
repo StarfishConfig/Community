@@ -34,6 +34,7 @@ internal class TemplateCommandHandler(IServiceProvider provider)
 			               target.Subject = message.Subject;
 			               target.Body = message.Body;
 			               target.Default = message.Default;
+						   target.MarkAsChanged();
 		               })
 		               .ExecuteAsync(cancellationToken);
 	}

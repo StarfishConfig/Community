@@ -117,49 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="IDS_COMMON_CANCEL" xml:space="preserve">
-    <value>Cancel</value>
+  <data name="IDS_TEMPLATE_CREATE_TITLE" xml:space="preserve">
+    <value>New Template</value>
   </data>
-  <data name="IDS_COMMON_CLOSE" xml:space="preserve">
-    <value>Close</value>
+  <data name="IDS_TEMPLATE_INDEX_TITLE" xml:space="preserve">
+    <value>Templates</value>
   </data>
-  <data name="IDS_COMMON_COLUMN_ACTIONS" xml:space="preserve">
-    <value>Actions</value>
-  </data>
-  <data name="IDS_COMMON_COLUMN_CREATE_TIME" xml:space="preserve">
-    <value>Created</value>
-  </data>
-  <data name="IDS_COMMON_COLUMN_UPDATE_TIME" xml:space="preserve">
-    <value>Updated</value>
-  </data>
-  <data name="IDS_COMMON_NO" xml:space="preserve">
-    <value>No</value>
-  </data>
-  <data name="IDS_COMMON_OPERATIONS" xml:space="preserve">
-    <value>Operations</value>
-  </data>
-  <data name="IDS_COMMON_PLACEHOLDER_KEYWORD" xml:space="preserve">
-    <value>Keyword to search</value>
-  </data>
-  <data name="IDS_COMMON_SAVE" xml:space="preserve">
-    <value>Save</value>
-  </data>
-  <data name="IDS_COMMON_SEARCH" xml:space="preserve">
-    <value>Search</value>
-  </data>
-  <data name="IDS_COMMON_SUBMIT" xml:space="preserve">
-    <value>Submit</value>
-  </data>
-  <data name="IDS_COMMON_SUBTITLE" xml:space="preserve">
-    <value>Configuration management &amp; service discovery</value>
-  </data>
-  <data name="IDS_COMMON_TITLE" xml:space="preserve">
-    <value>Starfish</value>
-  </data>
-  <data name="IDS_COMMON_YES" xml:space="preserve">
-    <value>Yes</value>
-  </data>
-  <data name="IDS_PAGINATOR_TOTAL_FORMAT" xml:space="preserve">
-    <value>Total &lt;strong&gt;{0}&lt;/strong&gt; rows</value>
+  <data name="IDS_TEMPLATE_UPDATE_TITLE" xml:space="preserve">
+    <value>Edit Template</value>
   </data>
 </root>

@@ -5,7 +5,7 @@
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
-        <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.AspNetCore.OpenApi.Generated;Microsoft.AspNetCore.Http.Validation.Generated;</InterceptorsNamespaces> 
+        <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.AspNetCore.OpenApi.Generated;Microsoft.AspNetCore.Http.Validation.Generated;</InterceptorsNamespaces>
         <InterceptorsPreventNamespaces>$(InterceptorsPreventNamespaces);OpenIddict</InterceptorsPreventNamespaces>
     </PropertyGroup>
 
@@ -69,6 +69,11 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>LayoutResources.resx</DependentUpon>
         </Compile>
+        <Compile Update="Properties\SystemResources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>SystemResources.resx</DependentUpon>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>
@@ -95,6 +100,10 @@
         <EmbeddedResource Update="Properties\LayoutResources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>LayoutResources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Properties\SystemResources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>SystemResources.Designer.cs</LastGenOutput>
         </EmbeddedResource>
     </ItemGroup>
 

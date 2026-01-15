@@ -2,16 +2,16 @@
 
 @inject NavigationManager NavigationManager
 
-<FluentDesignTheme StorageName="theme" OfficeColor="OfficeColor.Office"/>
+<FluentDesignTheme StorageName="theme" OfficeColor="OfficeColor.Office" />
 <FluentLayout>
     <FluentHeader Class="site-header">
         <a href="/" aria-label="Back to the homepage" style="text-decoration: none">
             <div class="logo" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope">
-                <img src="logo.svg" alt="starfish"/>
+                <img src="logo.svg" alt="starfish" />
                 <span>@CommonResources.IDS_COMMON_TITLE</span>
             </div>
         </a>
-        <FluentSpacer/>
+        <FluentSpacer />
 
         @* <div class="search"> *@
         @*     <DemoSearch/> *@
@@ -26,9 +26,9 @@
         @*     </FluentAnchor> *@
         @* </div> *@
         <div style="display: flex; align-items: center; gap: 8px;">
-            <NotificationCenter/>
-            <SiteSettings/>
-            <Avatar @rendermode="InteractiveServer"/>
+            <NotificationCenter />
+            <SiteSettings />
+            <Avatar @rendermode="InteractiveServer" />
         </div>
 
     </FluentHeader>
@@ -36,10 +36,10 @@
     <FluentStack Class="body-stack" Orientation="Orientation.Horizontal" Width="100%" HorizontalGap="0">
 
         <CascadingValue Value="Identity">
-            <MainMenuPanel/>
+            <MainMenuPanel />
         </CascadingValue>
 
-        <FluentBodyContent id="body-content" Style="height: calc(100dvh - 90px);">
+        <FluentBodyContent id="body-content" Style="height: calc(100dvh - 90px);padding-bottom: 1.5rem; padding-top:1.5rem; padding-right:1rem;">
             <div class="content">
                 <article id="article">
                     <CascadingValue Value="@OnRefreshTableOfContents">
@@ -48,12 +48,12 @@
 
                 </article>
 
-                <FluentMessageBarProvider Section="TOP" ClearAfterNavigation="true" @rendermode="InteractiveServer"/>
-                <FluentToastProvider MaxToastCount="10" @rendermode="InteractiveServer"/>
-                <FluentDialogProvider @rendermode="InteractiveServer"/>
-                <FluentTooltipProvider @rendermode="InteractiveServer"/>
-                <FluentKeyCodeProvider @rendermode="InteractiveServer"/>
-                <FluentMenuProvider @rendermode="InteractiveServer"/>
+                <FluentMessageBarProvider Section="TOP" ClearAfterNavigation="true" @rendermode="InteractiveServer" />
+                <FluentToastProvider MaxToastCount="10" @rendermode="InteractiveServer" />
+                <FluentDialogProvider @rendermode="InteractiveServer" />
+                <FluentTooltipProvider @rendermode="InteractiveServer" />
+                <FluentKeyCodeProvider @rendermode="InteractiveServer" />
+                <FluentMenuProvider @rendermode="InteractiveServer" />
             </div>
         </FluentBodyContent>
     </FluentStack>
@@ -66,7 +66,7 @@
             <span>|</span>
             <a target="_blank" href="https://github.com/NerosoftDev/Euonia">Powered by Euonia</a>
         </div>
-        <FluentSpacer/>
+        <FluentSpacer />
         <div class="copy">
             © 2025 Nerosoft, All rights reserved.
         </div>

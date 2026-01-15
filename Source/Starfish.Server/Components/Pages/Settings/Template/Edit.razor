@@ -1,7 +1,7 @@
-@page "/settings/template/edit/{Id:long}"
-@page "/settings/template/edit"
+@page "/system/template/edit/{Id:long}"
+@page "/system/template/edit"
 
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(false))
 
 @using Blazor.Monaco
 @using Nerosoft.Starfish.Shared
@@ -9,56 +9,68 @@
 @inject IDialogService DialogService
 @inject ITemplateAppService Service
 @inject NavigationManager NavigationManager
+@if (Id > 0)
+{
+    <PageTitle>@SystemResources.IDS_TEMPLATE_UPDATE_TITLE</PageTitle>
+}
+else
+{
+    <PageTitle>@SystemResources.IDS_TEMPLATE_CREATE_TITLE</PageTitle>
+}
 
-<PageTitle>新建消息模板</PageTitle>
+<FluentStack VerticalGap="16" Orientation="Orientation.Vertical">
+    @if (Id > 0)
+    {
+        <FluentLabel Typo="Typography.Header">@SystemResources.IDS_TEMPLATE_UPDATE_TITLE</FluentLabel>
+    }
+    else
+    {
+        <FluentLabel Typo="Typography.Header">@SystemResources.IDS_TEMPLATE_CREATE_TITLE</FluentLabel>
+    }
 
-<h3>新建消息模板</h3>
+    <FluentEditForm EditContext="_editContext" OnSubmit="@OnSubmitAsync" FormName="form" Style="width: 100%">
+        <DataAnnotationsValidator />
+        <FluentValidationSummary />
 
-<FluentEditForm EditContext="_editContext" OnSubmit="@OnSubmitAsync" FormName="form">
-    <DataAnnotationsValidator/>
-    <FluentValidationSummary/>
+        <FluentBodyContent>
+            <FluentGrid Columns="12" RowGap="10" ColumnGap="10">
+                <FluentGridItem sm="12" md="6" lg="3">
+                    <FluentSelect Label="模板类型"
+                                  Style="width: 100%"
+                                  TOption="Option<TemplateType>"
+                                  Items="@TemplateTypes"
+                                  OptionValue="@(i => i.Value.ToString())"
+                                  OptionText="@(i => i.Text)"
+                                  @bind-SelectedOption="@SelectedType" />
+                </FluentGridItem>
+                <FluentGridItem sm="12" md="6" lg="3">
+                    <FluentTextField Label="名称" Style="width: 100%" @bind-Value="Model.Name" />
+                </FluentGridItem>
+                <FluentGridItem sm="12" md="6" lg="3">
+                    <FluentTextField Label="代码" Style="width: 100%" @bind-Value="@Model.Code" />
+                </FluentGridItem>
+                <FluentGridItem sm="12" md="6" lg="3">
+                    <FluentTextField Label="语言" Style="width: 100%" @bind-Value="@Model.Language" />
+                </FluentGridItem>
+                <FluentGridItem md="12">
+                    <FluentTextField Label="主题" Style="width: 100%"
+                                     @bind-Value="Model.Subject" />
+                </FluentGridItem>
+                <FluentGridItem md="12">
+                    <MonacoEditor @ref="_editor" Language="Language.Html"
+                                  EditorOptions="@EditorOptions" ScriptContent="{{}}"/>
+                </FluentGridItem>
+            </FluentGrid>
+            <div style="width: 100%; display: flex; align-items: center;column-gap: 16px; margin-top: 16px;">
+                <FluentButton Style="width: 100px;" Appearance="Appearance.Accent" Type="ButtonType.Submit">
+                    提交
+                </FluentButton>
 
-    <FluentBodyContent>
-        <FluentGrid Columns="12" RowGap="10" ColumnGap="10">
-            <FluentGridItem sm="12" md="6" lg="3">
-                <FluentSelect Label="模板类型"
-                              Style="width: 100%"
-                              TOption="Option<TemplateType>"
-                              Items="@MessageTemplateTypes"
-                              OptionValue="@(i => i.Value.ToString())"
-                              OptionText="@(i => i.Text)"
-                              @bind-SelectedOption="@SelectedType"/>
-            </FluentGridItem>
-            <FluentGridItem sm="12" md="6" lg="3">
-                <FluentTextField Label="名称" Style="width: 100%" @bind-Value="Model.Name"/>
-            </FluentGridItem>
-            <FluentGridItem sm="12" md="6" lg="3">
-                <FluentTextField Label="代码" Style="width: 100%" @bind-Value="@Model.Code"/>
-            </FluentGridItem>
-            <FluentGridItem sm="12" md="6" lg="3">
-                <FluentTextField Label="语言" Style="width: 100%" @bind-Value="@Model.Language"/>
-            </FluentGridItem>
-            <FluentGridItem md="12">
-                <FluentTextField Label="主题" Style="width: 100%"
-                                 @bind-Value="Model.Subject"/>
-            </FluentGridItem>
-            <FluentGridItem md="12">
-                <MonacoEditor @ref="_editor" Language="Language.Html" ScriptContent="@Model.Body"
-                              EditorOptions="@EditorOptions"/>
-            </FluentGridItem>
-        </FluentGrid>
-        <div style="width: 100%; display: flex; align-items: center;column-gap: 12px; margin-top: 16px;">
-            <FluentButton Style="width: 100px;" Appearance="Appearance.Accent" Type="ButtonType.Submit">
-                提交
-            </FluentButton>
-
-            <FluentCheckbox Label="设为默认"></FluentCheckbox>
-        </div>
-    </FluentBodyContent>
-
-
-</FluentEditForm>
-
+                <FluentCheckbox Label="设为默认" @bind-Value="Model.Default"/>
+            </div>
+        </FluentBodyContent>
+    </FluentEditForm>
+</FluentStack>
 @code {
 
     [Parameter]
@@ -72,17 +84,31 @@
         {
             Enabled = false
         },
-        AutoClosingBrackets = AutoClosingBrackets.Always, Theme = Theme.VsDark
+        AutoClosingBrackets = AutoClosingBrackets.Always,
+        Theme = Theme.VsDark
     };
 
-    private List<Option<TemplateType>> MessageTemplateTypes { get; } =
+    private List<Option<TemplateType>> TemplateTypes { get; } =
     [
         new() { Value = TemplateType.Sms, Text = "Sms" },
         new() { Value = TemplateType.Email, Text = "Email" },
         new() { Value = TemplateType.Notification, Text = "Notification" }
     ];
 
-    private Option<TemplateType> SelectedType { get; set; }
+    private Option<TemplateType> SelectedType
+    {
+        get
+        {
+            return Model == null ? TemplateTypes[0] : TemplateTypes.FirstOrDefault(t => t.Value == Model.Type);
+        }
+        set
+        {
+            if (value != null)
+            {
+                Model.Type = value.Value;
+            }
+        }
+    }
 
     private EditContext _editContext;
 
@@ -98,8 +124,15 @@
     {
         var content = await _editor.GetEditorContent();
         Model.Body = content;
-        var id = await Service.CreateAsync(Model);
-        NavigationManager.NavigateTo("/settings/message/template");
+        if (Id > 0)
+        {
+            await Service.UpdateAsync(Id.Value, Model);
+        }
+        else
+        {
+            await Service.CreateAsync(Model);
+        }
+        NavigationManager.NavigateTo("/system/template");
     }
 
     private async Task OpenEditorAsync()
@@ -144,9 +177,10 @@
                 Model.Subject = detail.Subject;
                 Model.Type = detail.Type;
                 Model.Body = detail.Body;
+                await _editor.SetEditorContent(Model.Body);
             }
 
-            SelectedType = MessageTemplateTypes.FirstOrDefault(t => t.Value == Model.Type);
+            SelectedType = TemplateTypes.FirstOrDefault(t => t.Value == Model.Type);
         }
     }
 
