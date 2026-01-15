@@ -8,6 +8,11 @@ namespace Nerosoft.Starfish.Facade.Events;
 internal class UserAuthFailureEvent : ApplicationEvent
 {
 	/// <summary>
+	/// Gets or sets the user identifier.
+	/// </summary>
+	public string UserId { get; set; }
+
+	/// <summary>
 	/// Gets or sets the auth type.
 	/// </summary>
 	public string GrantType { get; set; }
