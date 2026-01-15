@@ -53,15 +53,20 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>HomeResources.resx</DependentUpon>
         </Compile>
-        <Compile Update="Properties\LoginResources.Designer.cs">
+        <Compile Update="Properties\IdentityResources.Designer.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
-            <DependentUpon>LoginResources.resx</DependentUpon>
+            <DependentUpon>IdentityResources.resx</DependentUpon>
         </Compile>
         <Compile Update="Properties\ProfileResources.Designer.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
             <DependentUpon>ProfileResources.resx</DependentUpon>
+        </Compile>
+        <Compile Update="Properties\LayoutResources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>LayoutResources.resx</DependentUpon>
         </Compile>
     </ItemGroup>
 
@@ -78,13 +83,17 @@
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>HomeResources.Designer.cs</LastGenOutput>
         </EmbeddedResource>
-        <EmbeddedResource Update="Properties\LoginResources.resx">
+        <EmbeddedResource Update="Properties\IdentityResources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>LoginResources.Designer.cs</LastGenOutput>
         </EmbeddedResource>
         <EmbeddedResource Update="Properties\ProfileResources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>ProfileResources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Properties\LayoutResources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>LayoutResources.Designer.cs</LastGenOutput>
         </EmbeddedResource>
     </ItemGroup>
 

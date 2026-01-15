@@ -51,7 +51,7 @@ internal class UserApplicationService : BaseApplicationService, IUserApplication
 	{
 		var userId = string.Empty;
 
-		var command = new UserPasswordResetCommand(userId, data.NewPassword);
+		var command = new UserPasswordResetCommand(userId, data.Password);
 		return Bus.SendAsync(command, cancellationToken);
 	}
 

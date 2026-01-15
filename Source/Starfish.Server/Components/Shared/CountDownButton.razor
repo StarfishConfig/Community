@@ -1,0 +1,83 @@
+<FluentButton Appearance="@Appearance" OnClick="@OnClicked" Disabled="@_isCountingDown"
+              Style="@Style">
+    @_buttonText
+</FluentButton>
+
+@code {
+
+    [Parameter]
+    public string DefaultText { get; set; }
+
+    [Parameter]
+    public int CountdownSeconds { get; set; } = 60;
+
+    [Parameter]
+    public string CountingText { get; set; }
+
+    [Parameter]
+    public Func<Task<bool>> Action { get; set; }
+
+    [Parameter]
+    public EventCallback OnCountdownComplete { get; set; }
+
+    [Parameter]
+    public string Style { get; set; }
+
+    [Parameter]
+    public Appearance Appearance { get; set; } = Appearance.Outline;
+
+    private bool _isCountingDown;
+    private int _remainingSeconds;
+    private string _buttonText;
+    private CancellationTokenSource _cancellationTokenSource;
+
+    protected override void OnInitialized()
+    {
+        _remainingSeconds = CountdownSeconds;
+        _buttonText = DefaultText;
+        _cancellationTokenSource = new CancellationTokenSource();
+    }
+
+    private async Task OnClicked(MouseEventArgs args)
+    {
+        if (_isCountingDown)
+        {
+            return;
+        }
+
+        _isCountingDown = true;
+
+        try
+        {
+            if (Action != null)
+            {
+                var result = await Action();
+                if (!result)
+                {
+                    throw new TaskCanceledException();
+                }
+            }
+
+            while (_remainingSeconds > 0 && !_cancellationTokenSource.Token.IsCancellationRequested)
+            {
+                await Task.Delay(1000, _cancellationTokenSource.Token);
+                _remainingSeconds--;
+                _buttonText = string.Format(CountingText, _remainingSeconds);
+                StateHasChanged();
+            }
+
+            await OnCountdownComplete.InvokeAsync();
+        }
+        catch (TaskCanceledException)
+        {
+            // Handle cancellation if needed
+        }
+        finally
+        {
+            _isCountingDown = false;
+            _remainingSeconds = CountdownSeconds;
+            _buttonText = DefaultText;
+        }
+    }
+
+}

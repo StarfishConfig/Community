@@ -12,6 +12,5 @@ internal sealed class UserEventSubscriber : IHandler<UserAuthSuccessEvent>, IHan
 
 	public async Task HandleAsync(UserAuthFailureEvent message, MessageContext context, CancellationToken cancellationToken = default)
 	{
-		
 	}
 }

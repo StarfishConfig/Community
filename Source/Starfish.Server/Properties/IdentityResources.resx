@@ -117,13 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="IDS_BUTTON_TEXT_LOGIN" xml:space="preserve">
+  <data name="IDS_LOGIN_PAGE_BUTTON_TEXT_LOGIN" xml:space="preserve">
     <value>Login</value>
   </data>
-  <data name="IDS_LINK_TEXT_FORGOT_PASSWORD" xml:space="preserve">
+  <data name="IDS_LOGIN_PAGE_LINK_TEXT_FORGOT_PASSWORD" xml:space="preserve">
     <value>Forgot your password?</value>
   </data>
-  <data name="IDS_PAGE_TITLE" xml:space="preserve">
+  <data name="IDS_LOGIN_PAGE_TITLE" xml:space="preserve">
     <value>Login</value>
+  </data>
+  <data name="IDS_RESET_PASSWORD_TITLE" xml:space="preserve">
+      <value>Reset Password</value>
   </data>
 </root>
