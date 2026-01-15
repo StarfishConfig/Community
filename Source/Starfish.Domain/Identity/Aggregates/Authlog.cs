@@ -5,7 +5,7 @@ using Nerosoft.Starfish.Persistent;
 
 namespace Nerosoft.Starfish.Domain.Aggregates;
 
-internal sealed class Authlog : EditableObjectBase<Authlog, string>
+internal sealed class Authlog : EditableObjectBase<Authlog, long>
 {
 	public static readonly PropertyInfo<string> UserIdProperty = RegisterProperty<string>(p => p.UserId);
 	public static readonly PropertyInfo<string> UsernameProperty = RegisterProperty<string>(p => p.Username);

@@ -10,7 +10,7 @@ using Nerosoft.Starfish.Toolkit;
 namespace Nerosoft.Starfish.Repository.Handlers;
 
 internal class UserQueryHandler : IHandler<UserPasswordVerifyRequest, bool>,
-                                    IHandler<UserDetailQuery, UserDetailQueryModel>
+                                  IHandler<UserDetailQuery, UserDetailQueryModel>
 {
 	private readonly IdentityDataContext _context;
 
@@ -50,7 +50,7 @@ internal class UserQueryHandler : IHandler<UserPasswordVerifyRequest, bool>,
 		var model = TypeAdapter.ProjectedAs<UserDetailQueryModel>(user);
 
 		var authlog = await _context.Set<Authlog>()
-		                            .OrderByDescending(x => x.Timestamp)
+		                            .OrderByDescending(x => x.Id)
 		                            .Where(x => x.Username == user.Username && x.Success)
 		                            .FirstOrDefaultAsync(cancellationToken);
 		if (authlog != null)

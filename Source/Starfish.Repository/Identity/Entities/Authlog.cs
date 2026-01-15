@@ -10,7 +10,7 @@ namespace Nerosoft.Starfish.Repository.Entities;
 /// Some fields may contain sensitive data (for example, <see cref="IpAddress"/> and <see cref="UserAgent"/>)
 /// and should be handled according to security and privacy policies (restricted access, redaction, or encryption).
 /// </remarks>
-internal class Authlog : Entity<string>
+internal class Authlog : Entity<long>
 {
 	/// <summary>
 	/// Identifier of the user associated with the authentication event.
@@ -64,7 +64,7 @@ internal class Authlog : Entity<string>
 	/// Operating system platform of the client making the authentication request.
 	/// </summary>
 	public string OsPlatform { get; set; }
-	
+
 	/// <summary>
 	/// Gets or sets the source of the authentication failure.
 	/// </summary>

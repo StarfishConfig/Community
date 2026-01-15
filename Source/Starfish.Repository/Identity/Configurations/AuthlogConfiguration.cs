@@ -18,11 +18,11 @@ internal sealed class AuthlogConfiguration : IEntityTypeConfiguration<Authlog>
 
 		builder.HasIndex(x => x.Timestamp)
 		       .HasDatabaseName("authlog_idx_timestamp");
-		
-		builder.HasIndex(t=>t.Success)
+
+		builder.HasIndex(t => t.Success)
 		       .HasDatabaseName("authlog_idx_success");
 
-		builder.ShortUniqueId();
+		builder.SnowflakeId();
 
 		builder.Property(x => x.UserId)
 		       .HasColumnName("user_id")
