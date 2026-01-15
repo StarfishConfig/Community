@@ -7,10 +7,8 @@ namespace Nerosoft.Starfish.Persistent;
 ///	The UserData class encapsulates various properties related to a user, including
 /// credentials, contact information, account status, and assigned roles.
 /// </remarks>
-internal class UserData
+internal class UserData : Persistent<string>
 {
-	public string Id { get; set; }
-
 	public string Username { get; set; }
 
 	public string Nickname { get; set; }

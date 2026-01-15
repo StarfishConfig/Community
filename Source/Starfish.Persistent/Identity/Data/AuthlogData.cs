@@ -3,7 +3,7 @@ namespace Nerosoft.Starfish.Persistent;
 /// <summary>
 /// Represents an authentication log entry capturing details of user authentication attempts.
 /// </summary>
-public class AuthlogData
+internal class AuthlogData : Persistent<string>
 {
 	/// <summary>
 	/// Identifier of the user associated with the authentication event.

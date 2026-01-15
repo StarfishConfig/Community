@@ -11,4 +11,4 @@ namespace Nerosoft.Starfish.Repository.Requests;
 /// The returned <see cref="UserDetailQueryModel"/> may contain sensitive user information.
 /// Handlers should enforce authorization checks and avoid logging or exposing sensitive fields.
 /// </remarks>
-public record UserDetailQueryRequest(string Id) : IRequest<UserDetailQueryModel>;
+public record UserDetailQuery(string Id) : IRequest<UserDetailQueryModel>;

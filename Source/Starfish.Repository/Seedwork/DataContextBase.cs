@@ -11,18 +11,18 @@ namespace Nerosoft.Starfish.Repository;
 /// <summary>
 /// Base data context with bus and request context support.
 /// </summary>
-internal abstract class DataContextWithBus<TContext> : DataContextBase<TContext>
+internal abstract class DataContextBase<TContext> : Euonia.Repository.EfCore.DataContextBase<TContext>
 	where TContext : DbContext, IRepositoryContext
 {
 	private readonly List<object> _unchangedEntities = [];
 	private readonly IRequestContextAccessor _request;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="DataContextWithBus{TContext}"/> class.
+	/// Initializes a new instance of the <see cref="DataContextBase{TContext}"/> class.
 	/// </summary>
 	/// <param name="options">The options for this context.</param>
 	/// <param name="request">The accessor to get current request information.</param>
-	protected DataContextWithBus(DbContextOptions<TContext> options, IRequestContextAccessor request)
+	protected DataContextBase(DbContextOptions<TContext> options, IRequestContextAccessor request)
 		: base(options)
 	{
 		_request = request;
@@ -105,9 +105,9 @@ internal abstract class DataContextWithBus<TContext> : DataContextBase<TContext>
 	{
 		base.ConfigureConventions(configurationBuilder);
 		configurationBuilder.Properties<DateTime>()
-		                    .HaveConversion<UniversalTimeConverter>();
+							.HaveConversion<UniversalTimeConverter>();
 		configurationBuilder.Properties<DateTime?>()
-		                    .HaveConversion<UniversalTimeConverter>();
+							.HaveConversion<UniversalTimeConverter>();
 	}
 
 	public override void Dispose()

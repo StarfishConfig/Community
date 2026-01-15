@@ -9,12 +9,12 @@ using Nerosoft.Starfish.Toolkit;
 
 namespace Nerosoft.Starfish.Repository.Handlers;
 
-internal class UserRequestHandler : IHandler<UserPasswordVerifyRequest, bool>,
-                                    IHandler<UserDetailQueryRequest, UserDetailQueryModel>
+internal class UserQueryHandler : IHandler<UserPasswordVerifyRequest, bool>,
+                                    IHandler<UserDetailQuery, UserDetailQueryModel>
 {
 	private readonly IdentityDataContext _context;
 
-	public UserRequestHandler(IdentityDataContext context)
+	public UserQueryHandler(IdentityDataContext context)
 	{
 		_context = context;
 	}
@@ -31,7 +31,7 @@ internal class UserRequestHandler : IHandler<UserPasswordVerifyRequest, bool>,
 		return string.Equals(password.PasswordHash, secretHash, StringComparison.Ordinal);
 	}
 
-	public async Task<UserDetailQueryModel> HandleAsync(UserDetailQueryRequest message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	public async Task<UserDetailQueryModel> HandleAsync(UserDetailQuery message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
 	{
 		var specification = UserSpecification.IdEquals(message.Id);
 

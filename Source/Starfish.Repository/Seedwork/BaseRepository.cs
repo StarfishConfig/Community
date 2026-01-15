@@ -11,11 +11,11 @@ namespace Nerosoft.Starfish.Repository;
 /// Provides a base repository implementation for Entity Framework Core that extends
 /// <see cref="EfCoreRepository{TContext, TEntity, TKey}"/> and exposes common helper methods.
 /// </summary>
-/// <typeparam name="TContext">The DbContext type deriving from <see cref="DataContextBase{TContext}"/>.</typeparam>
+/// <typeparam name="TContext">The DbContext type deriving from <see cref="Euonia.Repository.EfCore.DataContextBase{TContext}"/>.</typeparam>
 /// <typeparam name="TEntity">The entity type managed by the repository. Must implement <see cref="IEntity{TKey}"/>.</typeparam>
 /// <typeparam name="TKey">The type of the entity primary key. Must implement <see cref="IEquatable{TKey}"/>.</typeparam>
 internal abstract class BaseRepository<TContext, TEntity, TKey> : EfCoreRepository<TContext, TEntity, TKey>, IScopedDependency
-	where TContext : DataContextBase<TContext>
+	where TContext : Euonia.Repository.EfCore.DataContextBase<TContext>
 	where TEntity : class, IEntity<TKey>
 	where TKey : IEquatable<TKey>
 {
