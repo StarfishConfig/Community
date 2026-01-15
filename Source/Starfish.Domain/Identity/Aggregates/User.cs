@@ -55,18 +55,34 @@ internal sealed partial class User : EditableObjectBase<User, string>
 	/// </summary>
 	internal void IncreaseAccessFailedCount()
 	{
+		if (LockoutEnd >= DateTime.UtcNow)
+		{
+			return;
+		}
+
 		AccessFailedCount++;
 		if (AccessFailedCount >= 10)
 		{
-			LockoutEnd = DateTime.Now.AddMinutes(30);
+			LockoutEnd = DateTime.UtcNow.AddMinutes(30);
 		}
 	}
 
 	/// <summary>
-	/// Resets the count of failed access attempts.
+	/// Resets the count of failed access attempts for the user.
 	/// </summary>
-	internal void ResetAccessFailedCount()
+	/// <param name="forceReset">
+	/// A boolean value indicating whether to forcefully reset the <see cref="LockoutEnd"/> 
+	/// and <see cref="AccessFailedCount"/>. If <c>true</c>, the values will be reset 
+	/// regardless of the current lockout state. If <c>false</c>, the reset will only occur 
+	/// if the lockout period has expired.
+	/// </param>
+	internal void ResetAccessFailedCount(bool forceReset = false)
 	{
+		if (!forceReset && LockoutEnd >= DateTime.UtcNow)
+		{
+			return;
+		}
+
 		AccessFailedCount = 0;
 		LockoutEnd = null;
 	}
@@ -77,7 +93,7 @@ internal sealed partial class User : EditableObjectBase<User, string>
 	/// <param name="roles">The roles to set.</param>
 	internal void AssignRoles(params string[] roles)
 	{
-		if (roles?.Any() != true)
+		if (roles == null || roles.Length == 0)
 		{
 			return;
 		}
