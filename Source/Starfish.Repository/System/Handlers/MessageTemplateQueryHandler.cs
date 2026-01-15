@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Nerosoft.Euonia.Bus;
+using Nerosoft.Euonia.Linq;
 using Nerosoft.Euonia.Mapping;
 using Nerosoft.Starfish.Repository.Entities;
 using Nerosoft.Starfish.Repository.Models;
@@ -9,8 +10,9 @@ using Nerosoft.Starfish.Repository.Specifications;
 namespace Nerosoft.Starfish.Repository.Handlers;
 
 internal class MessageTemplateQueryHandler : IHandler<MessageTemplateDetailQuery, MessageTemplateDetailModel>,
-	IHandler<MessageTemplateMatchQuery, MessageTemplateDetailModel>,
-	IHandler<MessageTemplateListQuery, IList<MessageTemplateListModel>>
+                                             IHandler<MessageTemplateMatchQuery, MessageTemplateDetailModel>,
+                                             IHandler<MessageTemplateListQuery, IList<MessageTemplateListModel>>,
+                                             IHandler<MessageTemplateCountQuery, int>
 {
 	private readonly SystemDataContext _context;
 
@@ -22,7 +24,7 @@ internal class MessageTemplateQueryHandler : IHandler<MessageTemplateDetailQuery
 	public async Task<MessageTemplateDetailModel> HandleAsync(MessageTemplateDetailQuery message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		var entity = await _context.Set<MessageTemplate>()
-							 .FindAsync([message.Id], cancellationToken);
+		                           .FindAsync([message.Id], cancellationToken);
 
 		if (entity == null)
 		{
@@ -38,11 +40,11 @@ internal class MessageTemplateQueryHandler : IHandler<MessageTemplateDetailQuery
 		var predicate = specification.Satisfy();
 
 		var entities = await _context.Set<MessageTemplate>()
-							   .AsNoTracking()
-							   .Where(predicate)
-							   .ToListAsync(cancellationToken);
+		                             .AsNoTracking()
+		                             .Where(predicate)
+		                             .ToListAsync(cancellationToken);
 
-		if (entities?.Any() != true)
+		if (entities.Count == 0)
 		{
 			return null;
 		}
@@ -57,8 +59,65 @@ internal class MessageTemplateQueryHandler : IHandler<MessageTemplateDetailQuery
 		return TypeAdapter.ProjectedAs<MessageTemplateDetailModel>(entity);
 	}
 
-	public Task<IList<MessageTemplateListModel>> HandleAsync(MessageTemplateListQuery message, MessageContext context, CancellationToken cancellationToken = default)
+	public async Task<IList<MessageTemplateListModel>> HandleAsync(MessageTemplateListQuery message, MessageContext context, CancellationToken cancellationToken = default)
 	{
-		throw new NotImplementedException();
+		var specifications = new List<ISpecification<MessageTemplate>>()
+		{
+			MessageTemplateSpecification.IdNotEquals(string.Empty)
+		};
+		if (!string.IsNullOrEmpty(message.Code))
+		{
+			specifications.Add(MessageTemplateSpecification.CodeContains(message.Code));
+		}
+
+		if (message.Type.HasValue)
+		{
+			specifications.Add(MessageTemplateSpecification.TypeEquals(message.Type.Value));
+		}
+
+		if (!string.IsNullOrWhiteSpace(message.Keyword))
+		{
+			specifications.Add(MessageTemplateSpecification.NameContains(message.Keyword));
+		}
+
+		var predicate = new CompositeSpecification<MessageTemplate>(PredicateOperator.AndAlso, specifications.ToArray());
+
+		var query = _context.Set<MessageTemplate>()
+		                    .AsNoTracking()
+		                    .Where(predicate)
+		                    .OrderByDescending(t => t.CreatedAt)
+		                    .Skip(message.Skip)
+		                    .Take(message.Size);
+		var entities = await query.ToListAsync(cancellationToken);
+		return TypeAdapter.ProjectedAs<IList<MessageTemplateListModel>>(entities);
+	}
+
+	public Task<int> HandleAsync(MessageTemplateCountQuery message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	{
+		var specifications = new List<ISpecification<MessageTemplate>>()
+		{
+			MessageTemplateSpecification.IdNotEquals(string.Empty)
+		};
+		if (!string.IsNullOrEmpty(message.Code))
+		{
+			specifications.Add(MessageTemplateSpecification.CodeContains(message.Code));
+		}
+
+		if (message.Type.HasValue)
+		{
+			specifications.Add(MessageTemplateSpecification.TypeEquals(message.Type.Value));
+		}
+
+		if (!string.IsNullOrWhiteSpace(message.Keyword))
+		{
+			specifications.Add(MessageTemplateSpecification.NameContains(message.Keyword));
+		}
+
+		var predicate = new CompositeSpecification<MessageTemplate>(PredicateOperator.AndAlso, specifications.ToArray());
+
+		var query = _context.Set<MessageTemplate>()
+		                    .AsNoTracking()
+		                    .Where(predicate);
+		return query.CountAsync(cancellationToken);
 	}
 }

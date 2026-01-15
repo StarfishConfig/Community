@@ -13,41 +13,41 @@ internal class MessageTemplateConfiguration : IEntityTypeConfiguration<MessageTe
 		builder.ToTable("message_template");
 
 		builder.HasIndex(x => new { x.Code, x.Language, x.Type })
-			.HasDatabaseName("idx_message_template_unique");
+		       .HasDatabaseName("idx_message_template_unique");
 
 		builder.ShortUniqueId();
 
 		builder.Property(t => t.Name)
-			.HasColumnName("name")
-			.HasMaxLength(200)
-			.IsRequired()
-			.IsUnicode();
+		       .HasColumnName("name")
+		       .HasMaxLength(200)
+		       .IsRequired()
+		       .IsUnicode();
 
 		builder.Property(t => t.Code)
-			.HasColumnName("code")
-			.HasMaxLength(100)
-			.IsRequired();
+		       .HasColumnName("code")
+		       .HasMaxLength(100)
+		       .IsRequired();
 
 		builder.Property(t => t.Language)
-			.HasColumnName("language")
-			.HasMaxLength(16)
-			.IsRequired();
+		       .HasColumnName("language")
+		       .HasMaxLength(16)
+		       .IsRequired();
 
 		builder.Property(t => t.Type)
-			.HasColumnName("type")
-			.IsRequired();
+		       .HasColumnName("type")
+		       .IsRequired();
 
 		builder.Property(t => t.Subject)
-			.HasColumnName("subject")
-			.HasMaxLength(500)
-			.IsRequired()
-			.IsUnicode();
+		       .HasColumnName("subject")
+		       .HasMaxLength(500)
+		       .IsRequired()
+		       .IsUnicode();
 
 		builder.Property(t => t.Body)
-			.HasColumnName("body")
-			.HasMaxLength(int.MaxValue)
-			.IsRequired()
-			.IsUnicode();
+		       .HasColumnName("body")
+		       .HasMaxLength(int.MaxValue)
+		       .IsRequired()
+		       .IsUnicode();
 
 		builder.ConfigureAuditableProperties();
 	}

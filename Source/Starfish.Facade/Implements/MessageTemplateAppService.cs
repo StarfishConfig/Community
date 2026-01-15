@@ -14,42 +14,48 @@ internal class MessageTemplateAppService : BaseApplicationService, IMessageTempl
 	{
 		var request = new MessageTemplateDetailQuery(id);
 		return Bus.CallAsync(request, cancellationToken)
-			.ContinueWith(task =>
-			{
-				if (task.IsFaulted)
-				{
-					throw task.Exception;
-				}
+		          .ContinueWith(task =>
+		          {
+			          if (task.IsFaulted)
+			          {
+				          throw task.Exception;
+			          }
 
-				var result = task.Result;
-				if (result == null)
-				{
-					throw new NotFoundException("Message template not found.");
-				}
+			          var result = task.Result;
+			          if (result == null)
+			          {
+				          throw new NotFoundException("Message template not found.");
+			          }
 
-				return TypeAdapter.ProjectedAs<MessageTemplateDetailDto>(result);
-			});
+			          {
+			          }
+
+			          return TypeAdapter.ProjectedAs<MessageTemplateDetailDto>(result);
+		          }, cancellationToken);
 	}
 
 	public Task<List<MessageTemplateListDto>> QueryAsync(MessageTemplateCriteria criteria, int skip, int size, CancellationToken cancellationToken = default)
 	{
 		var request = new MessageTemplateListQuery(criteria.Code, criteria.Type, criteria.Keyword, skip, size);
 		return Bus.CallAsync(request, cancellationToken)
-			.ContinueWith(task =>
-			{
-				if (task.IsFaulted)
-				{
-					throw task.Exception;
-				}
+		          .ContinueWith(task =>
+		          {
+			          if (task.IsFaulted)
+			          {
+				          throw task.Exception;
+			          }
 
-				var result = task.Result;
-				if (result?.Any() != true)
-				{
-					return [];
-				}
+			          var result = task.Result;
+			          if (result?.Any() != true)
+			          {
+				          return [];
+			          }
 
-				return TypeAdapter.ProjectedAs<List<MessageTemplateListDto>>(result);
-			});
+			          {
+			          }
+
+			          return TypeAdapter.ProjectedAs<List<MessageTemplateListDto>>(result);
+		          }, cancellationToken);
 	}
 
 	public Task<int> CountAsync(MessageTemplateCriteria criteria, CancellationToken cancellationToken = default)

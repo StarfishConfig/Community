@@ -45,11 +45,6 @@ public class RepositoryServiceModule : ModuleContextBase
 	/// <inheritdoc />
 	public override void AheadConfigureServices(ServiceConfigurationContext context)
 	{
-		// Configure<AutomapperOptions>(options =>
-		// {
-		// 	options.AddProfile<UserMapperProfile>();
-		// 	options.AddProfile<TokenMapperProfile>();
-		// });
 		Configure<RedisCacheOptions>(Configuration.GetSection("Euonia:Caching:Redis"));
 		Configure<MemoryCacheOptions>(Configuration.GetSection("Euonia:Caching:Memory"));
 		Configure<RuntimeCacheOptions>(Configuration.GetSection("Euonia:Caching:Runtime"));
@@ -67,7 +62,9 @@ public class RepositoryServiceModule : ModuleContextBase
 			mySqlOptions.EnableRetryOnFailure();
 		}));
 
-		context.Services.AddDataContextFactory<IdentityDataContext>();
+		context.Services
+		       .AddDataContextFactory<IdentityDataContext>()
+		       .AddDataContextFactory<SystemDataContext>();
 
 		context.Services.AddKeyedSingleton<ICacheService, RedisCacheService>("Redis");
 		context.Services.AddKeyedSingleton<ICacheService, MemoryCacheService>("Memory");

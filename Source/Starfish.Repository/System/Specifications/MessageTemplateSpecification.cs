@@ -28,12 +28,23 @@ internal static class MessageTemplateSpecification
 		return new DirectSpecification<MessageTemplate>(t => t.Name == name);
 	}
 
+	public static ISpecification<MessageTemplate> NameContains(string name)
+	{
+		return new DirectSpecification<MessageTemplate>(t => t.Name.Contains(name));
+	}
+
 	public static ISpecification<MessageTemplate> CodeEquals(string code)
 	{
 		code = code.Normalize(TextCaseType.Lower);
 		return new DirectSpecification<MessageTemplate>(t => t.Code == code);
 	}
 
+	public static ISpecification<MessageTemplate> CodeContains(string code)
+	{
+		code = code.Normalize(TextCaseType.Lower);
+		return new DirectSpecification<MessageTemplate>(t => t.Code.Contains(code));
+	}
+	
 	public static ISpecification<MessageTemplate> LanguageEquals(string language)
 	{
 		return new DirectSpecification<MessageTemplate>(t => t.Language == language);

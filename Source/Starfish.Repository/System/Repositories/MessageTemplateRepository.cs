@@ -22,8 +22,8 @@ internal class MessageTemplateRepository(SystemDataContext context) : IMessageTe
 		var predicate = specification.Satisfy();
 
 		return context.Set<MessageTemplate>()
-				.AsNoTracking()
-				.AnyAsync(predicate, cancellationToken);
+		              .AsNoTracking()
+		              .AnyAsync(predicate, cancellationToken);
 	}
 
 	public async Task<MessageTemplateData> GetAsync(string id, CancellationToken cancellationToken = default)
@@ -54,6 +54,7 @@ internal class MessageTemplateRepository(SystemDataContext context) : IMessageTe
 			{
 				throw new KeyNotFoundException($"MessageTemplate with id '{data.Id}' was not found.");
 			}
+
 			TypeAdapter.ProjectedAs(data, entity);
 		}
 
