@@ -12,7 +12,9 @@ internal class MessageTemplateRepository(SystemDataContext context) : IMessageTe
 {
 	public Task DeleteAsync(long id, CancellationToken cancellationToken = default)
 	{
-		throw new NotImplementedException();
+		return context.Set<MessageTemplate>()
+		              .Where(x => x.Id == id)
+		              .ExecuteUpdateAsync(x => x.SetProperty(y => y.IsDeleted, true), cancellationToken);
 	}
 
 	public Task<bool> ExistsDefaultAsync(string code, MessageTemplateType type, long excludeId = 0, CancellationToken cancellationToken = default)
