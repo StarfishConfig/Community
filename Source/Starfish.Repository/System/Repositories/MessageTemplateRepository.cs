@@ -10,12 +10,12 @@ namespace Nerosoft.Starfish.Repository.Repositories;
 
 internal class MessageTemplateRepository(SystemDataContext context) : IMessageTemplateRepository, ITransientDependency
 {
-	public Task DeleteAsync(string id, CancellationToken cancellationToken = default)
+	public Task DeleteAsync(long id, CancellationToken cancellationToken = default)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<bool> ExistsDefaultAsync(string code, MessageTemplateType type, string excludeId = null, CancellationToken cancellationToken = default)
+	public Task<bool> ExistsDefaultAsync(string code, MessageTemplateType type, long excludeId = 0, CancellationToken cancellationToken = default)
 	{
 		var specification = MessageTemplateSpecification.ExistsDefault(code, type, excludeId);
 
@@ -26,7 +26,7 @@ internal class MessageTemplateRepository(SystemDataContext context) : IMessageTe
 		              .AnyAsync(predicate, cancellationToken);
 	}
 
-	public async Task<MessageTemplateData> GetAsync(string id, CancellationToken cancellationToken = default)
+	public async Task<MessageTemplateData> GetAsync(long id, CancellationToken cancellationToken = default)
 	{
 		var entity = await context.Set<MessageTemplate>().FindAsync([id], cancellationToken);
 		if (entity is null || entity.IsDeleted)
@@ -39,10 +39,10 @@ internal class MessageTemplateRepository(SystemDataContext context) : IMessageTe
 		return data;
 	}
 
-	public async Task<string> SaveAsync(MessageTemplateData data, CancellationToken cancellationToken = default)
+	public async Task<long> SaveAsync(MessageTemplateData data, CancellationToken cancellationToken = default)
 	{
 		MessageTemplate entity;
-		if (string.IsNullOrEmpty(data.Id))
+		if (data.Id <= 0)
 		{
 			entity = TypeAdapter.ProjectedAs<MessageTemplate>(data);
 			await context.AddAsync(entity, cancellationToken);

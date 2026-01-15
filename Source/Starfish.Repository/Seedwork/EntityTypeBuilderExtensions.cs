@@ -16,41 +16,41 @@ internal static class EntityTypeBuilderExtensions
 		where TEntity : class, IAuditable
 	{
 		builder.Property(t => t.CreatedAt)
-			   .HasColumnName("created_at")
-			   .HasValueGenerator<UtcTimeValueGenerator>()
-			   .ValueGeneratedOnAdd()
-			   .IsRequired();
+		       .HasColumnName("created_at")
+		       .HasValueGenerator<UtcTimeValueGenerator>()
+		       .ValueGeneratedOnAdd()
+		       .IsRequired();
 
 		builder.Property(t => t.UpdatedAt)
-			   .HasColumnName("updated_at")
-			   .HasValueGenerator<UtcTimeValueGenerator>()
-			   .ValueGeneratedOnAddOrUpdate()
-			   .IsRequired();
+		       .HasColumnName("updated_at")
+		       .HasValueGenerator<UtcTimeValueGenerator>()
+		       .ValueGeneratedOnAddOrUpdate()
+		       .IsRequired();
 
 		builder.Property(t => t.CreatedBy)
-			   .HasColumnName("created_by")
-			   .HasMaxLength(64)
-			   .IsRequired()
-			   .IsUnicode();
+		       .HasColumnName("created_by")
+		       .HasMaxLength(64)
+		       .IsRequired()
+		       .IsUnicode();
 
 		builder.Property(t => t.UpdatedBy)
-			   .HasColumnName("updated_by")
-			   .HasMaxLength(64)
-			   .IsRequired()
-			   .IsUnicode();
+		       .HasColumnName("updated_by")
+		       .HasMaxLength(64)
+		       .IsRequired()
+		       .IsUnicode();
 
 		builder.Property(t => t.IsDeleted)
-			   .HasColumnName("is_deleted")
-			   .HasDefaultValue(false)
-			   .IsRequired();
+		       .HasColumnName("is_deleted")
+		       .HasDefaultValue(false)
+		       .IsRequired();
 
 		builder.Property(t => t.DeletedAt)
-			   .HasColumnName("deleted_at");
+		       .HasColumnName("deleted_at");
 
 		builder.Property(t => t.DeletedBy)
-			   .HasColumnName("deleted_by")
-			   .HasMaxLength(64)
-			   .IsUnicode();
+		       .HasColumnName("deleted_by")
+		       .HasMaxLength(64)
+		       .IsUnicode();
 	}
 
 	/// <summary>
@@ -62,9 +62,9 @@ internal static class EntityTypeBuilderExtensions
 		where TEntity : class, ITombstone
 	{
 		builder.Property(t => t.IsDeleted)
-			   .HasColumnName("is_deleted")
-			   .HasDefaultValue(false)
-			   .IsRequired();
+		       .HasColumnName("is_deleted")
+		       .HasDefaultValue(false)
+		       .IsRequired();
 	}
 
 	/// <summary>
@@ -78,10 +78,10 @@ internal static class EntityTypeBuilderExtensions
 	{
 		builder.HasKey(t => t.Id);
 		builder.Property(t => t.Id)
-			   .HasColumnName("id")
-			   .IsRequired()
-			   .HasValueGenerator<SnowflakeIdValueGenerator>()
-			   .ValueGeneratedOnAdd();
+		       .HasColumnName(columnName)
+		       .IsRequired()
+		       .HasValueGenerator<SnowflakeIdValueGenerator>()
+		       .ValueGeneratedOnAdd();
 	}
 
 	/// <summary>
@@ -95,11 +95,11 @@ internal static class EntityTypeBuilderExtensions
 	{
 		builder.HasKey(t => t.Id);
 		builder.Property(t => t.Id)
-			   .HasColumnName(columnName)
-			   .HasMaxLength(20)
-			   .IsRequired()
-			   .HasValueGenerator<ShortUniqueIdValueGenerator>()
-			   .ValueGeneratedOnAdd();
+		       .HasColumnName(columnName)
+		       .HasMaxLength(20)
+		       .IsRequired()
+		       .HasValueGenerator<ShortUniqueIdValueGenerator>()
+		       .ValueGeneratedOnAdd();
 	}
 
 	/// <summary>
@@ -111,10 +111,10 @@ internal static class EntityTypeBuilderExtensions
 		where TEntity : class, IHasCreateTime
 	{
 		builder.Property(t => t.CreatedAt)
-			   .HasColumnName("created_at")
-			   .HasValueGenerator<UtcTimeValueGenerator>()
-			   .ValueGeneratedOnAdd()
-			   .IsRequired();
+		       .HasColumnName("created_at")
+		       .HasValueGenerator<UtcTimeValueGenerator>()
+		       .ValueGeneratedOnAdd()
+		       .IsRequired();
 	}
 
 	/// <summary>
@@ -126,10 +126,10 @@ internal static class EntityTypeBuilderExtensions
 		where TEntity : class, IHasUpdateTime
 	{
 		builder.Property(t => t.UpdatedAt)
-			   .HasColumnName("updated_at")
-			   .HasValueGenerator<UtcTimeValueGenerator>()
-			   .ValueGeneratedOnAddOrUpdate()
-			   .IsRequired();
+		       .HasColumnName("updated_at")
+		       .HasValueGenerator<UtcTimeValueGenerator>()
+		       .ValueGeneratedOnAddOrUpdate()
+		       .IsRequired();
 	}
 
 	/// <summary>
@@ -141,8 +141,8 @@ internal static class EntityTypeBuilderExtensions
 		where TEntity : class, IHasDeleteTime
 	{
 		builder.Property(t => t.DeletedAt)
-			   .HasColumnName("deleted_at")
-			   .HasValueGenerator<UtcTimeValueGenerator>();
+		       .HasColumnName("deleted_at")
+		       .HasValueGenerator<UtcTimeValueGenerator>();
 	}
 
 	/// <summary>
@@ -155,6 +155,6 @@ internal static class EntityTypeBuilderExtensions
 		where TEntity : class, ITombstone
 	{
 		builder.HasIndex(t => t.IsDeleted)
-			   .HasDatabaseName($"{tableName ?? typeof(TEntity).Name.ToLower()}_idx_tombstone");
+		       .HasDatabaseName($"{tableName ?? typeof(TEntity).Name.ToLower()}_idx_tombstone");
 	}
 }

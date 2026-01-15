@@ -4,17 +4,33 @@ using Nerosoft.Starfish.Facade.Transit;
 
 namespace Nerosoft.Starfish.Server.Controllers;
 
+/// <summary>
+/// Controller for managing message templates.
+/// </summary>
+/// <param name="service"></param>
 [Route("api/message/template")]
 [ApiController]
 public class MessageTemplateController(IMessageTemplateAppService service) : ControllerBase
 {
-	[HttpGet("{id}")]
-	public async Task<IActionResult> GetAsync([FromRoute] string id)
+	/// <summary>
+	/// Gets a message template by its unique identifier.
+	/// </summary>
+	/// <param name="id"></param>
+	/// <returns></returns>
+	[HttpGet("{id:long}")]
+	public async Task<IActionResult> GetAsync([FromRoute] long id)
 	{
 		var result = await service.GetAsync(id, HttpContext.RequestAborted);
 		return Ok(result);
 	}
 
+	/// <summary>
+	/// Queries message templates based on specified criteria with pagination.
+	/// </summary>
+	/// <param name="criteria"></param>
+	/// <param name="skip"></param>
+	/// <param name="size"></param>
+	/// <returns></returns>
 	[HttpGet("query")]
 	public async Task<IActionResult> QueryAsync([FromQuery] MessageTemplateCriteria criteria, [FromQuery] int skip = 0, [FromQuery] int size = 20)
 	{
@@ -23,6 +39,11 @@ public class MessageTemplateController(IMessageTemplateAppService service) : Con
 		return Ok(result);
 	}
 
+	/// <summary>
+	/// Counts the number of message templates that match the specified criteria.
+	/// </summary>
+	/// <param name="criteria"></param>
+	/// <returns></returns>
 	[HttpGet("count")]
 	public async Task<IActionResult> CountAsync([FromQuery] MessageTemplateCriteria criteria)
 	{
@@ -30,24 +51,40 @@ public class MessageTemplateController(IMessageTemplateAppService service) : Con
 		return Ok(result);
 	}
 
+	/// <summary>
+	/// Creates a new message template.
+	/// </summary>
+	/// <param name="dto"></param>
+	/// <returns></returns>
 	[HttpPost]
 	public async Task<IActionResult> CreateAsync([FromBody] MessageTemplateEditDto dto)
 	{
 		ArgumentNullException.ThrowIfNull(dto);
 		var id = await service.CreateAsync(dto, HttpContext.RequestAborted);
-		return CreatedAtAction(nameof(GetAsync), new { id }, null);
+		return Created($"api/message/template/{id}", id);
 	}
 
-	[HttpPut("{id}")]
-	public async Task<IActionResult> UpdateAsync([FromRoute] string id, [FromBody] MessageTemplateEditDto dto)
+	/// <summary>
+	/// Updates an existing message template.
+	/// </summary>
+	/// <param name="id"></param>
+	/// <param name="dto"></param>
+	/// <returns></returns>
+	[HttpPut("{id:long}")]
+	public async Task<IActionResult> UpdateAsync([FromRoute] long id, [FromBody] MessageTemplateEditDto dto)
 	{
 		ArgumentNullException.ThrowIfNull(dto);
 		await service.UpdateAsync(id, dto, HttpContext.RequestAborted);
 		return NoContent();
 	}
 
-	[HttpDelete("{id}")]
-	public async Task<IActionResult> DeleteAsync([FromRoute] string id)
+	/// <summary>
+	/// Deletes a message template by its unique identifier.
+	/// </summary>
+	/// <param name="id"></param>
+	/// <returns></returns>
+	[HttpDelete("{id:long}")]
+	public async Task<IActionResult> DeleteAsync([FromRoute] long id)
 	{
 		await service.DeleteAsync(id, HttpContext.RequestAborted);
 		return NoContent();

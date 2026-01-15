@@ -11,7 +11,7 @@ public class MessageTemplateDetailModel
 	/// <summary>
 	/// Gets or sets the unique identifier of the template.
 	/// </summary>
-	public string Id { get; set; }
+	public long Id { get; set; }
 
 	/// <summary>
 	/// Gets or sets the name of the template.

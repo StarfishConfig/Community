@@ -8,7 +8,7 @@ namespace Nerosoft.Starfish.Repository.Requests;
 /// Get message template detail by id
 /// </summary>
 /// <param name="Id"></param>
-public record MessageTemplateDetailQuery(string Id) : IRequest<MessageTemplateDetailModel>;
+public record MessageTemplateDetailQuery(long Id) : IRequest<MessageTemplateDetailModel>;
 
 /// <summary>
 /// Represents a request to retrieve a list of message templates.

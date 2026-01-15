@@ -5,11 +5,11 @@ namespace Nerosoft.Starfish.Persistent.Repositories;
 
 internal interface IMessageTemplateRepository
 {
-	Task<string> SaveAsync(MessageTemplateData data, CancellationToken cancellationToken = default);
+	Task<long> SaveAsync(MessageTemplateData data, CancellationToken cancellationToken = default);
 
-	Task<MessageTemplateData> GetAsync(string id, CancellationToken cancellationToken = default);
+	Task<MessageTemplateData> GetAsync(long id, CancellationToken cancellationToken = default);
 
-	Task<bool> ExistsDefaultAsync(string code, MessageTemplateType type, string excludeId = null, CancellationToken cancellationToken = default);
+	Task<bool> ExistsDefaultAsync(string code, MessageTemplateType type, long excludeId = 0, CancellationToken cancellationToken = default);
 
-	Task DeleteAsync(string id, CancellationToken cancellationToken = default);
+	Task DeleteAsync(long id, CancellationToken cancellationToken = default);
 }

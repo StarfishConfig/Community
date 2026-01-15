@@ -12,7 +12,7 @@ public class MessageTemplateUpdateCommand : Command
 	/// Initializes a new instance of the MessageTemplateUpdateCommand class with the specified template identifier.
 	/// </summary>
 	/// <param name="id">The unique identifier of the message template to update. Cannot be null.</param>
-	public MessageTemplateUpdateCommand(string id)
+	public MessageTemplateUpdateCommand(long id)
 	{
 		Id = id;
 	}
@@ -20,7 +20,7 @@ public class MessageTemplateUpdateCommand : Command
 	/// <summary>
 	/// Gets the identifier of the template to be updated.
 	/// </summary>
-	public string Id { get; }
+	public long Id { get; }
 
 	/// <summary>
 	/// Gets or sets the name of the template.

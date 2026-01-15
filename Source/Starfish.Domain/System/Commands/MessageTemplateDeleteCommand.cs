@@ -11,7 +11,7 @@ public class MessageTemplateDeleteCommand : Command
 	/// Initializes a new instance of the MessageTemplateDeleteCommand class with the specified template identifier.
 	/// </summary>
 	/// <param name="id">The unique identifier of the message template to delete. Cannot be null.</param>
-	public MessageTemplateDeleteCommand(string id)
+	public MessageTemplateDeleteCommand(long id)
 	{
 		Id = id;
 	}
@@ -19,5 +19,5 @@ public class MessageTemplateDeleteCommand : Command
 	/// <summary>
 	/// Gets the identifier of the template to be deleted.
 	/// </summary>
-	public string Id { get; }
+	public long Id { get; }
 }

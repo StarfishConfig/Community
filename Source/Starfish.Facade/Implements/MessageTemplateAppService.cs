@@ -10,7 +10,7 @@ namespace Nerosoft.Starfish.Facade.Implements;
 
 internal class MessageTemplateAppService : BaseApplicationService, IMessageTemplateAppService
 {
-	public Task<MessageTemplateDetailDto> GetAsync(string id, CancellationToken cancellationToken = default)
+	public Task<MessageTemplateDetailDto> GetAsync(long id, CancellationToken cancellationToken = default)
 	{
 		var request = new MessageTemplateDetailQuery(id);
 		return Bus.CallAsync(request, cancellationToken)
@@ -64,31 +64,31 @@ internal class MessageTemplateAppService : BaseApplicationService, IMessageTempl
 		return Bus.CallAsync(request, cancellationToken);
 	}
 
-	public async Task<string> CreateAsync(MessageTemplateEditDto dto, CancellationToken cancellationToken = default)
+	public async Task<long> CreateAsync(MessageTemplateEditDto dto, CancellationToken cancellationToken = default)
 	{
 		var command = TypeAdapter.ProjectedAs<MessageTemplateCreateCommand>(dto);
-		var tcs = new TaskCompletionSource<string>();
+		var tcs = new TaskCompletionSource<long>();
 
-		var subject = new Subject<string>();
+		var subject = new Subject<long>();
 		subject.Subscribe
 		(
 			id => tcs.SetResult(id),
 			ex => tcs.SetException(ex),
-			() => tcs.TrySetResult(null)
+			() => tcs.TrySetResult(0)
 		);
 
 		await Bus.SendAsync(command, subject, cancellationToken);
 		return await tcs.Task;
 	}
 
-	public Task UpdateAsync(string id, MessageTemplateEditDto dto, CancellationToken cancellationToken = default)
+	public Task UpdateAsync(long id, MessageTemplateEditDto dto, CancellationToken cancellationToken = default)
 	{
 		var command = new MessageTemplateUpdateCommand(id);
 		TypeAdapter.ProjectedAs(dto, command);
 		return Bus.SendAsync(command, cancellationToken);
 	}
 
-	public Task DeleteAsync(string id, CancellationToken cancellationToken = default)
+	public Task DeleteAsync(long id, CancellationToken cancellationToken = default)
 	{
 		var command = new MessageTemplateDeleteCommand(id);
 		return Bus.SendAsync(command, cancellationToken);

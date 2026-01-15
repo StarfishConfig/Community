@@ -15,7 +15,7 @@ internal class MessageTemplateConfiguration : IEntityTypeConfiguration<MessageTe
 		builder.HasIndex(x => new { x.Code, x.Language, x.Type })
 		       .HasDatabaseName("idx_message_template_unique");
 
-		builder.ShortUniqueId();
+		builder.SnowflakeId();
 
 		builder.Property(t => t.Name)
 		       .HasColumnName("name")

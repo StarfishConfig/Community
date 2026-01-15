@@ -3,7 +3,7 @@ using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Entities;
 
-internal class MessageTemplate : Entity<string>, IAuditable
+internal class MessageTemplate : Entity<long>, IAuditable
 {
 	/// <summary>
 	/// Gets or sets the name of the template.

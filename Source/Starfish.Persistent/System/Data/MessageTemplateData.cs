@@ -8,7 +8,7 @@ namespace Nerosoft.Starfish.Persistent.Data;
 /// <remarks>Use this class to store and transfer information about message templates, such as email or phone
 /// templates, including their identifiers, content, language, and audit details. The class includes properties for
 /// tracking creation, updates, and deletion, which can be useful for auditing and versioning scenarios.</remarks>
-internal class MessageTemplateData : Persistent<string>
+internal class MessageTemplateData : Persistent<long>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MessageTemplateData"/> class.
@@ -21,7 +21,7 @@ internal class MessageTemplateData : Persistent<string>
 	/// Initializes a new instance of the MessageTemplateData class with the specified template identifier.
 	/// </summary>
 	/// <param name="id">The unique identifier for the message template. Cannot be null or empty.</param>
-	public MessageTemplateData(string id)
+	public MessageTemplateData(long id)
 		: base(id)
 	{
 	}

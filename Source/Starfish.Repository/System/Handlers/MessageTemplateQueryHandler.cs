@@ -63,7 +63,7 @@ internal class MessageTemplateQueryHandler : IHandler<MessageTemplateDetailQuery
 	{
 		var specifications = new List<ISpecification<MessageTemplate>>()
 		{
-			MessageTemplateSpecification.IdNotEquals(string.Empty)
+			MessageTemplateSpecification.IdNotEquals(0)
 		};
 		if (!string.IsNullOrEmpty(message.Code))
 		{
@@ -96,7 +96,7 @@ internal class MessageTemplateQueryHandler : IHandler<MessageTemplateDetailQuery
 	{
 		var specifications = new List<ISpecification<MessageTemplate>>()
 		{
-			MessageTemplateSpecification.IdNotEquals(string.Empty)
+			MessageTemplateSpecification.IdNotEquals(0)
 		};
 		if (!string.IsNullOrEmpty(message.Code))
 		{

@@ -6,9 +6,10 @@ using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Domain.Aggregates;
 
-internal class MessageTemplate : EditableObjectBase<MessageTemplate, string>
+internal class MessageTemplate : EditableObjectBase<MessageTemplate, long>
 {
 	#region Properties
+
 	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
 	public static readonly PropertyInfo<string> CodeProperty = RegisterProperty<string>(p => p.Code);
 	public static readonly PropertyInfo<string> LanguageProperty = RegisterProperty<string>(p => p.Language);
@@ -58,9 +59,11 @@ internal class MessageTemplate : EditableObjectBase<MessageTemplate, string>
 		get => GetProperty(DefaultProperty);
 		set => SetProperty(DefaultProperty, value);
 	}
+
 	#endregion
 
 	#region Rules
+
 	protected override void AddRules()
 	{
 		// Name
@@ -86,9 +89,9 @@ internal class MessageTemplate : EditableObjectBase<MessageTemplate, string>
 			var exists = await repository.ExistsDefaultAsync(target.Code, target.Type, target.Id);
 
 			return !exists;
-
 		}, "Only one default template is allowed for the same usage and type.");
 	}
+
 	#endregion
 
 	[FactoryCreate]
@@ -110,9 +113,9 @@ internal class MessageTemplate : EditableObjectBase<MessageTemplate, string>
 	}
 
 	[FactoryFetch]
-	private async Task FetchAsync(string id, CancellationToken cancellationToken = default)
+	private async Task FetchAsync(long id, CancellationToken cancellationToken = default)
 	{
-		ArgumentNullException.ThrowIfNullOrWhiteSpace(id);
+		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
 		var repository = BusinessContext.GetRequiredService<IMessageTemplateRepository>();
 
@@ -150,11 +153,11 @@ internal class MessageTemplate : EditableObjectBase<MessageTemplate, string>
 		var repository = BusinessContext.GetRequiredService<IMessageTemplateRepository>();
 
 		return repository.SaveAsync(data, cancellationToken)
-			.ContinueWith(task =>
-			{
-				task.WaitAndUnwrapException(cancellationToken);
-				LoadProperty(IdProperty, task.Result);
-			});
+		                 .ContinueWith(task =>
+		                 {
+			                 task.WaitAndUnwrapException(cancellationToken);
+			                 LoadProperty(IdProperty, task.Result);
+		                 }, cancellationToken);
 	}
 
 	[FactoryUpdate]
