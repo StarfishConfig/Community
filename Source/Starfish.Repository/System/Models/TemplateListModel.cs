@@ -47,6 +47,11 @@ public class TemplateListModel
 	public bool Default { get; set; }
 
 	/// <summary>
+	/// Gets or sets a value indicating whether the template is active.
+	/// </summary>
+	public bool Active { get; set; }
+
+	/// <summary>
 	/// Gets or sets the last update time of the template.
 	/// </summary>
 	public DateTime UpdatedAt { get; set; }

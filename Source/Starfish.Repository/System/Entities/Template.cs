@@ -48,6 +48,11 @@ internal class Template : Entity<long>, IAuditable
 	public bool Default { get; set; }
 
 	/// <summary>
+	/// Gets or sets a value indicating whether the template is active.
+	/// </summary>
+	public bool Active { get; set; }
+
+	/// <summary>
 	/// Gets or sets the creation time of the template.
 	/// </summary>
 	public DateTime CreatedAt { get; set; }

@@ -64,4 +64,9 @@ internal class TemplateData : Persistent<long>
 	/// Gets or sets a value indicating whether the template is the default one for its usage and type.
 	/// </summary>
 	public bool Default { get; set; }
+
+	/// <summary>
+	/// Gets or sets a value indicating whether the template is active.
+	/// </summary>
+	public bool Active { get; set; }
 }

@@ -17,6 +17,7 @@ internal class Template : EditableObjectBase<Template, long>
 	public static readonly PropertyInfo<string> SubjectProperty = RegisterProperty<string>(p => p.Subject);
 	public static readonly PropertyInfo<string> BodyProperty = RegisterProperty<string>(p => p.Body);
 	public static readonly PropertyInfo<bool> DefaultProperty = RegisterProperty<bool>(p => p.Default);
+	public static readonly PropertyInfo<bool> ActiveProperty = RegisterProperty<bool>(p => p.Active, nameof(Active), defaultValue: true);
 
 	public string Name
 	{
@@ -60,6 +61,12 @@ internal class Template : EditableObjectBase<Template, long>
 		set => SetProperty(DefaultProperty, value);
 	}
 
+	public bool Active
+	{
+		get => GetProperty(ActiveProperty);
+		private set => SetProperty(ActiveProperty, value);
+	}
+
 	#endregion
 
 	#region Rules
@@ -94,6 +101,14 @@ internal class Template : EditableObjectBase<Template, long>
 
 	#endregion
 
+	#region Methods
+	public void SetActive(bool active)
+	{
+		Active = active;
+	}
+	#endregion
+
+	#region Factory
 	[FactoryCreate]
 	private async Task CreateAsync(TemplateCreateCommand command, CancellationToken cancellationToken = default)
 	{
@@ -148,16 +163,17 @@ internal class Template : EditableObjectBase<Template, long>
 			Subject = Subject,
 			Default = Default,
 			Type = Type,
+			Active = true
 		};
 
 		var repository = BusinessContext.GetRequiredService<ITemplateRepository>();
 
 		return repository.SaveAsync(data, cancellationToken)
-		                 .ContinueWith(task =>
-		                 {
-			                 task.WaitAndUnwrapException(cancellationToken);
-			                 LoadProperty(IdProperty, task.Result);
-		                 }, cancellationToken);
+						 .ContinueWith(task =>
+						 {
+							 task.WaitAndUnwrapException(cancellationToken);
+							 LoadProperty(IdProperty, task.Result);
+						 }, cancellationToken);
 	}
 
 	[FactoryUpdate]
@@ -172,6 +188,7 @@ internal class Template : EditableObjectBase<Template, long>
 			Subject = Subject,
 			Default = Default,
 			Type = Type,
+			Active = Active
 		};
 		var repository = BusinessContext.GetRequiredService<ITemplateRepository>();
 		return repository.SaveAsync(data, cancellationToken);
@@ -183,4 +200,5 @@ internal class Template : EditableObjectBase<Template, long>
 		var repository = BusinessContext.GetRequiredService<ITemplateRepository>();
 		return repository.DeleteAsync(Id, cancellationToken);
 	}
+	#endregion
 }
