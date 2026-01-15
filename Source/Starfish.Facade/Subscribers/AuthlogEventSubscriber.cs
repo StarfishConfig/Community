@@ -41,6 +41,7 @@ internal sealed class AuthlogEventSubscriber(IBus bus)
 	{
 		var command = new AuthlogCreateCommand
 		{
+			UserId = message.UserId,
 			Username = message.Data["Username"],
 			Success = false,
 			GrantType = message.GrantType,
