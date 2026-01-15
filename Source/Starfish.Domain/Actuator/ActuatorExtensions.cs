@@ -12,7 +12,7 @@ internal static class ActuatorExtensions
 		});
 	}
 
-	public static Task ReturnAsync<TTarget, TResult>(this Task<TTarget> source, [NotNull] Func<TTarget, TResult> selector, [NotNull] Action<TResult> action)
+	public static Task NextAsync<TTarget, TResult>(this Task<TTarget> source, [NotNull] Func<TTarget, TResult> selector, [NotNull] Action<TResult> action)
 	{
 		return source.ContinueWith(task =>
 		{
@@ -21,7 +21,7 @@ internal static class ActuatorExtensions
 		});
 	}
 
-	public static Task ReturnAsync<TTarget>(this Task<TTarget> source, [NotNull] Action<TTarget> action)
+	public static Task NextAsync<TTarget>(this Task<TTarget> source, [NotNull] Action<TTarget> action)
 	{
 		return source.ContinueWith(task =>
 		{
