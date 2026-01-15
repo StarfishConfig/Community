@@ -8,6 +8,17 @@ namespace Nerosoft.Starfish.Domain.Commands;
 public class UserPasswordResetCommand : Command
 {
 	/// <summary>
+	/// Initializes a new instance of the <see cref="UserPasswordResetCommand"/> class.
+	/// </summary>
+	/// <param name="id"></param>
+	/// <param name="password"></param>
+	public UserPasswordResetCommand(string id, string password)
+	{
+		Id = id;
+		Password = password;
+	}
+
+	/// <summary>
 	/// Gets or sets the identifier of the user whose password is to be reset.
 	/// </summary>
 	public string Id { get; set; }
