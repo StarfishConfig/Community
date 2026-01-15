@@ -85,7 +85,7 @@
         </EmbeddedResource>
         <EmbeddedResource Update="Properties\IdentityResources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
-            <LastGenOutput>LoginResources.Designer.cs</LastGenOutput>
+            <LastGenOutput>IdentityResources.Designer.cs</LastGenOutput>
         </EmbeddedResource>
         <EmbeddedResource Update="Properties\ProfileResources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
