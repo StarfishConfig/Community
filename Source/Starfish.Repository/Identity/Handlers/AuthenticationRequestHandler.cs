@@ -2,6 +2,7 @@ using System.Security.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Nerosoft.Euonia.Bus;
 using Nerosoft.Euonia.Mapping;
+using Nerosoft.Euonia.Security;
 using Nerosoft.Starfish.Repository.Entities;
 using Nerosoft.Starfish.Repository.Models;
 using Nerosoft.Starfish.Repository.Requests;
@@ -42,12 +43,12 @@ internal class AuthenticationRequestHandler : IHandler<AuthenticateWithUsernameR
 		var passwordHash = Cryptography.DES.Encrypt(message.Password, Encoding.UTF8.GetBytes(user.PasswordSalt));
 		if (!string.Equals(passwordHash, user.PasswordHash, StringComparison.Ordinal))
 		{
-			throw new AuthenticationException(IdentityResources.IDS_ERROR_INVALID_USERNAME_PASSWORD);
+			throw new CredentialIncorrectException(user.Id, IdentityResources.IDS_ERROR_INVALID_USERNAME_PASSWORD);
 		}
 
 		if (user.LockoutEnd > DateTime.UtcNow)
 		{
-			throw new AuthenticationException(IdentityResources.IDS_ERROR_USER_LOCKED);
+			throw new AccountLockedException(user.Id, IdentityResources.IDS_ERROR_USER_LOCKED);
 		}
 
 		var result = TypeAdapter.ProjectedAs<UserAuthQueryModel>(user);

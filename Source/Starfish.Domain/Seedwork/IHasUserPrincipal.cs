@@ -1,4 +1,4 @@
-﻿using Nerosoft.Euonia.Claims;
+﻿using Nerosoft.Euonia.Security;
 
 namespace Nerosoft.Starfish.Domain;
 

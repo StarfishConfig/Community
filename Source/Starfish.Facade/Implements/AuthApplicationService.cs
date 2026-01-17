@@ -1,9 +1,11 @@
+using System.Security.Authentication;
 using System.Security.Claims;
 using Duende.IdentityModel;
 using Microsoft.Extensions.Configuration;
 using Nerosoft.Euonia.Application;
 using Nerosoft.Euonia.Bus;
 using Nerosoft.Euonia.Domain;
+using Nerosoft.Euonia.Security;
 using Nerosoft.Starfish.Facade.Events;
 using Nerosoft.Starfish.Facade.ExternalAuth;
 using Nerosoft.Starfish.Facade.Interfaces;
@@ -62,7 +64,7 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 			});
 
 			var refreshTokenId = ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N");
-			
+
 			var identity = BuildClaims("Bearer", user);
 			events.Add(new TokenGeneratedEvent
 			{
@@ -104,9 +106,9 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 				ExpiresIn = (long)(expiresAt - issueTime).TotalSeconds
 			};
 		}
-		catch (Exception exception)
+		catch (AuthenticationException exception)
 		{
-			events.Add(new UserAuthFailureEvent
+			var @event = new UserAuthFailureEvent
 			{
 				Source = "Bearer",
 				GrantType = data.GrantType,
@@ -117,7 +119,19 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 					{ "Password", data.Password != null ? "******" : string.Empty },
 				},
 				Error = exception.Message
-			});
+			};
+
+			switch (exception.InnerException)
+			{
+				case CredentialException ex:
+					@event.UserId = ex.Credential as string;
+					break;
+				case AccountLockedException ex:
+					@event.UserId = ex.Identity;
+					break;
+			}
+
+			events.Add(@event);
 			throw;
 		}
 		finally
@@ -151,11 +165,12 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 			var identity = BuildClaims("Cookies", user);
 			return new ClaimsPrincipal(identity);
 		}
-		catch (Exception exception)
+		catch (CredentialException exception)
 		{
-			events.Add(new UserAuthFailureEvent
+			var @event = new UserAuthFailureEvent
 			{
-				Source = "Cookies",
+				UserId = exception.Credential as string,
+				Source = "Bearer",
 				GrantType = data.GrantType,
 				GrantTime = DateTime.UtcNow,
 				Data = new Dictionary<string, string>
@@ -164,7 +179,31 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 					{ "Password", data.Password != null ? "******" : string.Empty },
 				},
 				Error = exception.Message
-			});
+			};
+			events.Add(@event);
+			throw;
+		}
+		catch (AccountException exception)
+		{
+			var @event = new UserAuthFailureEvent
+			{
+				Source = "Bearer",
+				GrantType = data.GrantType,
+				GrantTime = DateTime.UtcNow,
+				Data = new Dictionary<string, string>
+				{
+					{ "Username", data.Username ?? string.Empty },
+					{ "Password", data.Password != null ? "******" : string.Empty },
+				},
+				Error = exception.Message
+			};
+			if (exception is AccountLockedException ex)
+			{
+				@event.UserId = ex.Identity;
+				@event.Data.Add("Locked", "true");
+			}
+
+			events.Add(@event);
 			throw;
 		}
 		finally
