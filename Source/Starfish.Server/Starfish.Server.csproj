@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Blazor.Monaco" />
         <PackageReference Include="Euonia.Hosting" />
         <PackageReference Include="Euonia.Modularity" />
         <PackageReference Include="Grpc.AspNetCore" />

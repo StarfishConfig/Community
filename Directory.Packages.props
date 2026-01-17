@@ -2,12 +2,12 @@
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <EnablePackageVersionOverride>true</EnablePackageVersionOverride>
-        <EuoniaPackageVersion>10.2.10</EuoniaPackageVersion>
+        <EuoniaPackageVersion>10.3.0</EuoniaPackageVersion>
         <FluentBlazorPackageVersion>4.13.2</FluentBlazorPackageVersion>
         <RefitPackageVersion>9.0.2</RefitPackageVersion>
     </PropertyGroup>
     <ItemGroup>
-        <PackageVersion Include="BlazorMonaco" Version="3.4.0" />
+        <PackageVersion Include="Blazor.Monaco" Version="0.2.0" />
         <PackageVersion Include="Dapper" Version="2.1.66" />
         <PackageVersion Include="Dapper.Contrib" Version="2.0.78" />
         <PackageVersion Include="Dapper.SqlBuilder" Version="2.1.66" />
