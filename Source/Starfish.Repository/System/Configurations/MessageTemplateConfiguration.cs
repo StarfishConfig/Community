@@ -48,6 +48,10 @@ internal class MessageTemplateConfiguration : IEntityTypeConfiguration<MessageTe
 		       .HasMaxLength(int.MaxValue)
 		       .IsRequired()
 		       .IsUnicode();
+		
+		builder.Property(t => t.Default)
+		       .HasColumnName("default")
+		       .HasDefaultValue(false);
 
 		builder.ConfigureAuditableProperties();
 	}
