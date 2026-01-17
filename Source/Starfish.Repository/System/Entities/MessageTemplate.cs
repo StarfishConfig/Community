@@ -3,6 +3,9 @@ using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Entities;
 
+/// <summary>
+/// Represents a message template entity.
+/// </summary>
 internal class MessageTemplate : Entity<long>, IAuditable
 {
 	/// <summary>

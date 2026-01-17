@@ -6,6 +6,11 @@ namespace Nerosoft.Starfish.Repository.Specifications;
 
 internal static class MessageTemplateSpecification
 {
+	public static ISpecification<MessageTemplate> True()
+	{
+		return new DirectSpecification<MessageTemplate>(t => t.Id > 0);
+	}
+
 	public static ISpecification<MessageTemplate> IdEquals(long id)
 	{
 		return new DirectSpecification<MessageTemplate>(t => t.Id == id);
@@ -72,19 +77,19 @@ internal static class MessageTemplateSpecification
 
 	public static ISpecification<MessageTemplate> Matches(string code, MessageTemplateType type, string language)
 	{
-		ISpecification<MessageTemplate>[] speficications =
+		ISpecification<MessageTemplate>[] specifications =
 		[
 			CodeEquals(code),
 			LanguageEqualsOrDefault(language),
 			TypeEquals(type)
 		];
 
-		return new CompositeSpecification<MessageTemplate>(PredicateOperator.AndAlso, speficications);
+		return new CompositeSpecification<MessageTemplate>(PredicateOperator.AndAlso, specifications);
 	}
 
 	public static ISpecification<MessageTemplate> ExistsDefault(string code, MessageTemplateType type, long excludeId)
 	{
-		ISpecification<MessageTemplate>[] speficications =
+		ISpecification<MessageTemplate>[] specifications =
 		[
 			CodeEquals(code),
 			TypeEquals(type),
@@ -92,6 +97,6 @@ internal static class MessageTemplateSpecification
 			IdNotEquals(excludeId)
 		];
 
-		return new CompositeSpecification<MessageTemplate>(PredicateOperator.AndAlso, speficications);
+		return new CompositeSpecification<MessageTemplate>(PredicateOperator.AndAlso, specifications);
 	}
 }

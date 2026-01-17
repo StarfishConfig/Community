@@ -61,6 +61,12 @@ internal class MessageTemplateQueryHandler : IHandler<MessageTemplateDetailQuery
 
 	public async Task<IList<MessageTemplateListModel>> HandleAsync(MessageTemplateListQuery message, MessageContext context, CancellationToken cancellationToken = default)
 	{
+		var specification = MessageTemplateSpecification.True()
+		                                                .AndIf(!string.IsNullOrEmpty(message.Code), () => MessageTemplateSpecification.CodeContains(message.Code))
+		                                                .AndIf(message.Type.HasValue, () => MessageTemplateSpecification.TypeEquals(message.Type!.Value))
+		                                                .AndIf(!string.IsNullOrWhiteSpace(message.Keyword), () => MessageTemplateSpecification.NameContains(message.Keyword));
+
+		/*
 		var specifications = new List<ISpecification<MessageTemplate>>()
 		{
 			MessageTemplateSpecification.IdNotEquals(0)
@@ -81,7 +87,9 @@ internal class MessageTemplateQueryHandler : IHandler<MessageTemplateDetailQuery
 		}
 
 		var predicate = new CompositeSpecification<MessageTemplate>(PredicateOperator.AndAlso, specifications.ToArray());
-
+		*/
+		
+		var predicate = specification.Satisfy();
 		var query = _context.Set<MessageTemplate>()
 		                    .AsNoTracking()
 		                    .Where(predicate)
