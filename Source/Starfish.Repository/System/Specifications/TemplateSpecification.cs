@@ -99,4 +99,9 @@ internal static class TemplateSpecification
 
 		return new CompositeSpecification<Template>(PredicateOperator.AndAlso, specifications);
 	}
+
+	public static ISpecification<Template> ContainsKeyword(string keyword)
+	{
+		return new DirectSpecification<Template>(t => t.Name.Contains(keyword) || t.Code.Contains(keyword) || t.Subject.Contains(keyword) || t.Body.Contains(keyword));
+	}
 }

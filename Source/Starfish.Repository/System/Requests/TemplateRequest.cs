@@ -18,24 +18,21 @@ public record TemplateDetailQuery(long Id) : IRequest<TemplateDetailModel>;
 /// purposes. The result contains detailed information for each template. The returned list may be empty if no templates
 /// are defined.
 /// </remarks>
-/// <param name="Code">The code or identifier used to filter the message templates. This parameter helps narrow down the list to templates matching the specified code.</param>
 /// <param name="Type">The type or category of the message template to retrieve. This may refer to the format or delivery method (such as
 /// 'Email', 'SMS', etc.).</param>
 /// <param name="Keyword">A keyword to search for within the message templates. This can be used to filter templates based on content or metadata.</param>
 /// <param name="Skip">The number of message templates to skip before starting to collect the result set. This is useful for pagination.</param>
 /// <param name="Size">The maximum number of message templates to return in the result set. This is useful for pagination.</param>
-public record TemplateListQuery(string Code, TemplateType? Type, string Keyword, int Skip, int Size) : IRequest<IList<TemplateListModel>>;
+public record TemplateSearchRequest(TemplateType? Type, string Keyword, int Skip, int Size) : IRequest<IList<TemplateListModel>>;
 
 /// <summary>
 /// Represents a query to retrieve the count of message templates that match the specified code, type, and keyword
 /// criteria.
 /// </summary>
-/// <param name="Code">The code used to filter message templates. Only templates with a matching code will be included in the count. Can be
-/// null or empty to ignore this filter.</param>
 /// <param name="Type">The type of message template to filter by. If null, templates of all types are included.</param>
 /// <param name="Keyword">A keyword to search for within message templates. Only templates containing this keyword will be counted. Can be
 /// null or empty to ignore this filter.</param>
-public record TemplateCountQuery(string Code, TemplateType? Type, string Keyword) : IRequest<int>;
+public record TemplateCountRequest(TemplateType? Type, string Keyword) : IRequest<int>;
 
 /// <summary>
 /// Represents a query to retrieve a message template that matches the specified usage, type, and language.

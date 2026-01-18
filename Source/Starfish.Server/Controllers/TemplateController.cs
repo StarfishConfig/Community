@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Nerosoft.Starfish.Facade.Interfaces;
 using Nerosoft.Starfish.Facade.Transit;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Server.Controllers;
 
@@ -25,29 +26,30 @@ public class TemplateController(ITemplateAppService service) : ControllerBase
 	}
 
 	/// <summary>
-	/// Queries message templates based on specified criteria with pagination.
+	/// Queries message templates based on the specified criteria.
 	/// </summary>
-	/// <param name="criteria"></param>
+	/// <param name="type"></param>
+	/// <param name="keyword"></param>
 	/// <param name="skip"></param>
 	/// <param name="size"></param>
 	/// <returns></returns>
-	[HttpGet("query")]
-	public async Task<IActionResult> QueryAsync([FromQuery] TemplateCriteria criteria, [FromQuery] int skip = 0, [FromQuery] int size = 20)
+	[HttpGet("search")]
+	public async Task<IActionResult> SearchAsync([FromQuery] TemplateType type, [FromQuery] string keyword, [FromQuery] int skip = 0, [FromQuery] int size = 20)
 	{
-		ArgumentNullException.ThrowIfNull(criteria);
-		var result = await service.QueryAsync(criteria, skip, size, HttpContext.RequestAborted);
+		var result = await service.SearchAsync(type, keyword, skip, size, HttpContext.RequestAborted);
 		return Ok(result);
 	}
 
 	/// <summary>
-	/// Counts the number of message templates that match the specified criteria.
+	/// Counts the number of message templates matching the specified criteria.
 	/// </summary>
-	/// <param name="criteria"></param>
+	/// <param name="type"></param>
+	/// <param name="keyword"></param>
 	/// <returns></returns>
 	[HttpGet("count")]
-	public async Task<IActionResult> CountAsync([FromQuery] TemplateCriteria criteria)
+	public async Task<IActionResult> CountAsync([FromQuery] TemplateType type, [FromQuery] string keyword)
 	{
-		var result = await service.CountAsync(criteria, HttpContext.RequestAborted);
+		var result = await service.CountAsync(type, keyword, HttpContext.RequestAborted);
 		return Ok(result);
 	}
 

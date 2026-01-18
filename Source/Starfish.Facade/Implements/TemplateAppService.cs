@@ -5,6 +5,7 @@ using Nerosoft.Starfish.Domain.Commands;
 using Nerosoft.Starfish.Facade.Interfaces;
 using Nerosoft.Starfish.Facade.Transit;
 using Nerosoft.Starfish.Repository.Requests;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Facade.Implements;
 
@@ -34,9 +35,9 @@ internal class TemplateAppService : BaseApplicationService, ITemplateAppService
 		          }, cancellationToken);
 	}
 
-	public Task<List<TemplateListDto>> QueryAsync(TemplateCriteria criteria, int skip, int size, CancellationToken cancellationToken = default)
+	public Task<List<TemplateListDto>> SearchAsync(TemplateType type, string keyword, int skip, int size, CancellationToken cancellationToken = default)
 	{
-		var request = new TemplateListQuery(criteria.Code, criteria.Type, criteria.Keyword, skip, size);
+		var request = new TemplateSearchRequest(type, keyword, skip, size);
 		return Bus.CallAsync(request, cancellationToken)
 		          .ContinueWith(task =>
 		          {
@@ -58,9 +59,9 @@ internal class TemplateAppService : BaseApplicationService, ITemplateAppService
 		          }, cancellationToken);
 	}
 
-	public Task<int> CountAsync(TemplateCriteria criteria, CancellationToken cancellationToken = default)
+	public Task<int> CountAsync(TemplateType type, string keyword, CancellationToken cancellationToken = default)
 	{
-		var request = new TemplateCountQuery(criteria.Code, criteria.Type, criteria.Keyword);
+		var request = new TemplateCountRequest(type, keyword);
 		return Bus.CallAsync(request, cancellationToken);
 	}
 
