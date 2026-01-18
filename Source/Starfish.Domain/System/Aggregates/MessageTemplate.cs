@@ -13,7 +13,7 @@ internal class MessageTemplate : EditableObjectBase<MessageTemplate, long>
 	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
 	public static readonly PropertyInfo<string> CodeProperty = RegisterProperty<string>(p => p.Code);
 	public static readonly PropertyInfo<string> LanguageProperty = RegisterProperty<string>(p => p.Language);
-	public static readonly PropertyInfo<MessageTemplateType> TypeProperty = RegisterProperty<MessageTemplateType>(p => p.Type);
+	public static readonly PropertyInfo<TemplateType> TypeProperty = RegisterProperty<TemplateType>(p => p.Type);
 	public static readonly PropertyInfo<string> SubjectProperty = RegisterProperty<string>(p => p.Subject);
 	public static readonly PropertyInfo<string> BodyProperty = RegisterProperty<string>(p => p.Body);
 	public static readonly PropertyInfo<bool> DefaultProperty = RegisterProperty<bool>(p => p.Default);
@@ -36,7 +36,7 @@ internal class MessageTemplate : EditableObjectBase<MessageTemplate, long>
 		set => SetProperty(LanguageProperty, value);
 	}
 
-	public MessageTemplateType Type
+	public TemplateType Type
 	{
 		get => GetProperty(TypeProperty);
 		set => SetProperty(TypeProperty, value);

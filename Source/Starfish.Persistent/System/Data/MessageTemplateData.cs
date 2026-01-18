@@ -48,7 +48,7 @@ internal class MessageTemplateData : Persistent<long>
 	/// Gets or sets the type of the template.
 	/// </summary>
 	/// <value>Possible values include "email" and "phone".</value>
-	public MessageTemplateType Type { get; set; }
+	public TemplateType Type { get; set; }
 
 	/// <summary>
 	/// Gets or sets the subject of the template.

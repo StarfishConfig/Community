@@ -15,7 +15,7 @@ public class MessageTemplateCriteria
 	/// <summary>
 	/// Gets or sets the type of the message template.
 	/// </summary>
-	public MessageTemplateType? Type { get; set; }
+	public TemplateType? Type { get; set; }
 
 	/// <summary>
 	/// Gets or sets the keyword used for searching or filtering operations.

@@ -9,7 +9,7 @@ internal interface IMessageTemplateRepository
 
 	Task<MessageTemplateData> GetAsync(long id, CancellationToken cancellationToken = default);
 
-	Task<bool> ExistsDefaultAsync(string code, MessageTemplateType type, long excludeId = 0, CancellationToken cancellationToken = default);
+	Task<bool> ExistsDefaultAsync(string code, TemplateType type, long excludeId = 0, CancellationToken cancellationToken = default);
 
 	Task DeleteAsync(long id, CancellationToken cancellationToken = default);
 }
