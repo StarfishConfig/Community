@@ -60,7 +60,7 @@ internal static class MessageTemplateSpecification
 		return new DirectSpecification<MessageTemplate>(t => t.Language == language || t.Default);
 	}
 
-	public static ISpecification<MessageTemplate> TypeEquals(MessageTemplateType type)
+	public static ISpecification<MessageTemplate> TypeEquals(TemplateType type)
 	{
 		return new DirectSpecification<MessageTemplate>(t => t.Type == type);
 	}
@@ -75,7 +75,7 @@ internal static class MessageTemplateSpecification
 		return new DirectSpecification<MessageTemplate>(t => t.Default == @default);
 	}
 
-	public static ISpecification<MessageTemplate> Matches(string code, MessageTemplateType type, string language)
+	public static ISpecification<MessageTemplate> Matches(string code, TemplateType type, string language)
 	{
 		ISpecification<MessageTemplate>[] specifications =
 		[
@@ -87,7 +87,7 @@ internal static class MessageTemplateSpecification
 		return new CompositeSpecification<MessageTemplate>(PredicateOperator.AndAlso, specifications);
 	}
 
-	public static ISpecification<MessageTemplate> ExistsDefault(string code, MessageTemplateType type, long excludeId)
+	public static ISpecification<MessageTemplate> ExistsDefault(string code, TemplateType type, long excludeId)
 	{
 		ISpecification<MessageTemplate>[] specifications =
 		[

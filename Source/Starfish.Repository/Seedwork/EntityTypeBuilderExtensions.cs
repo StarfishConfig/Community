@@ -109,7 +109,6 @@ internal static class EntityTypeBuilderExtensions
 		builder.Property(t => t.CreatedAt)
 		       .HasColumnName(COLUMN_CREATED_AT)
 		       .HasValueGenerator<UtcTimeValueGenerator>()
-		       .ValueGeneratedOnAdd()
 		       .IsRequired();
 	}
 
@@ -124,7 +123,6 @@ internal static class EntityTypeBuilderExtensions
 		builder.Property(t => t.UpdatedAt)
 		       .HasColumnName(COLUMN_UPDATED_AT)
 		       .HasValueGenerator<UtcTimeValueGenerator>()
-		       .ValueGeneratedOnAddOrUpdate()
 		       .IsRequired();
 	}
 

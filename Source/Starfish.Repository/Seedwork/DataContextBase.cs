@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Logging;
 using Nerosoft.Euonia.Modularity;
 using Nerosoft.Euonia.Repository;
 using Nerosoft.Euonia.Repository.EfCore;
@@ -16,21 +17,41 @@ internal abstract class DataContextBase<TContext> : Euonia.Repository.EfCore.Dat
 {
 	private readonly List<object> _unchangedEntities = [];
 	private readonly IRequestContextAccessor _request;
+	private readonly ILoggerFactory _logger;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DataContextBase{TContext}"/> class.
 	/// </summary>
 	/// <param name="options">The options for this context.</param>
 	/// <param name="request">The accessor to get current request information.</param>
-	protected DataContextBase(DbContextOptions<TContext> options, IRequestContextAccessor request)
+	/// <param name="logger">The logger factory.</param>
+	protected DataContextBase(DbContextOptions<TContext> options, IRequestContextAccessor request, ILoggerFactory logger)
 		: base(options)
 	{
 		_request = request;
+		_logger = logger;
+		Logger = logger.CreateLogger<TContext>();
+		// ReSharper disable once VirtualMemberCallInConstructor
 		ChangeTracker.DetectedEntityChanges += OnDetectedEntityChanges;
 	}
 
+	protected ILogger<TContext> Logger { get; }
+
 	/// <inheritdoc/>
 	protected override bool AutoSetEntryValues => true;
+
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+	{
+		optionsBuilder.UseLoggerFactory(_logger);
+		optionsBuilder.LogTo(Console.WriteLine);
+		base.OnConfiguring(optionsBuilder);
+	}
+
+	public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
+	{
+		SetEntryValues(ChangeTracker.Entries());
+		return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+	}
 
 	protected override void SetEntryValues(IEnumerable<EntityEntry> entries)
 	{
@@ -48,11 +69,6 @@ internal abstract class DataContextBase<TContext> : Euonia.Repository.EfCore.Dat
 					continue;
 			}
 
-			if (entry.Entity is not IAuditable auditable)
-			{
-				continue;
-			}
-
 			var user = GetCurrentUser();
 
 			if (string.IsNullOrWhiteSpace(user))
@@ -64,22 +80,25 @@ internal abstract class DataContextBase<TContext> : Euonia.Repository.EfCore.Dat
 			switch (entry.State)
 			{
 				case EntityState.Added:
-					auditable.CreatedBy = user;
-					auditable.UpdatedBy = user;
-					auditable.CreatedAt = dateTime;
-					auditable.UpdatedAt = dateTime;
+					entry.CurrentValues[nameof(IAuditable.CreatedBy)] = user;
+					entry.CurrentValues[nameof(IAuditable.CreatedAt)] = dateTime;
+					entry.CurrentValues[nameof(IAuditable.UpdatedBy)] = user;
+					entry.CurrentValues[nameof(IAuditable.UpdatedAt)] = dateTime;
 
 					break;
 				case EntityState.Deleted:
-					entry.State = EntityState.Modified;
-					auditable.DeletedBy = user;
-					auditable.DeletedAt = dateTime;
-					auditable.IsDeleted = true;
+					if (entry.Entity is IAuditable)
+					{
+						entry.State = EntityState.Modified;
+						entry.CurrentValues[nameof(IAuditable.DeletedBy)] = user;
+						entry.CurrentValues[nameof(IAuditable.DeletedAt)] = dateTime;
+						entry.CurrentValues[nameof(IAuditable.IsDeleted)] = true;
+					}
 
 					break;
 				case EntityState.Modified:
-					auditable.UpdatedBy = user;
-					auditable.UpdatedAt = dateTime;
+					entry.CurrentValues[nameof(IAuditable.UpdatedBy)] = user;
+					entry.CurrentValues[nameof(IAuditable.UpdatedAt)] = dateTime;
 					break;
 			}
 		}
@@ -105,9 +124,9 @@ internal abstract class DataContextBase<TContext> : Euonia.Repository.EfCore.Dat
 	{
 		base.ConfigureConventions(configurationBuilder);
 		configurationBuilder.Properties<DateTime>()
-							.HaveConversion<UniversalTimeConverter>();
+		                    .HaveConversion<UniversalTimeConverter>();
 		configurationBuilder.Properties<DateTime?>()
-							.HaveConversion<UniversalTimeConverter>();
+		                    .HaveConversion<UniversalTimeConverter>();
 	}
 
 	public override void Dispose()
