@@ -5,13 +5,13 @@ namespace Nerosoft.Starfish.Domain.Commands;
 /// <summary>
 /// Represents a command to delete an existing message template.
 /// </summary>
-public class MessageTemplateDeleteCommand : Command
+public class TemplateDeleteCommand : Command
 {
 	/// <summary>
 	/// Initializes a new instance of the MessageTemplateDeleteCommand class with the specified template identifier.
 	/// </summary>
 	/// <param name="id">The unique identifier of the message template to delete. Cannot be null.</param>
-	public MessageTemplateDeleteCommand(long id)
+	public TemplateDeleteCommand(long id)
 	{
 		Id = id;
 	}

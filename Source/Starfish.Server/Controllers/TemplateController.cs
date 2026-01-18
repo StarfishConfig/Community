@@ -8,9 +8,9 @@ namespace Nerosoft.Starfish.Server.Controllers;
 /// Controller for managing message templates.
 /// </summary>
 /// <param name="service"></param>
-[Route("api/message/template")]
+[Route("api/[controller]")]
 [ApiController]
-public class MessageTemplateController(IMessageTemplateAppService service) : ControllerBase
+public class TemplateController(ITemplateAppService service) : ControllerBase
 {
 	/// <summary>
 	/// Gets a message template by its unique identifier.
@@ -32,7 +32,7 @@ public class MessageTemplateController(IMessageTemplateAppService service) : Con
 	/// <param name="size"></param>
 	/// <returns></returns>
 	[HttpGet("query")]
-	public async Task<IActionResult> QueryAsync([FromQuery] MessageTemplateCriteria criteria, [FromQuery] int skip = 0, [FromQuery] int size = 20)
+	public async Task<IActionResult> QueryAsync([FromQuery] TemplateCriteria criteria, [FromQuery] int skip = 0, [FromQuery] int size = 20)
 	{
 		ArgumentNullException.ThrowIfNull(criteria);
 		var result = await service.QueryAsync(criteria, skip, size, HttpContext.RequestAborted);
@@ -45,7 +45,7 @@ public class MessageTemplateController(IMessageTemplateAppService service) : Con
 	/// <param name="criteria"></param>
 	/// <returns></returns>
 	[HttpGet("count")]
-	public async Task<IActionResult> CountAsync([FromQuery] MessageTemplateCriteria criteria)
+	public async Task<IActionResult> CountAsync([FromQuery] TemplateCriteria criteria)
 	{
 		var result = await service.CountAsync(criteria, HttpContext.RequestAborted);
 		return Ok(result);
@@ -57,7 +57,7 @@ public class MessageTemplateController(IMessageTemplateAppService service) : Con
 	/// <param name="dto"></param>
 	/// <returns></returns>
 	[HttpPost]
-	public async Task<IActionResult> CreateAsync([FromBody] MessageTemplateEditDto dto)
+	public async Task<IActionResult> CreateAsync([FromBody] TemplateEditDto dto)
 	{
 		ArgumentNullException.ThrowIfNull(dto);
 		var id = await service.CreateAsync(dto, HttpContext.RequestAborted);
@@ -71,7 +71,7 @@ public class MessageTemplateController(IMessageTemplateAppService service) : Con
 	/// <param name="dto"></param>
 	/// <returns></returns>
 	[HttpPut("{id:long}")]
-	public async Task<IActionResult> UpdateAsync([FromRoute] long id, [FromBody] MessageTemplateEditDto dto)
+	public async Task<IActionResult> UpdateAsync([FromRoute] long id, [FromBody] TemplateEditDto dto)
 	{
 		ArgumentNullException.ThrowIfNull(dto);
 		await service.UpdateAsync(id, dto, HttpContext.RequestAborted);

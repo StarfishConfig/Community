@@ -32,7 +32,7 @@
         Items.Add(new MenuGroup(new Icons.Regular.Size20.Settings(), "设置", false, "10px", new List<MenuItem>
         {
             new MenuLink("/settings/preferences", null, "偏好设置"),
-            new MenuLink("/settings/message/template", null, "消息模板")
+            new MenuLink("/settings/template", null, "消息模板")
         }));
         await base.OnInitializedAsync();
     }

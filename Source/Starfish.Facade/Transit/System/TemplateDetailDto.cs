@@ -1,11 +1,11 @@
 ﻿using Nerosoft.Starfish.Shared;
 
-namespace Nerosoft.Starfish.Repository.Models;
+namespace Nerosoft.Starfish.Facade.Transit;
 
 /// <summary>
-/// Represents the data model for listing message template details, including identity, usage, and audit metadata.
+/// Represents a data transfer object for detailed information about a message template.
 /// </summary>
-public class MessageTemplateListModel
+public class TemplateDetailDto
 {
 	/// <summary>
 	/// Gets or sets the unique identifier of the template.
@@ -42,9 +42,24 @@ public class MessageTemplateListModel
 	public string Subject { get; set; }
 
 	/// <summary>
+	/// Gets or sets the message body of the template.
+	/// </summary>
+	public string Body { get; set; }
+
+	/// <summary>
 	/// Gets or sets a value indicating whether the template is the default one for its usage and type.
 	/// </summary>
 	public bool Default { get; set; }
+
+	/// <summary>
+	/// Gets or sets the creation time of the template.
+	/// </summary>
+	public DateTime CreatedAt { get; set; }
+
+	/// <summary>
+	/// Gets or sets the user who created the template.
+	/// </summary>
+	public string CreatedBy { get; set; }
 
 	/// <summary>
 	/// Gets or sets the last update time of the template.

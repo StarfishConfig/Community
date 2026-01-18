@@ -5,7 +5,7 @@ namespace Nerosoft.Starfish.Facade.Transit;
 /// <summary>
 /// Message template criteria for querying message templates.
 /// </summary>
-public class MessageTemplateCriteria
+public class TemplateCriteria
 {
 	/// <summary>
 	/// Gets or sets the code associated with this instance.

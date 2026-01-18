@@ -6,7 +6,7 @@ using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Domain.Aggregates;
 
-internal class MessageTemplate : EditableObjectBase<MessageTemplate, long>
+internal class Template : EditableObjectBase<Template, long>
 {
 	#region Properties
 
@@ -77,14 +77,14 @@ internal class MessageTemplate : EditableObjectBase<MessageTemplate, long>
 		// Body
 		Rules.AddRule(new CommonRule.Required(BodyProperty, "The body is required."));
 
-		Rules.AddRule<MessageTemplate>(DefaultProperty, async target =>
+		Rules.AddRule<Template>(DefaultProperty, async target =>
 		{
 			if (target.Default == false)
 			{
 				return true;
 			}
 
-			var repository = target.BusinessContext.GetRequiredService<IMessageTemplateRepository>();
+			var repository = target.BusinessContext.GetRequiredService<ITemplateRepository>();
 
 			var exists = await repository.ExistsDefaultAsync(target.Code, target.Type, target.Id);
 
@@ -95,7 +95,7 @@ internal class MessageTemplate : EditableObjectBase<MessageTemplate, long>
 	#endregion
 
 	[FactoryCreate]
-	private async Task CreateAsync(MessageTemplateCreateCommand command, CancellationToken cancellationToken = default)
+	private async Task CreateAsync(TemplateCreateCommand command, CancellationToken cancellationToken = default)
 	{
 		if (command == null)
 		{
@@ -117,7 +117,7 @@ internal class MessageTemplate : EditableObjectBase<MessageTemplate, long>
 	{
 		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
-		var repository = BusinessContext.GetRequiredService<IMessageTemplateRepository>();
+		var repository = BusinessContext.GetRequiredService<ITemplateRepository>();
 
 		var data = await repository.GetAsync(id, cancellationToken);
 
@@ -139,7 +139,7 @@ internal class MessageTemplate : EditableObjectBase<MessageTemplate, long>
 	[FactoryInsert]
 	protected override Task InsertAsync(CancellationToken cancellationToken = default)
 	{
-		var data = new MessageTemplateData
+		var data = new TemplateData
 		{
 			Name = Name,
 			Code = Code,
@@ -150,7 +150,7 @@ internal class MessageTemplate : EditableObjectBase<MessageTemplate, long>
 			Type = Type,
 		};
 
-		var repository = BusinessContext.GetRequiredService<IMessageTemplateRepository>();
+		var repository = BusinessContext.GetRequiredService<ITemplateRepository>();
 
 		return repository.SaveAsync(data, cancellationToken)
 		                 .ContinueWith(task =>
@@ -163,7 +163,7 @@ internal class MessageTemplate : EditableObjectBase<MessageTemplate, long>
 	[FactoryUpdate]
 	protected override Task UpdateAsync(CancellationToken cancellationToken = default)
 	{
-		var data = new MessageTemplateData(Id)
+		var data = new TemplateData(Id)
 		{
 			Name = Name,
 			Code = Code,
@@ -173,14 +173,14 @@ internal class MessageTemplate : EditableObjectBase<MessageTemplate, long>
 			Default = Default,
 			Type = Type,
 		};
-		var repository = BusinessContext.GetRequiredService<IMessageTemplateRepository>();
+		var repository = BusinessContext.GetRequiredService<ITemplateRepository>();
 		return repository.SaveAsync(data, cancellationToken);
 	}
 
 	[FactoryDelete]
 	protected override Task DeleteAsync(CancellationToken cancellationToken = default)
 	{
-		var repository = BusinessContext.GetRequiredService<IMessageTemplateRepository>();
+		var repository = BusinessContext.GetRequiredService<ITemplateRepository>();
 		return repository.DeleteAsync(Id, cancellationToken);
 	}
 }

@@ -1,0 +1,76 @@
+@implements IDialogContentComponent<StandaloneEditor.StandaloneEditorOptions>
+
+@rendermode InteractiveServer
+
+@using Blazor.Monaco
+
+<FluentDialogHeader ShowDismiss="true">
+    <FluentStack VerticalAlignment="VerticalAlignment.Center">
+        <FluentIcon Value="@(new Icons.Regular.Size24.Settings())"/>
+        <FluentLabel Typo="Typography.PaneHeader">
+            @Dialog.Instance.Parameters.Title
+        </FluentLabel>
+    </FluentStack>
+</FluentDialogHeader>
+
+<FluentDialogBody>
+    <FluentStack Orientation="Orientation.Vertical">
+        <div style="height: 100%; width: 100%;">
+            <MonacoEditor @ref="_editor"
+                          Language="@Language"
+                          ScriptContent="@EditorContent"/>
+        </div>
+    </FluentStack>
+</FluentDialogBody>
+
+<FluentDialogFooter>
+    <FluentButton Appearance="Appearance.Accent" OnClick="@SaveAsync">@(CommonResources.IDS_COMMON_SAVE)</FluentButton>
+    <FluentButton Appearance="Appearance.Neutral"
+                  OnClick="@CancelAsync">@(CommonResources.IDS_COMMON_CANCEL)</FluentButton>
+</FluentDialogFooter>
+
+@code {
+    private MonacoEditor _editor;
+
+    [Parameter]
+    public StandaloneEditorOptions Content { get; set; }
+
+    private Language Language { get; set; }
+
+    private string EditorContent { get; set; }
+
+    [CascadingParameter]
+    public FluentDialog Dialog { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Content != null)
+        {
+            Language = Content.Language;
+            EditorContent = Content.Content;
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    public class StandaloneEditorOptions
+    {
+        public Language Language { get; set; }
+
+        public string Content { get; set; }
+
+        public Dictionary<string, object> Properties { get; set; }
+    }
+
+    private async Task SaveAsync()
+    {
+        var content = await _editor.GetEditorContent(resetChangedOnRead: true);
+        await Dialog.CloseAsync(content);
+    }
+
+    private async Task CancelAsync()
+    {
+        await Dialog.CancelAsync();
+    }
+
+}

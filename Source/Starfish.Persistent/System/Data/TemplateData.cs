@@ -1,16 +1,30 @@
 ﻿using Nerosoft.Starfish.Shared;
 
-namespace Nerosoft.Starfish.Facade.Transit;
+namespace Nerosoft.Starfish.Persistent.Data;
 
 /// <summary>
-/// Represents a data transfer object for detailed information about a message template.
+/// Represents the data for a message template, including its content, metadata, and lifecycle information.
 /// </summary>
-public class MessageTemplateDetailDto
+/// <remarks>Use this class to store and transfer information about message templates, such as email or phone
+/// templates, including their identifiers, content, language, and audit details. The class includes properties for
+/// tracking creation, updates, and deletion, which can be useful for auditing and versioning scenarios.</remarks>
+internal class TemplateData : Persistent<long>
 {
 	/// <summary>
-	/// Gets or sets the unique identifier of the template.
+	/// Initializes a new instance of the <see cref="TemplateData"/> class.
 	/// </summary>
-	public long Id { get; set; }
+	public TemplateData()
+	{
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the MessageTemplateData class with the specified template identifier.
+	/// </summary>
+	/// <param name="id">The unique identifier for the message template. Cannot be null or empty.</param>
+	public TemplateData(long id)
+		: base(id)
+	{
+	}
 
 	/// <summary>
 	/// Gets or sets the name of the template.
@@ -50,24 +64,4 @@ public class MessageTemplateDetailDto
 	/// Gets or sets a value indicating whether the template is the default one for its usage and type.
 	/// </summary>
 	public bool Default { get; set; }
-
-	/// <summary>
-	/// Gets or sets the creation time of the template.
-	/// </summary>
-	public DateTime CreatedAt { get; set; }
-
-	/// <summary>
-	/// Gets or sets the user who created the template.
-	/// </summary>
-	public string CreatedBy { get; set; }
-
-	/// <summary>
-	/// Gets or sets the last update time of the template.
-	/// </summary>
-	public DateTime UpdatedAt { get; set; }
-
-	/// <summary>
-	/// Gets or sets the user who last updated the template.
-	/// </summary>
-	public string UpdatedBy { get; set; }
 }

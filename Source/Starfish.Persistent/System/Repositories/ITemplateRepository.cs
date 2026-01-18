@@ -3,11 +3,11 @@ using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Persistent.Repositories;
 
-internal interface IMessageTemplateRepository
+internal interface ITemplateRepository
 {
-	Task<long> SaveAsync(MessageTemplateData data, CancellationToken cancellationToken = default);
+	Task<long> SaveAsync(TemplateData data, CancellationToken cancellationToken = default);
 
-	Task<MessageTemplateData> GetAsync(long id, CancellationToken cancellationToken = default);
+	Task<TemplateData> GetAsync(long id, CancellationToken cancellationToken = default);
 
 	Task<bool> ExistsDefaultAsync(string code, TemplateType type, long excludeId = 0, CancellationToken cancellationToken = default);
 

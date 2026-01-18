@@ -6,9 +6,9 @@ using Nerosoft.Starfish.Repository.Entities;
 namespace Nerosoft.Starfish.Repository.Configurations;
 
 [DbContext(typeof(SystemDataContext))]
-internal class MessageTemplateConfiguration : IEntityTypeConfiguration<MessageTemplate>
+internal class TemplateConfiguration : IEntityTypeConfiguration<Template>
 {
-	public void Configure(EntityTypeBuilder<MessageTemplate> builder)
+	public void Configure(EntityTypeBuilder<Template> builder)
 	{
 		builder.ToTable("message_template");
 

@@ -5,7 +5,7 @@ namespace Nerosoft.Starfish.Facade.Transit;
 /// <summary>
 /// Represents a data transfer object for listing message templates.
 /// </summary>
-public class MessageTemplateListDto
+public class TemplateListDto
 {
 	/// <summary>
 	/// Gets or sets the unique identifier of the template.

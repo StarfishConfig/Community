@@ -1,30 +1,26 @@
-﻿using Nerosoft.Starfish.Shared;
+﻿using Nerosoft.Euonia.Domain;
+using Nerosoft.Starfish.Shared;
 
-namespace Nerosoft.Starfish.Persistent.Data;
+namespace Nerosoft.Starfish.Domain.Commands;
 
 /// <summary>
-/// Represents the data for a message template, including its content, metadata, and lifecycle information.
+/// Represents a command to create a new message template.
 /// </summary>
-/// <remarks>Use this class to store and transfer information about message templates, such as email or phone
-/// templates, including their identifiers, content, language, and audit details. The class includes properties for
-/// tracking creation, updates, and deletion, which can be useful for auditing and versioning scenarios.</remarks>
-internal class MessageTemplateData : Persistent<long>
+public class TemplateUpdateCommand : Command
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="MessageTemplateData"/> class.
+	/// Initializes a new instance of the MessageTemplateUpdateCommand class with the specified template identifier.
 	/// </summary>
-	public MessageTemplateData()
+	/// <param name="id">The unique identifier of the message template to update. Cannot be null.</param>
+	public TemplateUpdateCommand(long id)
 	{
+		Id = id;
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the MessageTemplateData class with the specified template identifier.
+	/// Gets the identifier of the template to be updated.
 	/// </summary>
-	/// <param name="id">The unique identifier for the message template. Cannot be null or empty.</param>
-	public MessageTemplateData(long id)
-		: base(id)
-	{
-	}
+	public long Id { get; }
 
 	/// <summary>
 	/// Gets or sets the name of the template.

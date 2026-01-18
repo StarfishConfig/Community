@@ -1,13 +1,17 @@
-﻿using Nerosoft.Euonia.Repository;
-using Nerosoft.Starfish.Shared;
+﻿using Nerosoft.Starfish.Shared;
 
-namespace Nerosoft.Starfish.Repository.Entities;
+namespace Nerosoft.Starfish.Repository.Models;
 
 /// <summary>
-/// Represents a message template entity.
+/// Represents the data model for listing message template details, including identity, usage, and audit metadata.
 /// </summary>
-internal class MessageTemplate : Entity<long>, IAuditable
+public class TemplateListModel
 {
+	/// <summary>
+	/// Gets or sets the unique identifier of the template.
+	/// </summary>
+	public long Id { get; set; }
+
 	/// <summary>
 	/// Gets or sets the name of the template.
 	/// </summary>
@@ -38,24 +42,9 @@ internal class MessageTemplate : Entity<long>, IAuditable
 	public string Subject { get; set; }
 
 	/// <summary>
-	/// Gets or sets the message body of the template.
-	/// </summary>
-	public string Body { get; set; }
-
-	/// <summary>
 	/// Gets or sets a value indicating whether the template is the default one for its usage and type.
 	/// </summary>
 	public bool Default { get; set; }
-
-	/// <summary>
-	/// Gets or sets the creation time of the template.
-	/// </summary>
-	public DateTime CreatedAt { get; set; }
-
-	/// <summary>
-	/// Gets or sets the user who created the template.
-	/// </summary>
-	public string CreatedBy { get; set; }
 
 	/// <summary>
 	/// Gets or sets the last update time of the template.
@@ -66,19 +55,4 @@ internal class MessageTemplate : Entity<long>, IAuditable
 	/// Gets or sets the user who last updated the template.
 	/// </summary>
 	public string UpdatedBy { get; set; }
-
-	/// <summary>
-	/// Gets or sets a value indicating whether the template is deleted.
-	/// </summary>
-	public bool IsDeleted { get; set; }
-
-	/// <summary>
-	/// Gets or sets the deletion time of the template.
-	/// </summary>
-	public DateTime? DeletedAt { get; set; }
-
-	/// <summary>
-	/// Gets or sets the user who deleted the template.
-	/// </summary>
-	public string DeletedBy { get; set; }
 }

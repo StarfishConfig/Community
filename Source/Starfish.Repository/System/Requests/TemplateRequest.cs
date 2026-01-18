@@ -8,7 +8,7 @@ namespace Nerosoft.Starfish.Repository.Requests;
 /// Get message template detail by id
 /// </summary>
 /// <param name="Id"></param>
-public record MessageTemplateDetailQuery(long Id) : IRequest<MessageTemplateDetailModel>;
+public record TemplateDetailQuery(long Id) : IRequest<TemplateDetailModel>;
 
 /// <summary>
 /// Represents a request to retrieve a list of message templates.
@@ -24,7 +24,7 @@ public record MessageTemplateDetailQuery(long Id) : IRequest<MessageTemplateDeta
 /// <param name="Keyword">A keyword to search for within the message templates. This can be used to filter templates based on content or metadata.</param>
 /// <param name="Skip">The number of message templates to skip before starting to collect the result set. This is useful for pagination.</param>
 /// <param name="Size">The maximum number of message templates to return in the result set. This is useful for pagination.</param>
-public record MessageTemplateListQuery(string Code, TemplateType? Type, string Keyword, int Skip, int Size) : IRequest<IList<MessageTemplateListModel>>;
+public record TemplateListQuery(string Code, TemplateType? Type, string Keyword, int Skip, int Size) : IRequest<IList<TemplateListModel>>;
 
 /// <summary>
 /// Represents a query to retrieve the count of message templates that match the specified code, type, and keyword
@@ -35,7 +35,7 @@ public record MessageTemplateListQuery(string Code, TemplateType? Type, string K
 /// <param name="Type">The type of message template to filter by. If null, templates of all types are included.</param>
 /// <param name="Keyword">A keyword to search for within message templates. Only templates containing this keyword will be counted. Can be
 /// null or empty to ignore this filter.</param>
-public record MessageTemplateCountQuery(string Code, TemplateType? Type, string Keyword) : IRequest<int>;
+public record TemplateCountQuery(string Code, TemplateType? Type, string Keyword) : IRequest<int>;
 
 /// <summary>
 /// Represents a query to retrieve a message template that matches the specified usage, type, and language.
@@ -46,4 +46,4 @@ public record MessageTemplateCountQuery(string Code, TemplateType? Type, string 
 /// 'Email', 'SMS', etc.). Cannot be null or empty.</param>
 /// <param name="Language">The language code for the desired message template, specified in a standard format such as 'en-US' or 'fr-FR'.
 /// Cannot be null or empty.</param>
-public record MessageTemplateMatchQuery(string Code, TemplateType Type, string Language) : IRequest<MessageTemplateDetailModel>;
+public record TemplateMatchQuery(string Code, TemplateType Type, string Language) : IRequest<TemplateDetailModel>;

@@ -8,11 +8,11 @@ using Nerosoft.Starfish.Repository.Requests;
 
 namespace Nerosoft.Starfish.Facade.Implements;
 
-internal class MessageTemplateAppService : BaseApplicationService, IMessageTemplateAppService
+internal class TemplateAppService : BaseApplicationService, ITemplateAppService
 {
-	public Task<MessageTemplateDetailDto> GetAsync(long id, CancellationToken cancellationToken = default)
+	public Task<TemplateDetailDto> GetAsync(long id, CancellationToken cancellationToken = default)
 	{
-		var request = new MessageTemplateDetailQuery(id);
+		var request = new TemplateDetailQuery(id);
 		return Bus.CallAsync(request, cancellationToken)
 		          .ContinueWith(task =>
 		          {
@@ -30,13 +30,13 @@ internal class MessageTemplateAppService : BaseApplicationService, IMessageTempl
 			          {
 			          }
 
-			          return TypeAdapter.ProjectedAs<MessageTemplateDetailDto>(result);
+			          return TypeAdapter.ProjectedAs<TemplateDetailDto>(result);
 		          }, cancellationToken);
 	}
 
-	public Task<List<MessageTemplateListDto>> QueryAsync(MessageTemplateCriteria criteria, int skip, int size, CancellationToken cancellationToken = default)
+	public Task<List<TemplateListDto>> QueryAsync(TemplateCriteria criteria, int skip, int size, CancellationToken cancellationToken = default)
 	{
-		var request = new MessageTemplateListQuery(criteria.Code, criteria.Type, criteria.Keyword, skip, size);
+		var request = new TemplateListQuery(criteria.Code, criteria.Type, criteria.Keyword, skip, size);
 		return Bus.CallAsync(request, cancellationToken)
 		          .ContinueWith(task =>
 		          {
@@ -54,19 +54,19 @@ internal class MessageTemplateAppService : BaseApplicationService, IMessageTempl
 			          {
 			          }
 
-			          return TypeAdapter.ProjectedAs<List<MessageTemplateListDto>>(result);
+			          return TypeAdapter.ProjectedAs<List<TemplateListDto>>(result);
 		          }, cancellationToken);
 	}
 
-	public Task<int> CountAsync(MessageTemplateCriteria criteria, CancellationToken cancellationToken = default)
+	public Task<int> CountAsync(TemplateCriteria criteria, CancellationToken cancellationToken = default)
 	{
-		var request = new MessageTemplateCountQuery(criteria.Code, criteria.Type, criteria.Keyword);
+		var request = new TemplateCountQuery(criteria.Code, criteria.Type, criteria.Keyword);
 		return Bus.CallAsync(request, cancellationToken);
 	}
 
-	public async Task<long> CreateAsync(MessageTemplateEditDto dto, CancellationToken cancellationToken = default)
+	public async Task<long> CreateAsync(TemplateEditDto dto, CancellationToken cancellationToken = default)
 	{
-		var command = TypeAdapter.ProjectedAs<MessageTemplateCreateCommand>(dto);
+		var command = TypeAdapter.ProjectedAs<TemplateCreateCommand>(dto);
 		var tcs = new TaskCompletionSource<long>();
 
 		var subject = new Subject<long>();
@@ -81,16 +81,16 @@ internal class MessageTemplateAppService : BaseApplicationService, IMessageTempl
 		return await tcs.Task;
 	}
 
-	public Task UpdateAsync(long id, MessageTemplateEditDto dto, CancellationToken cancellationToken = default)
+	public Task UpdateAsync(long id, TemplateEditDto dto, CancellationToken cancellationToken = default)
 	{
-		var command = new MessageTemplateUpdateCommand(id);
+		var command = new TemplateUpdateCommand(id);
 		TypeAdapter.ProjectedAs(dto, command);
 		return Bus.SendAsync(command, cancellationToken);
 	}
 
 	public Task DeleteAsync(long id, CancellationToken cancellationToken = default)
 	{
-		var command = new MessageTemplateDeleteCommand(id);
+		var command = new TemplateDeleteCommand(id);
 		return Bus.SendAsync(command, cancellationToken);
 	}
 }

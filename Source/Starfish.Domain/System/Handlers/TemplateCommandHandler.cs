@@ -4,15 +4,15 @@ using Nerosoft.Starfish.Domain.Commands;
 
 namespace Nerosoft.Starfish.Domain.Handlers;
 
-internal class MessageTemplateCommandHandler(IServiceProvider provider)
+internal class TemplateCommandHandler(IServiceProvider provider)
 	: CommandHandlerBase(provider),
-	  IHandler<MessageTemplateCreateCommand>,
-	  IHandler<MessageTemplateUpdateCommand>,
-	  IHandler<MessageTemplateDeleteCommand>
+	  IHandler<TemplateCreateCommand>,
+	  IHandler<TemplateUpdateCommand>,
+	  IHandler<TemplateDeleteCommand>
 {
-	public Task HandleAsync(MessageTemplateCreateCommand message, MessageContext context, CancellationToken cancellationToken = default)
+	public Task HandleAsync(TemplateCreateCommand message, MessageContext context, CancellationToken cancellationToken = default)
 	{
-		return Actuator.For<MessageTemplate>()
+		return Actuator.For<Template>()
 		               .Create(message, cancellationToken)
 		               .ExecuteAsync(cancellationToken)
 		               .NextAsync(target =>
@@ -21,9 +21,9 @@ internal class MessageTemplateCommandHandler(IServiceProvider provider)
 		               });
 	}
 
-	public Task HandleAsync(MessageTemplateUpdateCommand message, MessageContext context, CancellationToken cancellationToken = default)
+	public Task HandleAsync(TemplateUpdateCommand message, MessageContext context, CancellationToken cancellationToken = default)
 	{
-		return Actuator.For<MessageTemplate>()
+		return Actuator.For<Template>()
 		               .Fetch(message.Id, cancellationToken)
 		               .Handle(target =>
 		               {
@@ -38,9 +38,9 @@ internal class MessageTemplateCommandHandler(IServiceProvider provider)
 		               .ExecuteAsync(cancellationToken);
 	}
 
-	public Task HandleAsync(MessageTemplateDeleteCommand message, MessageContext context, CancellationToken cancellationToken = default)
+	public Task HandleAsync(TemplateDeleteCommand message, MessageContext context, CancellationToken cancellationToken = default)
 	{
-		return Actuator.For<MessageTemplate>()
+		return Actuator.For<Template>()
 		               .Delete(message.Id, cancellationToken)
 		               .ExecuteAsync(cancellationToken);
 	}

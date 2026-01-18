@@ -8,50 +8,50 @@ using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Repositories;
 
-internal class MessageTemplateRepository(SystemDataContext context) : IMessageTemplateRepository, ITransientDependency
+internal class TemplateRepository(SystemDataContext context) : ITemplateRepository, ITransientDependency
 {
 	public Task DeleteAsync(long id, CancellationToken cancellationToken = default)
 	{
-		return context.Set<MessageTemplate>()
+		return context.Set<Template>()
 		              .Where(x => x.Id == id)
 		              .ExecuteUpdateAsync(x => x.SetProperty(y => y.IsDeleted, true), cancellationToken);
 	}
 
 	public Task<bool> ExistsDefaultAsync(string code, TemplateType type, long excludeId = 0, CancellationToken cancellationToken = default)
 	{
-		var specification = MessageTemplateSpecification.ExistsDefault(code, type, excludeId);
+		var specification = TemplateSpecification.ExistsDefault(code, type, excludeId);
 
 		var predicate = specification.Satisfy();
 
-		return context.Set<MessageTemplate>()
+		return context.Set<Template>()
 		              .AsNoTracking()
 		              .AnyAsync(predicate, cancellationToken);
 	}
 
-	public async Task<MessageTemplateData> GetAsync(long id, CancellationToken cancellationToken = default)
+	public async Task<TemplateData> GetAsync(long id, CancellationToken cancellationToken = default)
 	{
-		var entity = await context.Set<MessageTemplate>().FindAsync([id], cancellationToken);
+		var entity = await context.Set<Template>().FindAsync([id], cancellationToken);
 		if (entity is null || entity.IsDeleted)
 		{
 			throw new KeyNotFoundException($"MessageTemplate with id '{id}' was not found.");
 		}
 
-		var data = new MessageTemplateData(entity.Id);
+		var data = new TemplateData(entity.Id);
 		TypeAdapter.ProjectedAs(entity, data);
 		return data;
 	}
 
-	public async Task<long> SaveAsync(MessageTemplateData data, CancellationToken cancellationToken = default)
+	public async Task<long> SaveAsync(TemplateData data, CancellationToken cancellationToken = default)
 	{
-		MessageTemplate entity;
+		Template entity;
 		if (data.Id <= 0)
 		{
-			entity = TypeAdapter.ProjectedAs<MessageTemplate>(data);
+			entity = TypeAdapter.ProjectedAs<Template>(data);
 			await context.AddAsync(entity, cancellationToken);
 		}
 		else
 		{
-			entity = await context.Set<MessageTemplate>().FindAsync([data.Id], cancellationToken);
+			entity = await context.Set<Template>().FindAsync([data.Id], cancellationToken);
 			if (entity is null || entity.IsDeleted)
 			{
 				throw new KeyNotFoundException($"MessageTemplate with id '{data.Id}' was not found.");

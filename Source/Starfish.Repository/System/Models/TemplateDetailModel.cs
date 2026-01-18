@@ -1,26 +1,17 @@
-﻿using Nerosoft.Euonia.Domain;
-using Nerosoft.Starfish.Shared;
+﻿using Nerosoft.Starfish.Shared;
 
-namespace Nerosoft.Starfish.Domain.Commands;
+namespace Nerosoft.Starfish.Repository.Models;
 
 /// <summary>
-/// Represents a command to create a new message template.
+/// Represents the data model for querying detailed information about a message template, including its identity,
+/// content, usage, and audit metadata.
 /// </summary>
-public class MessageTemplateUpdateCommand : Command
+public class TemplateDetailModel
 {
 	/// <summary>
-	/// Initializes a new instance of the MessageTemplateUpdateCommand class with the specified template identifier.
+	/// Gets or sets the unique identifier of the template.
 	/// </summary>
-	/// <param name="id">The unique identifier of the message template to update. Cannot be null.</param>
-	public MessageTemplateUpdateCommand(long id)
-	{
-		Id = id;
-	}
-
-	/// <summary>
-	/// Gets the identifier of the template to be updated.
-	/// </summary>
-	public long Id { get; }
+	public long Id { get; set; }
 
 	/// <summary>
 	/// Gets or sets the name of the template.
@@ -60,4 +51,24 @@ public class MessageTemplateUpdateCommand : Command
 	/// Gets or sets a value indicating whether the template is the default one for its usage and type.
 	/// </summary>
 	public bool Default { get; set; }
+
+	/// <summary>
+	/// Gets or sets the creation time of the template.
+	/// </summary>
+	public DateTime CreatedAt { get; set; }
+
+	/// <summary>
+	/// Gets or sets the user who created the template.
+	/// </summary>
+	public string CreatedBy { get; set; }
+
+	/// <summary>
+	/// Gets or sets the last update time of the template.
+	/// </summary>
+	public DateTime UpdatedAt { get; set; }
+
+	/// <summary>
+	/// Gets or sets the user who last updated the template.
+	/// </summary>
+	public string UpdatedBy { get; set; }
 }

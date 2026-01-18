@@ -1,0 +1,153 @@
+@page "/settings/template/edit/{Id:long}"
+@page "/settings/template/edit"
+
+@rendermode InteractiveServer
+
+@using Blazor.Monaco
+@using Nerosoft.Starfish.Shared
+
+@inject IDialogService DialogService
+@inject ITemplateAppService Service
+@inject NavigationManager NavigationManager
+
+<PageTitle>新建消息模板</PageTitle>
+
+<h3>新建消息模板</h3>
+
+<FluentEditForm EditContext="_editContext" OnSubmit="@OnSubmitAsync" FormName="form">
+    <DataAnnotationsValidator/>
+    <FluentValidationSummary/>
+
+    <FluentBodyContent>
+        <FluentGrid Columns="12" RowGap="10" ColumnGap="10">
+            <FluentGridItem sm="12" md="6" lg="3">
+                <FluentSelect Label="模板类型"
+                              Style="width: 100%"
+                              TOption="Option<TemplateType>"
+                              Items="@MessageTemplateTypes"
+                              OptionValue="@(i => i.Value.ToString())"
+                              OptionText="@(i => i.Text)"
+                              @bind-SelectedOption="@SelectedType"/>
+            </FluentGridItem>
+            <FluentGridItem sm="12" md="6" lg="3">
+                <FluentTextField Label="名称" Style="width: 100%" @bind-Value="Model.Name"/>
+            </FluentGridItem>
+            <FluentGridItem sm="12" md="6" lg="3">
+                <FluentTextField Label="代码" Style="width: 100%" @bind-Value="@Model.Code"/>
+            </FluentGridItem>
+            <FluentGridItem sm="12" md="6" lg="3">
+                <FluentTextField Label="语言" Style="width: 100%" @bind-Value="@Model.Language"/>
+            </FluentGridItem>
+            <FluentGridItem md="12">
+                <FluentTextField Label="主题" Style="width: 100%"
+                                 @bind-Value="Model.Subject"/>
+            </FluentGridItem>
+            <FluentGridItem md="12">
+                <MonacoEditor @ref="_editor" Language="Language.Html" ScriptContent="@Model.Body"
+                              EditorOptions="@EditorOptions"/>
+            </FluentGridItem>
+        </FluentGrid>
+        <div style="width: 100%; display: flex; align-items: center;column-gap: 12px; margin-top: 16px;">
+            <FluentButton Style="width: 100px;" Appearance="Appearance.Accent" Type="ButtonType.Submit">
+                提交
+            </FluentButton>
+
+            <FluentCheckbox Label="设为默认"></FluentCheckbox>
+        </div>
+    </FluentBodyContent>
+
+
+</FluentEditForm>
+
+@code {
+
+    [Parameter]
+    public long? Id { get; set; }
+
+    private MonacoEditor _editor;
+
+    private EditorOptions EditorOptions { get; } = new()
+    {
+        Minimap = new MinimapOptions
+        {
+            Enabled = false
+        },
+        AutoClosingBrackets = AutoClosingBrackets.Always, Theme = Theme.VsDark
+    };
+
+    private List<Option<TemplateType>> MessageTemplateTypes { get; } =
+    [
+        new() { Value = TemplateType.Sms, Text = "Sms" },
+        new() { Value = TemplateType.Email, Text = "Email" },
+        new() { Value = TemplateType.Notification, Text = "Notification" }
+    ];
+
+    private Option<TemplateType> SelectedType { get; set; }
+
+    private EditContext _editContext;
+
+    private TemplateEditDto Model { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _editContext = new EditContext(Model);
+        await LoadAsync();
+    }
+
+    private async Task OnSubmitAsync(EditContext context)
+    {
+        var content = await _editor.GetEditorContent();
+        Model.Body = content;
+        var id = await Service.CreateAsync(Model);
+        NavigationManager.NavigateTo("/settings/message/template");
+    }
+
+    private async Task OpenEditorAsync()
+    {
+        var options = new StandaloneEditor.StandaloneEditorOptions
+        {
+            Language = Language.Html
+            // Properties = new Dictionary<string, object>
+            // {
+            //     { "value", Model.Content ?? string.Empty }
+            // }
+        };
+
+        var parameters = new DialogParameters
+        {
+            { "Content", options }
+        };
+
+        var dialog = await DialogService.ShowDialogAsync<StandaloneEditor>(options, new DialogParameters { Title = "", Width = "calc(100% - 2px)", Height = "calc(100% - 2px)", PreventDismissOnOverlayClick = true });
+
+        var result = await dialog.Result;
+
+        // if (!result.Cancelled)
+        // {
+        //     if (result.Data is Dictionary<string, object> data && data.ContainsKey("value"))
+        //     {
+        //         Model.Content = data["value"]?.ToString();
+        //     }
+        // }
+    }
+
+    private async Task LoadAsync()
+    {
+        if (Id.HasValue)
+        {
+            var detail = await Service.GetAsync(Id.Value);
+            if (detail != null)
+            {
+                Model.Name = detail.Name;
+                Model.Code = detail.Code;
+                Model.Language = detail.Language;
+                Model.Subject = detail.Subject;
+                Model.Type = detail.Type;
+                Model.Body = detail.Body;
+            }
+
+            SelectedType = MessageTemplateTypes.FirstOrDefault(t => t.Value == Model.Type);
+        }
+    }
+
+}
