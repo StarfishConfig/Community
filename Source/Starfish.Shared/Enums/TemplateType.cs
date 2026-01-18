@@ -3,8 +3,13 @@
 /// <summary>
 /// Specifies the type of message template used for sending notifications.
 /// </summary>
-public enum MessageTemplateType
+public enum TemplateType
 {
+	/// <summary>
+	/// Specifies that no message template type is selected.
+	/// </summary>
+	None = 0,
+
 	/// <summary>
 	/// Specifies that the notification is sent by email.
 	/// </summary>
@@ -13,7 +18,7 @@ public enum MessageTemplateType
 	/// <summary>
 	/// Short Message Service (SMS)
 	/// </summary>
-	SMS = 2,
+	Sms = 2,
 
 	/// <summary>
 	/// Represents a notification message type.
