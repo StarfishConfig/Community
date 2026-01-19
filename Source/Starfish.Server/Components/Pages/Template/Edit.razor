@@ -4,7 +4,6 @@
 @using Blazor.Monaco
 @using Nerosoft.Starfish.Shared
 
-@inject IDialogService DialogService
 @inject ITemplateAppService Service
 @inject NavigationManager NavigationManager
 @if (Id > 0)
@@ -19,16 +18,28 @@ else
 <FluentStack VerticalGap="16" Orientation="Orientation.Vertical">
     @if (Id > 0)
     {
+        <FluentBreadcrumb Style="margin-bottom: 16px;">
+            <FluentBreadcrumbItem Href="/">@LayoutResources.IDS_MENU_TEXT_HOME</FluentBreadcrumbItem>
+            <FluentBreadcrumbItem Href="/templates">@LayoutResources.IDS_MENU_TEXT_TEMPLATE</FluentBreadcrumbItem>
+            <FluentBreadcrumbItem
+                Href="@($"/templates/{Id}/edit")">@SystemResources.IDS_TEMPLATE_UPDATE_TITLE</FluentBreadcrumbItem>
+        </FluentBreadcrumb>
         <FluentLabel Typo="Typography.Header">@SystemResources.IDS_TEMPLATE_UPDATE_TITLE</FluentLabel>
     }
     else
     {
+        <FluentBreadcrumb Style="margin-bottom: 16px;">
+            <FluentBreadcrumbItem Href="/">@LayoutResources.IDS_MENU_TEXT_HOME</FluentBreadcrumbItem>
+            <FluentBreadcrumbItem Href="/templates">@LayoutResources.IDS_MENU_TEXT_TEMPLATE</FluentBreadcrumbItem>
+            <FluentBreadcrumbItem
+                Href="/templates/new">@SystemResources.IDS_TEMPLATE_CREATE_TITLE</FluentBreadcrumbItem>
+        </FluentBreadcrumb>
         <FluentLabel Typo="Typography.Header">@SystemResources.IDS_TEMPLATE_CREATE_TITLE</FluentLabel>
     }
 
     <FluentEditForm EditContext="_editContext" OnSubmit="@OnSubmitAsync" FormName="form" Style="width: 100%">
-        <DataAnnotationsValidator />
-        <FluentValidationSummary />
+        <DataAnnotationsValidator/>
+        <FluentValidationSummary/>
 
         <FluentBodyContent>
             <FluentGrid Columns="12" RowGap="10" ColumnGap="10">
@@ -39,35 +50,35 @@ else
                                   Items="@TemplateTypes"
                                   OptionValue="@(i => i.Value.ToString())"
                                   OptionText="@(i => i.Text)"
-                                  @bind-SelectedOption="@SelectedType" />
+                                  @bind-SelectedOption="@SelectedType"/>
                 </FluentGridItem>
                 <FluentGridItem sm="12" md="6" lg="3">
                     <FluentTextField Label="@SystemResources.IDS_TEMPLATE_LABEL_NAME"
                                      Placeholder="@SystemResources.IDS_TEMPLATE_PLACEHOLDER_NAME"
                                      Style="width: 100%"
-                                     @bind-Value="Model.Name" />
+                                     @bind-Value="Model.Name"/>
                 </FluentGridItem>
                 <FluentGridItem sm="12" md="6" lg="3">
                     <FluentTextField Label="@SystemResources.IDS_TEMPLATE_LABEL_CODE"
                                      Placeholder="@SystemResources.IDS_TEMPLATE_PLACEHOLDER_CODE"
                                      Style="width: 100%"
-                                     @bind-Value="@Model.Code" />
+                                     @bind-Value="@Model.Code"/>
                 </FluentGridItem>
                 <FluentGridItem sm="12" md="6" lg="3">
                     <FluentTextField Label="@SystemResources.IDS_TEMPLATE_LABEL_LANGUAGE"
                                      Placeholder="@SystemResources.IDS_TEMPLATE_PLACEHOLDER_LANGUAGE"
                                      Style="width: 100%"
-                                     @bind-Value="@Model.Language" />
+                                     @bind-Value="@Model.Language"/>
                 </FluentGridItem>
                 <FluentGridItem md="12">
                     <FluentTextField Label="@SystemResources.IDS_TEMPLATE_LABEL_SUBJECT"
                                      Placeholder="@SystemResources.IDS_TEMPLATE_PLACEHOLDER_SUBJECT"
                                      Style="width: 100%"
-                                     @bind-Value="Model.Subject" />
+                                     @bind-Value="Model.Subject"/>
                 </FluentGridItem>
                 <FluentGridItem md="12">
-                    <MonacoEditor @ref="_editor" Language="Language.Html"
-                                  EditorOptions="@EditorOptions" ScriptContent="{{}}" />
+                    <MonacoEditor @ref="_editor" Language="Language.Html" Style="height: 200px; width: 100%;"
+                                  EditorOptions="@EditorOptions" ScriptContent="{{}}"/>
                 </FluentGridItem>
             </FluentGrid>
             <div style="width: 100%; display: flex; align-items: center;column-gap: 16px; margin-top: 16px;">
@@ -75,13 +86,17 @@ else
                     @CommonResources.IDS_BUTTON_TEXT_SUBMIT
                 </FluentButton>
 
-                <FluentCheckbox Label="@SystemResources.IDS_TEMPLATE_EDIT_SET_DEFAULT" @bind-Value="Model.Default" />
+                <FluentCheckbox Label="@SystemResources.IDS_TEMPLATE_EDIT_SET_DEFAULT" @bind-Value="Model.Default"/>
             </div>
         </FluentBodyContent>
     </FluentEditForm>
 </FluentStack>
+
 @code {
 
+    /// <summary>
+    /// Template Id
+    /// </summary>
     [Parameter]
     public long? Id { get; set; }
 
@@ -107,10 +122,7 @@ else
 
     private Option<TemplateType> SelectedType
     {
-        get
-        {
-            return Model == null ? TemplateTypes[0] : TemplateTypes.FirstOrDefault(t => t.Value == Model.Type);
-        }
+        get { return Model == null ? TemplateTypes[0] : TemplateTypes.FirstOrDefault(t => t.Value == Model.Type); }
         set
         {
             if (value != null)
@@ -124,6 +136,7 @@ else
 
     private TemplateEditDto Model { get; set; } = new();
 
+    /// <inheritdoc/>
     protected override async Task OnInitializedAsync()
     {
         _editContext = new EditContext(Model);
@@ -142,36 +155,8 @@ else
         {
             await Service.CreateAsync(Model);
         }
+
         NavigationManager.NavigateTo("/templates");
-    }
-
-    private async Task OpenEditorAsync()
-    {
-        var options = new StandaloneEditor.StandaloneEditorOptions
-        {
-            Language = Language.Html
-            // Properties = new Dictionary<string, object>
-            // {
-            //     { "value", Model.Content ?? string.Empty }
-            // }
-        };
-
-        var parameters = new DialogParameters
-        {
-            { "Content", options }
-        };
-
-        var dialog = await DialogService.ShowDialogAsync<StandaloneEditor>(options, new DialogParameters { Title = "", Width = "calc(100% - 2px)", Height = "calc(100% - 2px)", PreventDismissOnOverlayClick = true });
-
-        var result = await dialog.Result;
-
-        // if (!result.Cancelled)
-        // {
-        //     if (result.Data is Dictionary<string, object> data && data.ContainsKey("value"))
-        //     {
-        //         Model.Content = data["value"]?.ToString();
-        //     }
-        // }
     }
 
     private async Task LoadAsync()

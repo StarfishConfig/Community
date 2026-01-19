@@ -7,6 +7,11 @@
 <PageTitle>@SystemResources.IDS_TEMPLATE_INDEX_TITLE</PageTitle>
 
 <FluentStack Orientation="Orientation.Vertical" VerticalGap="16" Style="width: 100%">
+    <FluentBreadcrumb Style="margin-bottom: 16px;">
+        <FluentBreadcrumbItem Href="/">@LayoutResources.IDS_MENU_TEXT_HOME</FluentBreadcrumbItem>
+        <FluentBreadcrumbItem Href="/templates">@LayoutResources.IDS_MENU_TEXT_TEMPLATE</FluentBreadcrumbItem>
+    </FluentBreadcrumb>
+
     <FluentLabel Typo="Typography.Header">@SystemResources.IDS_TEMPLATE_INDEX_TITLE</FluentLabel>
 
     <FluentAccordion Style="width: 100%">
@@ -52,7 +57,8 @@
     <FluentDataGrid @ref="_dataGrid"
                     Style="width: 100%"
                     TGridItem="TemplateListDto"
-                    Items="_dataSource" RowSize="DataGridRowSize.Large"
+                    Items="_dataSource" 
+                    RowSize="DataGridRowSize.Large"
                     GenerateHeader="GenerateHeaderOption.Sticky"
                     Loading="Loading"
                     Pagination="Pagination"
@@ -68,11 +74,11 @@
         <TemplateColumn Title="@SystemResources.IDS_TEMPLATE_DEFAULT" Width="120px">
             @if (context.Default)
             {
-                <FluentBadge Appearance="Appearance.Accent">@CommonResources.IDS_LABEL_TEXT_YES</FluentBadge>
+                <FluentBadge Appearance="Appearance.Accent">@CommonResources.IDS_COMMON_YES</FluentBadge>
             }
             else
             {
-                <FluentBadge Appearance="Appearance.Lightweight">@CommonResources.IDS_LABEL_TEXT_NO</FluentBadge>
+                <FluentBadge Appearance="Appearance.Lightweight">@CommonResources.IDS_COMMON_NO</FluentBadge>
             }
         </TemplateColumn>
         <TemplateColumn Title="@SystemResources.IDS_TEMPLATE_LABEL_STATE" Width="120px">
@@ -149,7 +155,7 @@
     {
         var message = string.Format(SystemResources.IDS_TEMPLATE_DELETE_COMFIRMATION, name);
 
-        var dialog = await DialogService.ShowConfirmationAsync(message, CommonResources.IDS_LABEL_TEXT_YES, CommonResources.IDS_LABEL_TEXT_NO, CommonResources.IDS_CONFIRM_TITLE_DELETE);
+        var dialog = await DialogService.ShowConfirmationAsync(message, CommonResources.IDS_COMMON_YES, CommonResources.IDS_COMMON_NO, CommonResources.IDS_DIALOG_TITLE_CONFIRM);
 
         var result = await dialog.Result;
 
