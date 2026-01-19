@@ -11,7 +11,7 @@ using Nerosoft.Starfish.Toolkit;
 
 namespace Nerosoft.Starfish.Repository.Handlers;
 
-internal class AuthInfoQueryHandler : IHandler<AuthenticateWithUsernameRequest, AuthInfoModel>
+internal class AuthInfoQueryHandler : IHandler<AuthWithUsernameRequest, AuthInfoModel>
 {
 	private readonly IdentityDataContext _context;
 
@@ -20,7 +20,7 @@ internal class AuthInfoQueryHandler : IHandler<AuthenticateWithUsernameRequest, 
 		_context = context;
 	}
 
-	public async Task<AuthInfoModel> HandleAsync(AuthenticateWithUsernameRequest message, MessageContext context, CancellationToken cancellationToken = default)
+	public async Task<AuthInfoModel> HandleAsync(AuthWithUsernameRequest message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		if (string.IsNullOrWhiteSpace(message.Username))
 		{

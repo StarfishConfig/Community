@@ -274,9 +274,9 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 				throw new ArgumentException(IdentityResources.IDS_ERROR_AUTH_PROVIDER_REQUIRED, nameof(data));
 			case AuthProvider.Username:
 			case AuthProvider.Password:
-				return new AuthenticateWithUsernameRequest(data.Username, data.Password);
+				return new AuthWithUsernameRequest(data.Username, data.Password);
 			case AuthProvider.RefreshToken:
-				return new AuthenticateWithRefreshTokenRequest(data.Password);
+				return new AuthWithRefreshTokenRequest(data.Password);
 			case AuthProvider.Microsoft:
 			case AuthProvider.Google:
 			case AuthProvider.Github:
@@ -298,7 +298,7 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 				{
 				}
 
-				return new AuthenticateWithExternalProviderRequest(data.GrantType, auth.Id);
+				return new AuthWithExternalProviderRequest(data.GrantType, auth.Id);
 			}
 			default:
 				throw new NotSupportedException(string.Format(IdentityResources.IDS_ERROR_AUTH_PROVIDER_NOT_SUPPORT, data.GrantType));
