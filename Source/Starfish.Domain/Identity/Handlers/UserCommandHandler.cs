@@ -24,6 +24,7 @@ internal sealed class UserCommandHandler(IServiceProvider provider)
 			               user.SetPhone(message.Phone);
 			               user.SetNickname(message.Nickname);
 			               user.AssignRoles(message.Roles.ToArray());
+			               user.MarkAsNew();
 		               })
 		               .ExecuteAsync(cancellationToken);
 	}
@@ -37,6 +38,7 @@ internal sealed class UserCommandHandler(IServiceProvider provider)
 			               user.SetEmail(message.Email);
 			               user.SetPhone(message.Phone);
 			               user.SetNickname(message.Nickname);
+			               user.MarkAsChanged();
 		               })
 		               .ExecuteAsync(cancellationToken);
 	}
@@ -48,6 +50,7 @@ internal sealed class UserCommandHandler(IServiceProvider provider)
 		               .Handle(user =>
 		               {
 			               user.SetPassword(message.Password, UserPasswordUpdateType.Change);
+			               user.MarkAsChanged();
 		               })
 		               .ExecuteAsync(cancellationToken);
 	}
@@ -59,6 +62,7 @@ internal sealed class UserCommandHandler(IServiceProvider provider)
 		               .Handle(user =>
 		               {
 			               user.SetPassword(message.Password, UserPasswordUpdateType.Reset);
+			               user.MarkAsChanged();
 		               })
 		               .ExecuteAsync(cancellationToken);
 	}
@@ -78,6 +82,8 @@ internal sealed class UserCommandHandler(IServiceProvider provider)
 					               user.ResetAccessFailedCount();
 					               break;
 			               }
+
+			               user.MarkAsChanged();
 		               })
 		               .ExecuteAsync(cancellationToken);
 	}

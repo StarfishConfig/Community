@@ -1,13 +1,15 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Nerosoft.Euonia.Business;
+using Nerosoft.Starfish.Domain.Repositories;
+using Nerosoft.Starfish.Persistent;
 
 namespace Nerosoft.Starfish.Domain.Aggregates;
 
 /// <summary>
 /// Represents a team within the system.
 /// </summary>
-internal sealed partial class Team : EditableObjectBase<Team, string>
+internal sealed class Team : EditableObjectBase<Team, long>
 {
 	public Team()
 	{
@@ -50,9 +52,12 @@ internal sealed partial class Team : EditableObjectBase<Team, string>
 
 	protected override void AddRules()
 	{
-		Rules.AddRule(new CommonRule.Lambda(NameProperty, async (_, _) => !string.IsNullOrWhiteSpace(Name), "Team name cannot be empty."));
-		Rules.AddRule(new CommonRule.Lambda(DescriptionProperty, async (_, _) => Description?.Length > 500, "Team description cannot exceed 500 characters."));
+		Rules.AddRule(new CommonRule.Lambda(NameProperty, (_, _) => Task.FromResult(!string.IsNullOrWhiteSpace(Name)), "Team name cannot be empty."));
+		Rules.AddRule(new CommonRule.Lambda(DescriptionProperty, (_, _) => Task.FromResult(Description?.Length > 500), "Team description cannot exceed 500 characters."));
+		Rules.AddRule(new CommonRule.Lambda(OwnerIdProperty, (_, _) => Task.FromResult(!string.IsNullOrWhiteSpace(OwnerId)), "Owner id cannot be empty."));
 	}
+
+	#region Business Methods
 
 	/// <summary>
 	/// Sets the name of the team.
@@ -82,8 +87,6 @@ internal sealed partial class Team : EditableObjectBase<Team, string>
 		{
 			Members.Add(userId);
 		}
-
-		OnPropertyChanged(nameof(Members));
 	}
 
 	/// <summary>
@@ -92,18 +95,33 @@ internal sealed partial class Team : EditableObjectBase<Team, string>
 	/// <param name="userId">The user identifier.</param>
 	internal void RemoveMember(string userId)
 	{
-		if (Members.Contains(userId))
+		Members.Remove(userId);
+	}
+
+	/// <summary>
+	/// Transfers ownership of the team to another user.
+	/// </summary>
+	/// <param name="ownerId"></param>
+	/// <param name="leaveAfterTransfer"></param>
+	internal void Transfer(string ownerId, bool leaveAfterTransfer)
+	{
+		OwnerId = ownerId;
+		if (!Members.Contains(ownerId))
 		{
-			Members.Remove(userId);
+			AppendMember(ownerId);
 		}
 
-		OnPropertyChanged(nameof(Members));
+		if (leaveAfterTransfer)
+		{
+			RemoveMember(BusinessContext.User.UserId);
+		}
 	}
 
 	private void OnMembersChanged(object sender, NotifyCollectionChangedEventArgs args)
 	{
 		if (!IsBypassingRuleChecks)
 		{
+			OnPropertyChanged(nameof(Members));
 		}
 	}
 
@@ -112,4 +130,74 @@ internal sealed partial class Team : EditableObjectBase<Team, string>
 		Members.CollectionChanged -= OnMembersChanged;
 		base.Dispose(disposing);
 	}
+
+	#endregion
+
+	#region Factory Methods
+
+	[FactoryCreate]
+	private async Task CreateAsync(string name, CancellationToken cancellationToken = default)
+	{
+		Name = name;
+		OwnerId = BusinessContext.User.UserId;
+		AppendMember(BusinessContext.User.UserId);
+		await Task.CompletedTask;
+	}
+
+	[FactoryFetch]
+	private async Task FetchAsync(long id, CancellationToken cancellationToken = default)
+	{
+		var repository = BusinessContext.GetRequiredService<ITeamRepository>();
+		var data = await repository.GetAsync(id, cancellationToken);
+		LoadProperty(NameProperty, data.Name);
+		LoadProperty(DescriptionProperty, data.Description);
+		LoadProperty(OwnerIdProperty, data.OwnerId);
+		LoadProperty(IdProperty, data.Id);
+		using (BypassRuleChecks)
+		{
+			foreach (var memberId in data.Members)
+			{
+				Members.Add(memberId);
+			}
+		}
+	}
+
+	[FactoryInsert]
+	protected override Task InsertAsync(CancellationToken cancellationToken = default)
+	{
+		var data = new TeamData
+		{
+			Name = Name,
+			Description = Description,
+			OwnerId = OwnerId,
+			Members = Members.ToHashSet()
+		};
+
+		var repository = BusinessContext.GetRequiredService<ITeamRepository>();
+		return repository.SaveAsync(data, cancellationToken);
+	}
+
+	[FactoryUpdate]
+	protected override Task UpdateAsync(CancellationToken cancellationToken = default)
+	{
+		var data = new TeamData(Id)
+		{
+			Name = Name,
+			Description = Description,
+			OwnerId = OwnerId,
+			Members = Members.ToHashSet()
+		};
+
+		var repository = BusinessContext.GetRequiredService<ITeamRepository>();
+		return repository.SaveAsync(data, cancellationToken);
+	}
+
+	[FactoryDelete]
+	protected override Task DeleteAsync(CancellationToken cancellationToken = default)
+	{
+		var repository = BusinessContext.GetRequiredService<ITeamRepository>();
+		return repository.DeleteAsync(Id, cancellationToken);
+	}
+
+	#endregion
 }
