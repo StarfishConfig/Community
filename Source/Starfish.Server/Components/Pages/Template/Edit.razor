@@ -1,5 +1,5 @@
-@page "/system/template/edit/{Id:long}"
-@page "/system/template/edit"
+@page "/templates/{Id:long}/edit"
+@page "/templates/new"
 
 @rendermode @(new InteractiveServerRenderMode(false))
 
@@ -144,7 +144,7 @@ else
         {
             await Service.CreateAsync(Model);
         }
-        NavigationManager.NavigateTo("/system/template");
+        NavigationManager.NavigateTo("/templates");
     }
 
     private async Task OpenEditorAsync()

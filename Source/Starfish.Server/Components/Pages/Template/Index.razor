@@ -1,4 +1,4 @@
-@page "/system/template"
+@page "/templates"
 @using Nerosoft.Starfish.Shared
 @rendermode InteractiveServer
 
@@ -32,7 +32,7 @@
             <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End">
                 <FluentAnchor IconStart="@(new Icons.Regular.Size16.Add())"
                               Appearance="Appearance.Lightweight"
-                              Href="/system/template/edit">
+                              Href="/templates/new">
                     @SystemResources.IDS_TEMPLATE_INDEX_BUTTON_TEXT_NEW
                 </FluentAnchor>
                 <FluentButton IconStart="@(new Icons.Regular.Size16.Broom())"
@@ -90,7 +90,7 @@
         </TemplateColumn>
         <TemplateColumn Title="@CommonResources.IDS_COMMON_COLUMN_ACTIONS" Align="@Align.Center">
             <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center">
-                <FluentAnchor Href="@($"/system/template/edit/{context.Id}")">@CommonResources.IDS_BUTTON_TEXT_EDIT</FluentAnchor>
+                <FluentAnchor Href="@($"/templates/{context.Id}/edit")">@CommonResources.IDS_BUTTON_TEXT_EDIT</FluentAnchor>
                 <FluentButton OnClick="@(() => OnDeleteClicked(context.Id, context.Name))" Style="color: orangered">@CommonResources.IDS_BUTTON_TEXT_DELETE</FluentButton>
             </FluentStack>
         </TemplateColumn>

@@ -22,19 +22,26 @@
     protected override async Task OnInitializedAsync()
     {
         Items.Add(new MenuLink("/", new Icons.Regular.Size20.Home(), LayoutResources.IDS_MENU_TEXT_HOME, NavLinkMatch.All));
-        Items.Add(new MenuLink("/team", new Icons.Regular.Size20.ChartMultiple(), LayoutResources.IDS_MENU_TEXT_TEAM_MANAGEMENT));
-        Items.Add(new MenuGroup(new Icons.Regular.Size20.Folder(), LayoutResources.IDS_MENU_TEXT_USER_MANAGEMENT, false, "10px", new List<MenuItem>
-        {
-            new MenuLink("/users/", null, LayoutResources.IDS_MENU_TEXT_USER_LIST),
-            new MenuLink("/roles", null, LayoutResources.IDS_MENU_TEXT_ROLE_MANAGEMENT),
-            new MenuLink("/permissions", null, LayoutResources.IDS_MENU_TEXT_PERMISSION_MANAGEMENT)
-        }));
-        Items.Add(new MenuGroup(new Icons.Regular.Size20.Settings(), LayoutResources.IDS_MENU_TEXT_SETTINGS, false, "10px", new List<MenuItem>
-        {
-            new MenuLink("/system/settings", null, LayoutResources.IDS_MENU_TEXT_SYSTEM_SETTINGS),
-            new MenuLink("/system/preferences", null, LayoutResources.IDS_MENU_TEXT_PREFERENCES),
-            new MenuLink("/system/template", null, LayoutResources.IDS_MENU_TEXT_TEMPLATE)
-        }));
+        Items.Add(new MenuLink("/configs", new Icons.Regular.Size20.Apps(), LayoutResources.IDS_MENU_TEXT_CONFIGURATION_MANAGEMENT, NavLinkMatch.All));
+        Items.Add(new MenuLink("/clients", new Icons.Regular.Size20.Desktop(), LayoutResources.IDS_MENU_TEXT_CLIENT_MANAGEMENT));
+        Items.Add(new MenuLink("/nodes", new Icons.Regular.Size20.ServerMultiple(), LayoutResources.IDS_MENU_TEXT_NODES_MANAGEMENT));
+        Items.Add(new MenuLink("/teams", new Icons.Regular.Size20.PeopleTeam(), LayoutResources.IDS_MENU_TEXT_TEAM_MANAGEMENT));
+        Items.Add(new MenuLink("/users", new Icons.Regular.Size20.PeopleList(), LayoutResources.IDS_MENU_TEXT_USER_MANAGEMENT));
+        Items.Add(new MenuLink("/preferences", new Icons.Regular.Size20.PreviewLink(), LayoutResources.IDS_MENU_TEXT_PREFERENCES));
+        Items.Add(new MenuLink("/settings", new Icons.Regular.Size20.Settings(), LayoutResources.IDS_MENU_TEXT_SYSTEM_SETTINGS));
+        Items.Add(new MenuLink("/templates", new Icons.Regular.Size20.DocumentChevronDouble(), LayoutResources.IDS_MENU_TEXT_TEMPLATE));
+        Items.Add(new MenuLink("/logs", new Icons.Regular.Size20.DocumentText(), LayoutResources.IDS_MENU_TEXT_OPERATION_LOGS));
+        // Items.Add(new MenuGroup(new Icons.Regular.Size20.PeopleCommunication(), LayoutResources.IDS_MENU_TEXT_USER_MANAGEMENT, false, "10px", new List<MenuItem>
+        // {
+        //     new MenuLink("/account/users/", null, LayoutResources.IDS_MENU_TEXT_USER_LIST),
+        //     new MenuLink("/account/roles", null, LayoutResources.IDS_MENU_TEXT_ROLE_MANAGEMENT)
+        // }));
+        // Items.Add(new MenuGroup(new Icons.Regular.Size20.Settings(), LayoutResources.IDS_MENU_TEXT_SYSTEM_MANAGEMENT, false, "10px", new List<MenuItem>
+        // {
+        //     new MenuLink("/system/settings", null, LayoutResources.IDS_MENU_TEXT_SYSTEM_SETTINGS),
+        //     new MenuLink("/system/preferences", null, LayoutResources.IDS_MENU_TEXT_PREFERENCES),
+        //     new MenuLink("/system/template", null, LayoutResources.IDS_MENU_TEXT_TEMPLATE)
+        // }));
         await base.OnInitializedAsync();
     }
 
