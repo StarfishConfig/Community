@@ -153,7 +153,7 @@
   <data name="IDS_COMMON_TITLE" xml:space="preserve">
     <value>Starfish</value>
   </data>
-  <data name="IDS_LABEL_TEXT_YES" xml:space="preserve">
+  <data name="IDS_COMMON_YES" xml:space="preserve">
     <value>Yes</value>
   </data>
   <data name="IDS_PAGINATOR_TOTAL_FORMAT" xml:space="preserve">
@@ -168,7 +168,7 @@
   <data name="IDS_LABEL_TEXT_INACTIVE" xml:space="preserve">
     <value>Inactive</value>
   </data>
-  <data name="IDS_LABEL_TEXT_NO" xml:space="preserve">
+  <data name="IDS_COMMON_NO" xml:space="preserve">
     <value>No</value>
   </data>
   <data name="IDS_COMMON_OPERATIONS" xml:space="preserve">
@@ -186,7 +186,19 @@
   <data name="IDS_BUTTON_TEXT_CLEAR_FILTER" xml:space="preserve">
     <value>Clear</value>
   </data>
-  <data name="IDS_CONFIRM_TITLE_DELETE" xml:space="preserve">
+  <data name="IDS_DIALOG_TITLE_DELETE_CONFIRM" xml:space="preserve">
     <value>Delete confirmation</value>
+  </data>
+  <data name="IDS_COMMON_ALL" xml:space="preserve">
+      <value>All</value>
+  </data>
+  <data name="IDS_COMMON_NONE" xml:space="preserve">
+      <value>None</value>
+  </data>
+  <data name="IDS_DIALOG_TITLE_NOTICE" xml:space="preserve">
+      <value>Notice</value>
+  </data>
+  <data name="IDS_DIALOG_TITLE_CONFIRM" xml:space="preserve">
+      <value>Confirmation</value>
   </data>
 </root>

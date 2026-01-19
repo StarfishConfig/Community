@@ -3,7 +3,7 @@ namespace Nerosoft.Starfish.Repository.Models;
 /// <summary>
 /// Represents the detailed information of a user for query operations.
 /// </summary>
-public class UserDetailQueryModel
+public class UserDetailModel
 {
 	/// <summary>
 	/// Gets or sets the user identifier.
