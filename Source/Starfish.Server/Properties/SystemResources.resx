@@ -117,13 +117,79 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="IDS_TEMPLATE_TYPE_ALL" xml:space="preserve">
+    <value>All</value>
+  </data>
   <data name="IDS_TEMPLATE_CREATE_TITLE" xml:space="preserve">
     <value>New Template</value>
   </data>
   <data name="IDS_TEMPLATE_INDEX_TITLE" xml:space="preserve">
-    <value>Templates</value>
+    <value>Message Template</value>
+  </data>
+  <data name="IDS_TEMPLATE_TYPE_NONE" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="IDS_TEMPLATE_TYPE_NOTIFICATION" xml:space="preserve">
+    <value>Notification</value>
+  </data>
+  <data name="IDS_TEMPLATE_TYPE_PLACEHOLDER" xml:space="preserve">
+    <value>Please select</value>
+  </data>
+  <data name="IDS_TEMPLATE_TYPE_EMAIL" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="IDS_TEMPLATE_TYPE_SMS" xml:space="preserve">
+    <value>Sms</value>
   </data>
   <data name="IDS_TEMPLATE_UPDATE_TITLE" xml:space="preserve">
     <value>Edit Template</value>
+  </data>
+  <data name="IDS_TEMPLATE_LABEL_NAME" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="IDS_TEMPLATE_LABEL_CODE" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="IDS_TEMPLATE_LABEL_TYPE" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="IDS_TEMPLATE_LABEL_LANGUAGE" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="IDS_TEMPLATE_LABEL_SUBJECT" xml:space="preserve">
+    <value>Subject</value>
+  </data>
+  <data name="IDS_TEMPLATE_LABEL_BODY" xml:space="preserve">
+    <value>Body</value>
+  </data>
+  <data name="IDS_TEMPLATE_DEFAULT" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="IDS_TEMPLATE_LABEL_ACTIVE" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="IDS_TEMPLATE_LABEL_STATE" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="IDS_TEMPLATE_INDEX_BUTTON_TEXT_NEW" xml:space="preserve">
+    <value>New Template</value>
+  </data>
+  <data name="IDS_TEMPLATE_DELETE_COMFIRMATION" xml:space="preserve">
+    <value>Are you sure to delete the template '{0}'?</value>
+  </data>
+  <data name="IDS_TEMPLATE_EDIT_SET_DEFAULT" xml:space="preserve">
+    <value>Set as default</value>
+  </data>
+  <data name="IDS_TEMPLATE_PLACEHOLDER_NAME" xml:space="preserve">
+    <value>The template name</value>
+  </data>
+  <data name="IDS_TEMPLATE_PLACEHOLDER_CODE" xml:space="preserve">
+    <value>The template identify code</value>
+  </data>
+  <data name="IDS_TEMPLATE_PLACEHOLDER_LANGUAGE" xml:space="preserve">
+    <value>The body language code(e.g zh-hans,en,fr)</value>
+  </data>
+  <data name="IDS_TEMPLATE_PLACEHOLDER_SUBJECT" xml:space="preserve">
+    <value>The subject of the template message</value>
   </data>
 </root>

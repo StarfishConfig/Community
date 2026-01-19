@@ -35,7 +35,7 @@ else
         <FluentBodyContent>
             <FluentGrid Columns="12" RowGap="10" ColumnGap="10">
                 <FluentGridItem sm="12" md="6" lg="3">
-                    <FluentSelect Label="模板类型"
+                    <FluentSelect Label="@SystemResources.IDS_TEMPLATE_LABEL_TYPE"
                                   Style="width: 100%"
                                   TOption="Option<TemplateType>"
                                   Items="@TemplateTypes"
@@ -44,29 +44,40 @@ else
                                   @bind-SelectedOption="@SelectedType" />
                 </FluentGridItem>
                 <FluentGridItem sm="12" md="6" lg="3">
-                    <FluentTextField Label="名称" Style="width: 100%" @bind-Value="Model.Name" />
+                    <FluentTextField Label="@SystemResources.IDS_TEMPLATE_LABEL_NAME"
+                                     Placeholder="@SystemResources.IDS_TEMPLATE_PLACEHOLDER_NAME"
+                                     Style="width: 100%"
+                                     @bind-Value="Model.Name" />
                 </FluentGridItem>
                 <FluentGridItem sm="12" md="6" lg="3">
-                    <FluentTextField Label="代码" Style="width: 100%" @bind-Value="@Model.Code" />
+                    <FluentTextField Label="@SystemResources.IDS_TEMPLATE_LABEL_CODE"
+                                     Placeholder="@SystemResources.IDS_TEMPLATE_PLACEHOLDER_CODE"
+                                     Style="width: 100%"
+                                     @bind-Value="@Model.Code" />
                 </FluentGridItem>
                 <FluentGridItem sm="12" md="6" lg="3">
-                    <FluentTextField Label="语言" Style="width: 100%" @bind-Value="@Model.Language" />
+                    <FluentTextField Label="@SystemResources.IDS_TEMPLATE_LABEL_LANGUAGE"
+                                     Placeholder="@SystemResources.IDS_TEMPLATE_PLACEHOLDER_LANGUAGE"
+                                     Style="width: 100%"
+                                     @bind-Value="@Model.Language" />
                 </FluentGridItem>
                 <FluentGridItem md="12">
-                    <FluentTextField Label="主题" Style="width: 100%"
+                    <FluentTextField Label="@SystemResources.IDS_TEMPLATE_LABEL_SUBJECT"
+                                     Placeholder="@SystemResources.IDS_TEMPLATE_PLACEHOLDER_SUBJECT"
+                                     Style="width: 100%"
                                      @bind-Value="Model.Subject" />
                 </FluentGridItem>
                 <FluentGridItem md="12">
                     <MonacoEditor @ref="_editor" Language="Language.Html"
-                                  EditorOptions="@EditorOptions" ScriptContent="{{}}"/>
+                                  EditorOptions="@EditorOptions" ScriptContent="{{}}" />
                 </FluentGridItem>
             </FluentGrid>
             <div style="width: 100%; display: flex; align-items: center;column-gap: 16px; margin-top: 16px;">
                 <FluentButton Style="width: 100px;" Appearance="Appearance.Accent" Type="ButtonType.Submit">
-                    提交
+                    @CommonResources.IDS_BUTTON_TEXT_SUBMIT
                 </FluentButton>
 
-                <FluentCheckbox Label="设为默认" @bind-Value="Model.Default"/>
+                <FluentCheckbox Label="@SystemResources.IDS_TEMPLATE_EDIT_SET_DEFAULT" @bind-Value="Model.Default" />
             </div>
         </FluentBodyContent>
     </FluentEditForm>
@@ -90,9 +101,10 @@ else
 
     private List<Option<TemplateType>> TemplateTypes { get; } =
     [
-        new() { Value = TemplateType.Sms, Text = "Sms" },
-        new() { Value = TemplateType.Email, Text = "Email" },
-        new() { Value = TemplateType.Notification, Text = "Notification" }
+        new() { Value = TemplateType.None, Text = SystemResources.IDS_TEMPLATE_TYPE_NONE },
+        new() { Value = TemplateType.Sms, Text = SystemResources.IDS_TEMPLATE_TYPE_SMS },
+        new() { Value = TemplateType.Email, Text = SystemResources.IDS_TEMPLATE_TYPE_EMAIL },
+        new() { Value = TemplateType.Notification, Text = SystemResources.IDS_TEMPLATE_TYPE_NOTIFICATION }
     ];
 
     private Option<TemplateType> SelectedType
@@ -177,6 +189,7 @@ else
                 Model.Subject = detail.Subject;
                 Model.Type = detail.Type;
                 Model.Body = detail.Body;
+                Model.Default = detail.Default;
                 await _editor.SetEditorContent(Model.Body);
             }
 

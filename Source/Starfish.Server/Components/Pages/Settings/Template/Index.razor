@@ -3,6 +3,7 @@
 @rendermode InteractiveServer
 
 @inject ITemplateAppService Service
+@inject IDialogService DialogService
 
 <PageTitle>@SystemResources.IDS_TEMPLATE_INDEX_TITLE</PageTitle>
 
@@ -10,20 +11,20 @@
     <FluentLabel Typo="Typography.Header">@SystemResources.IDS_TEMPLATE_INDEX_TITLE</FluentLabel>
 
     <FluentAccordion Style="width: 100%">
-        <FluentAccordionItem Heading="Filter(s)" Expanded="true">
+        <FluentAccordionItem Heading="@CommonResources.IDS_LABEL_TEXT_FILTER" Expanded="true">
             <FluentIcon Value="@(new Icons.Regular.Size20.FilterAdd())" Color="@Color.Neutral" Slot="start" />
             <FluentGrid Spacing="1" Justify="JustifyContent.FlexStart" Style="padding: 5px;">
                 <FluentGridItem xs="12" sm="6" md="3">
-                    <FluentTextField @bind-Value="Keyword" Label="关键字"
+                    <FluentTextField @bind-Value="Keyword" Label="@CommonResources.IDS_LABEL_TEXT_KEYWORD"
                                      Style="width: 100%"
-                                     Placeholder="@CommonResources.IDS_COMMON_PLACEHOLDER_KEYWORD" />
+                                     Placeholder="@CommonResources.IDS_PLACEHOLDER_KEYWORD" />
                 </FluentGridItem>
                 <FluentGridItem xs="12" sm="6" md="3">
                     <FluentSelect TOption="Option<TemplateType>"
                                   Items="@MessageTemplateTypes"
                                   OptionValue="@(i => i.Value.ToString())"
                                   OptionText="@(i => i.Text)"
-                                  Label="模板类型"
+                                  Label="@SystemResources.IDS_TEMPLATE_LABEL_TYPE"
                                   Style="width: 100%"
                                   @bind-SelectedOption="@SelectedType" />
                 </FluentGridItem>
@@ -32,18 +33,18 @@
                 <FluentAnchor IconStart="@(new Icons.Regular.Size16.Add())"
                               Appearance="Appearance.Lightweight"
                               Href="/system/template/edit">
-                    新建模板
+                    @SystemResources.IDS_TEMPLATE_INDEX_BUTTON_TEXT_NEW
                 </FluentAnchor>
                 <FluentButton IconStart="@(new Icons.Regular.Size16.Broom())"
                               Disabled="@Loading"
                               OnClick="@OnClearClicked">
-                    清除条件
+                    @CommonResources.IDS_BUTTON_TEXT_CLEAR_FILTER
                 </FluentButton>
                 <FluentButton IconStart="@(new Icons.Regular.Size16.Search())"
                               Appearance="Appearance.Accent"
                               Loading="@Loading"
                               OnClick="@OnSearchClicked">
-                    搜索
+                    @CommonResources.IDS_BUTTON_TEXT_SEARCH
                 </FluentButton>
             </FluentStack>
         </FluentAccordionItem>
@@ -57,20 +58,40 @@
                     Loading="Loading"
                     Pagination="Pagination"
                     RefreshItems="@RefreshItemsAsync">
-        <PropertyColumn Title="Name" Property="p => p.Name" />
-        <PropertyColumn Title="Code" Property="p => p.Code" />
-        <TemplateColumn Title="Type" Width="100px">
-            <label>@context.Type.ToString()</label>
+        <PropertyColumn Title="@SystemResources.IDS_TEMPLATE_LABEL_NAME" Property="p => p.Name" />
+        <PropertyColumn Title="@SystemResources.IDS_TEMPLATE_LABEL_CODE" Property="p => p.Code" />
+        <TemplateColumn Title="@SystemResources.IDS_TEMPLATE_LABEL_TYPE" Width="120px">
+            <label>@GetTemplateTypeText(context.Type)</label>
         </TemplateColumn>
-        <PropertyColumn Title="Language" Property="p => p.Language"
-                        Width="100px" />
-        <PropertyColumn Title="Subject" Property="p => p.Subject" />
-        <PropertyColumn Title="Default" Property="p => p.Default"
-                        Width="100px" />
+        <PropertyColumn Title="@SystemResources.IDS_TEMPLATE_LABEL_LANGUAGE" Property="p => p.Language"
+                        Width="120px" />
+        <PropertyColumn Title="@SystemResources.IDS_TEMPLATE_LABEL_SUBJECT" Property="p => p.Subject" />
+        <TemplateColumn Title="@SystemResources.IDS_TEMPLATE_DEFAULT" Width="120px">
+            @if (context.Default)
+            {
+                <FluentBadge Appearance="Appearance.Accent">@CommonResources.IDS_LABEL_TEXT_YES</FluentBadge>
+            }
+            else
+            {
+                <FluentBadge Appearance="Appearance.Lightweight">@CommonResources.IDS_LABEL_TEXT_NO</FluentBadge>
+            }
+        </TemplateColumn>
+        <TemplateColumn Title="@SystemResources.IDS_TEMPLATE_LABEL_STATE" Width="120px">
+            @if (context.Active)
+            {
+                <FluentButton Appearance="Appearance.Accent"
+                              OnClick="@(() => DisableAsync(context.Id, context.Name))">@CommonResources.IDS_LABEL_TEXT_ACTIVE</FluentButton>
+            }
+            else
+            {
+                <FluentButton Appearance="Appearance.Lightweight"
+                              OnClick="@(() => EnableAsync(context.Id, context.Name))">@CommonResources.IDS_LABEL_TEXT_INACTIVE</FluentButton>
+            }
+        </TemplateColumn>
         <TemplateColumn Title="@CommonResources.IDS_COMMON_COLUMN_ACTIONS" Align="@Align.Center">
-            <FluentStack Orientation="Orientation.Horizontal">
-                <FluentAnchor Href="@($"/system/template/edit/{context.Id}")">编辑</FluentAnchor>
-                <FluentButton OnClick="@(() => OnDeleteClicked(context.Id, context.Name))" Style="color: orangered">删除</FluentButton>
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center">
+                <FluentAnchor Href="@($"/system/template/edit/{context.Id}")">@CommonResources.IDS_BUTTON_TEXT_EDIT</FluentAnchor>
+                <FluentButton OnClick="@(() => OnDeleteClicked(context.Id, context.Name))" Style="color: orangered">@CommonResources.IDS_BUTTON_TEXT_DELETE</FluentButton>
             </FluentStack>
         </TemplateColumn>
     </FluentDataGrid>
@@ -85,10 +106,10 @@
 
     private List<Option<TemplateType>> MessageTemplateTypes { get; } =
     [
-        new() { Value = TemplateType.None, Text = "All", Selected = true },
-        new() { Value = TemplateType.Sms, Text = "Sms" },
-        new() { Value = TemplateType.Email, Text = "Email" },
-        new() { Value = TemplateType.Notification, Text = "Notification" }
+        new() { Value = TemplateType.None, Text = SystemResources.IDS_TEMPLATE_TYPE_ALL, Selected = true },
+        new() { Value = TemplateType.Sms, Text = SystemResources.IDS_TEMPLATE_TYPE_SMS },
+        new() { Value = TemplateType.Email, Text = SystemResources.IDS_TEMPLATE_TYPE_EMAIL },
+        new() { Value = TemplateType.Notification, Text = SystemResources.IDS_TEMPLATE_TYPE_NOTIFICATION }
     ];
 
     private Option<TemplateType> SelectedType { get; set; }
@@ -125,7 +146,31 @@
 
     private async Task OnDeleteClicked(long id, string name)
     {
+        var message = string.Format(SystemResources.IDS_TEMPLATE_DELETE_COMFIRMATION, name);
 
+        var dialog = await DialogService.ShowConfirmationAsync(message, CommonResources.IDS_LABEL_TEXT_YES, CommonResources.IDS_LABEL_TEXT_NO, CommonResources.IDS_CONFIRM_TITLE_DELETE);
+
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await Service.DeleteAsync(id);
+            await _dataGrid.RefreshDataAsync(true);
+        }
     }
 
+    private async Task EnableAsync(long id, string name)
+    {
+        await _dataGrid.RefreshDataAsync(false);
+    }
+
+    private async Task DisableAsync(long id, string name)
+    {
+        await _dataGrid.RefreshDataAsync(false);
+    }
+
+    private string GetTemplateTypeText(TemplateType type)
+    {
+        return SystemResources.ResourceManager.GetString($"IDS_TEMPLATE_TYPE_{type}".Normalize(TextCaseType.Upper)) ?? type.ToString();
+    }
 }

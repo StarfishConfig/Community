@@ -21,19 +21,19 @@
     /// <inheritdoc />
     protected override async Task OnInitializedAsync()
     {
-        Items.Add(new MenuLink("/", new Icons.Regular.Size20.Home(), "首页", NavLinkMatch.All));
-        Items.Add(new MenuLink("/team", new Icons.Regular.Size20.ChartMultiple(), "团队管理"));
-        Items.Add(new MenuGroup(new Icons.Regular.Size20.Folder(), "用户管理", false, "10px", new List<MenuItem>
+        Items.Add(new MenuLink("/", new Icons.Regular.Size20.Home(), LayoutResources.IDS_MENU_TEXT_HOME, NavLinkMatch.All));
+        Items.Add(new MenuLink("/team", new Icons.Regular.Size20.ChartMultiple(), LayoutResources.IDS_MENU_TEXT_TEAM_MANAGEMENT));
+        Items.Add(new MenuGroup(new Icons.Regular.Size20.Folder(), LayoutResources.IDS_MENU_TEXT_USER_MANAGEMENT, false, "10px", new List<MenuItem>
         {
-            new MenuLink("/users/list", null, "用户列表"),
-            new MenuLink("/users/roles", null, "角色管理"),
-            new MenuLink("/users/permissions", null, "权限管理")
+            new MenuLink("/users/", null, LayoutResources.IDS_MENU_TEXT_USER_LIST),
+            new MenuLink("/roles", null, LayoutResources.IDS_MENU_TEXT_ROLE_MANAGEMENT),
+            new MenuLink("/permissions", null, LayoutResources.IDS_MENU_TEXT_PERMISSION_MANAGEMENT)
         }));
-        Items.Add(new MenuGroup(new Icons.Regular.Size20.Settings(), "设置", false, "10px", new List<MenuItem>
+        Items.Add(new MenuGroup(new Icons.Regular.Size20.Settings(), LayoutResources.IDS_MENU_TEXT_SETTINGS, false, "10px", new List<MenuItem>
         {
-            new MenuLink("/system/settings", null, "系统设置"),
-            new MenuLink("/system/preferences", null, "偏好设置"),
-            new MenuLink("/system/template", null, "消息模板")
+            new MenuLink("/system/settings", null, LayoutResources.IDS_MENU_TEXT_SYSTEM_SETTINGS),
+            new MenuLink("/system/preferences", null, LayoutResources.IDS_MENU_TEXT_PREFERENCES),
+            new MenuLink("/system/template", null, LayoutResources.IDS_MENU_TEXT_TEMPLATE)
         }));
         await base.OnInitializedAsync();
     }
