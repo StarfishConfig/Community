@@ -28,7 +28,7 @@
         <div style="display: flex; align-items: center; gap: 8px;">
             <NotificationCenter />
             <SiteSettings />
-            <Avatar @rendermode="InteractiveServer" />
+            <Avatar />
         </div>
 
     </FluentHeader>
@@ -48,12 +48,12 @@
 
                 </article>
 
-                <FluentMessageBarProvider Section="TOP" ClearAfterNavigation="true" @rendermode="InteractiveServer" />
-                <FluentToastProvider MaxToastCount="10" @rendermode="InteractiveServer" />
-                <FluentDialogProvider @rendermode="InteractiveServer" />
-                <FluentTooltipProvider @rendermode="InteractiveServer" />
-                <FluentKeyCodeProvider @rendermode="InteractiveServer" />
-                <FluentMenuProvider @rendermode="InteractiveServer" />
+                <FluentMessageBarProvider Section="TOP" ClearAfterNavigation="true" />
+                <FluentToastProvider MaxToastCount="10" />
+                <FluentDialogProvider />
+                <FluentTooltipProvider />
+                <FluentKeyCodeProvider />
+                <FluentMenuProvider />
             </div>
         </FluentBodyContent>
     </FluentStack>

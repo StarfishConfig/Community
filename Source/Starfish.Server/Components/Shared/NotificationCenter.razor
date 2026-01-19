@@ -2,8 +2,6 @@
 @inject IDialogService DialogService
 @inject IMessageService MessageService
 
-@rendermode InteractiveServer
-
 <FluentCounterBadge Count="@MessageService.Count("MESSAGES_NOTIFICATION_CENTER")"
                     BackgroundColor="@Color.Error"
                     Appearance="Appearance.Accent"
