@@ -11,16 +11,16 @@ using Nerosoft.Starfish.Toolkit;
 
 namespace Nerosoft.Starfish.Repository.Handlers;
 
-internal class AuthenticationRequestHandler : IHandler<AuthenticateWithUsernameRequest, UserAuthQueryModel>
+internal class AuthInfoQueryHandler : IHandler<AuthenticateWithUsernameRequest, AuthInfoModel>
 {
 	private readonly IdentityDataContext _context;
 
-	public AuthenticationRequestHandler(IdentityDataContext context)
+	public AuthInfoQueryHandler(IdentityDataContext context)
 	{
 		_context = context;
 	}
 
-	public async Task<UserAuthQueryModel> HandleAsync(AuthenticateWithUsernameRequest message, MessageContext context, CancellationToken cancellationToken = default)
+	public async Task<AuthInfoModel> HandleAsync(AuthenticateWithUsernameRequest message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		if (string.IsNullOrWhiteSpace(message.Username))
 		{
@@ -51,7 +51,7 @@ internal class AuthenticationRequestHandler : IHandler<AuthenticateWithUsernameR
 			throw new AccountLockedException(user.Id, IdentityResources.IDS_ERROR_USER_LOCKED);
 		}
 
-		var result = TypeAdapter.ProjectedAs<UserAuthQueryModel>(user);
+		var result = TypeAdapter.ProjectedAs<AuthInfoModel>(user);
 		return result;
 	}
 }

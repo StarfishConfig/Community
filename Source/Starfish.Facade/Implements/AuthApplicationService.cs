@@ -215,7 +215,7 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 		}
 	}
 
-	private static ClaimsIdentity BuildClaims(string authenticationType, UserAuthQueryModel user)
+	private static ClaimsIdentity BuildClaims(string authenticationType, AuthInfoModel user)
 	{
 		var identity = new ClaimsIdentity(authenticationType);
 
@@ -266,7 +266,7 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 	/// <exception cref="ArgumentException">Thrown when the provider is null or empty.</exception>
 	/// <exception cref="NotSupportedException">Thrown when the specified authentication provider is not supported or the external provider service is not available.</exception>
 	/// <exception cref="BadGatewayException">Thrown when external authentication with a third-party provider fails.</exception>
-	private async Task<IRequest<UserAuthQueryModel>> GetRequestAsync(TokenGrantRequestDto data, CancellationToken cancellationToken = default)
+	private async Task<IRequest<AuthInfoModel>> GetRequestAsync(TokenGrantRequestDto data, CancellationToken cancellationToken = default)
 	{
 		switch (data.GrantType?.ToLowerInvariant())
 		{

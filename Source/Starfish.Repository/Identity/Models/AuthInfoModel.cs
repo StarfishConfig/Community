@@ -4,7 +4,7 @@ namespace Nerosoft.Starfish.Repository.Models;
 /// Represents a query model for user authentication/identity lookups.
 /// Contains identifying fields and the list of roles associated with the user.
 /// </summary>
-public class UserAuthQueryModel
+public class AuthInfoModel
 {
 	/// <summary>
 	/// Gets or sets the unique identifier of the user.
