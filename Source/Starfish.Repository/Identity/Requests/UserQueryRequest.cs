@@ -1,4 +1,5 @@
 using Nerosoft.Euonia.Bus;
+using Nerosoft.Starfish.Repository.Models;
 
 namespace Nerosoft.Starfish.Repository.Requests;
 
@@ -17,3 +18,17 @@ namespace Nerosoft.Starfish.Repository.Requests;
 /// password values in error messages or logs.
 /// </remarks>
 public record UserPasswordVerifyRequest(string Id, string Password) : IRequest<bool>;
+
+/// <summary>
+/// Represents a request to query detailed information for a specific user.
+/// </summary>
+/// <param name="Id">The identifier of the user whose details are being requested.</param>
+/// <remarks>
+/// The returned <see cref="UserDetailModel"/> may contain sensitive user information.
+/// Handlers should enforce authorization checks and avoid logging or exposing sensitive fields.
+/// </remarks>
+public record UserDetailQuery(string Id) : IRequest<UserDetailModel>;
+
+public record UserSearchQuery(string Keyword, bool? Locked, int Skip = 0, int Size = 20) : IRequest<List<UserListModel>>;
+
+public record UserCountQuery(string Keyword, bool? Locked) : IRequest<int>;

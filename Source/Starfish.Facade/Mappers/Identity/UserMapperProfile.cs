@@ -12,7 +12,8 @@ internal class UserMapperProfile : Profile
 		CreateMap<UserCreateDto, UserCreateCommand>();
 		CreateMap<UserUpdateDto, UserUpdateCommand>();
 
-		CreateMap<UserDetailQueryModel, UserDetailDto>();
-		CreateMap<UserDetailQueryModel, UserProfileDto>();
+		CreateMap<UserDetailModel, UserDetailDto>();
+		CreateMap<UserDetailModel, UserProfileDto>();
+		CreateMap<UserListModel, UserListDto>();
 	}
 }

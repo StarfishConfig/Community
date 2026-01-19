@@ -10,6 +10,26 @@ namespace Nerosoft.Starfish.Facade.Implements;
 
 internal class UserApplicationService : BaseApplicationService, IUserApplicationService
 {
+	public Task<UserDetailDto> GetAsync(string id, CancellationToken cancellationToken = default)
+	{
+		var request = new UserDetailQuery(User.UserId);
+		return Bus.CallAsync(request, cancellationToken)
+		          .ContinueWith(task => TypeAdapter.ProjectedAs<UserDetailDto>(task.Result), cancellationToken);
+	}
+
+	public Task<List<UserListDto>> SearchAsync(string keywork, bool? locked, int skip, int size, CancellationToken cancellationToken = default)
+	{
+		var request = new UserSearchQuery(keywork, locked, skip, size);
+		return Bus.CallAsync(request, cancellationToken)
+		          .ContinueWith(task => TypeAdapter.ProjectedAs<List<UserListDto>>(task.Result), cancellationToken);
+	}
+
+	public Task<int> CountAsync(string keywork, bool? locked, CancellationToken cancellationToken = default)
+	{
+		var request = new UserCountQuery(keywork, locked);
+		return Bus.CallAsync(request, cancellationToken);
+	}
+
 	public Task<UserProfileDto> GetProfileAsync(CancellationToken cancellationToken = default)
 	{
 		var request = new UserDetailQuery(User.UserId);
@@ -23,7 +43,14 @@ internal class UserApplicationService : BaseApplicationService, IUserApplication
 		return Bus.SendAsync(command, cancellationToken);
 	}
 
-	public Task UpdateAsync(UserUpdateDto data, CancellationToken cancellationToken = default)
+	public Task UpdateAsync(string id, UserUpdateDto data, CancellationToken cancellationToken = default)
+	{
+		var command = new UserUpdateCommand(id);
+		TypeAdapter.ProjectedAs(data, command);
+		return Bus.SendAsync(command, cancellationToken);
+	}
+
+	public Task UpdateProfileAsync(UserUpdateDto data, CancellationToken cancellationToken = default)
 	{
 		var command = new UserUpdateCommand(User.UserId);
 		TypeAdapter.ProjectedAs(data, command);
@@ -55,15 +82,16 @@ internal class UserApplicationService : BaseApplicationService, IUserApplication
 		return Bus.SendAsync(command, cancellationToken);
 	}
 
-	public Task ResetPasswordAsync(string userId, CancellationToken cancellationToken = default)
+	public async Task<string> ResetPasswordAsync(string id, CancellationToken cancellationToken = default)
 	{
 		const PasswordComplexity complexity = PasswordComplexity.ContainsUppercase | PasswordComplexity.ContainsLowercase |
 		                                      PasswordComplexity.ContainsDigit | PasswordComplexity.ContainsSymbol;
-		var password = PasswordGenerator.GeneratePassword(complexity, 12, 16);
-		var command = new UserPasswordResetCommand(userId, password)
+		var password = PasswordGenerator.GeneratePassword(complexity, 12, 24);
+		var command = new UserPasswordResetCommand(id, password)
 		{
 			ChangedBy = User.UserId
 		};
-		return Bus.SendAsync(command, cancellationToken);
+		await Bus.SendAsync(command, cancellationToken);
+		return password;
 	}
 }

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Nerosoft.Euonia.Bus;
+using Nerosoft.Euonia.Linq;
 using Nerosoft.Euonia.Mapping;
 using Nerosoft.Starfish.Repository.Entities;
 using Nerosoft.Starfish.Repository.Models;
@@ -10,7 +11,9 @@ using Nerosoft.Starfish.Toolkit;
 namespace Nerosoft.Starfish.Repository.Handlers;
 
 internal class UserQueryHandler : IHandler<UserPasswordVerifyRequest, bool>,
-                                  IHandler<UserDetailQuery, UserDetailQueryModel>
+                                  IHandler<UserDetailQuery, UserDetailModel>,
+                                  IHandler<UserSearchQuery, List<UserListModel>>,
+                                  IHandler<UserCountQuery, int>
 {
 	private readonly IdentityDataContext _context;
 
@@ -31,7 +34,7 @@ internal class UserQueryHandler : IHandler<UserPasswordVerifyRequest, bool>,
 		return string.Equals(password.PasswordHash, secretHash, StringComparison.Ordinal);
 	}
 
-	public async Task<UserDetailQueryModel> HandleAsync(UserDetailQuery message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	public async Task<UserDetailModel> HandleAsync(UserDetailQuery message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
 	{
 		var specification = UserSpecification.IdEquals(message.Id);
 
@@ -47,7 +50,7 @@ internal class UserQueryHandler : IHandler<UserPasswordVerifyRequest, bool>,
 			return null;
 		}
 
-		var model = TypeAdapter.ProjectedAs<UserDetailQueryModel>(user);
+		var model = TypeAdapter.ProjectedAs<UserDetailModel>(user);
 
 		var authlog = await _context.Set<Authlog>()
 		                            .OrderByDescending(x => x.Id)
@@ -59,5 +62,38 @@ internal class UserQueryHandler : IHandler<UserPasswordVerifyRequest, bool>,
 		}
 
 		return model;
+	}
+
+	public async Task<List<UserListModel>> HandleAsync(UserSearchQuery message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	{
+		var specification = UserSpecification.True()
+		                                     .AndIf(!string.IsNullOrWhiteSpace(message.Keyword), () => UserSpecification.ContainsKeyword(message.Keyword))
+		                                     .AndIf(message.Locked.HasValue, () => UserSpecification.IsLocked(message.Locked!.Value));
+
+		var predicate = specification.Satisfy();
+
+		var entities = await _context.Set<User>()
+		                             .AsNoTracking()
+		                             .Where(predicate)
+		                             .OrderBy(x => x.CreatedAt)
+		                             .Skip(message.Skip)
+		                             .Take(message.Size)
+		                             .ToListAsync(cancellationToken);
+
+		return TypeAdapter.ProjectedAs<List<UserListModel>>(entities);
+	}
+
+	public Task<int> HandleAsync(UserCountQuery message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	{
+		var specification = UserSpecification.True()
+		                                     .AndIf(!string.IsNullOrWhiteSpace(message.Keyword), () => UserSpecification.ContainsKeyword(message.Keyword))
+		                                     .AndIf(message.Locked.HasValue, () => UserSpecification.IsLocked(message.Locked!.Value));
+
+		var predicate = specification.Satisfy();
+
+		return _context.Set<User>()
+		               .AsNoTracking()
+		               .Where(predicate)
+		               .CountAsync(cancellationToken);
 	}
 }
