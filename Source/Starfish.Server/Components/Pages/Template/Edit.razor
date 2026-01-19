@@ -43,9 +43,11 @@ else
 
         <FluentBodyContent>
             <FluentGrid Columns="12" RowGap="10" ColumnGap="10">
+                <FluentGridItem sm="12" md="2" lg="1">
+                    <FluentLabel Alignment="HorizontalAlignment.Right">@SystemResources.IDS_TEMPLATE_LABEL_TYPE</FluentLabel>
+                </FluentGridItem>
                 <FluentGridItem sm="12" md="6" lg="3">
-                    <FluentSelect Label="@SystemResources.IDS_TEMPLATE_LABEL_TYPE"
-                                  Style="width: 100%"
+                    <FluentSelect Style="width: 100%"
                                   TOption="Option<TemplateType>"
                                   Items="@TemplateTypes"
                                   OptionValue="@(i => i.Value.ToString())"
