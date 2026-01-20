@@ -190,15 +190,24 @@
     <value>Delete confirmation</value>
   </data>
   <data name="IDS_COMMON_ALL" xml:space="preserve">
-      <value>All</value>
+    <value>All</value>
   </data>
   <data name="IDS_COMMON_NONE" xml:space="preserve">
-      <value>None</value>
+    <value>None</value>
   </data>
   <data name="IDS_DIALOG_TITLE_NOTICE" xml:space="preserve">
-      <value>Notice</value>
+    <value>Notice</value>
   </data>
   <data name="IDS_DIALOG_TITLE_CONFIRM" xml:space="preserve">
-      <value>Confirmation</value>
+    <value>Confirmation</value>
+  </data>
+  <data name="IDS_ERROR_FIELD_REQUIRED" xml:space="preserve">
+    <value>The {0} is required.</value>
+  </data>
+  <data name="IDS_ERROR_FIELD_STRING_LENGTH" xml:space="preserve">
+    <value>The {0} length must between {2} and {1}.</value>
+  </data>
+  <data name="IDS_ERROR_FIELD_INVALID_FORMAT" xml:space="preserve">
+    <value>The {0} field format is incorrect.</value>
   </data>
 </root>

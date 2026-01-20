@@ -12,9 +12,7 @@
     --presence-oof: #c239b3;
     --presence-unknown: #d13438;
     --highlight-bg: #fff3cd;
-
     --bs-secondary-color: #6c757d;
-
     --direction: ltr;
     --disabled-opacity: 0.3;
     --base-height-multiplier: 8;
@@ -219,9 +217,9 @@ h1:focus {
     color: white;
 }
 
-.blazor-error-boundary::after {
-    content: "An error has occurred."
-}
+    .blazor-error-boundary::after {
+        content: "An error has occurred."
+    }
 
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
@@ -251,12 +249,12 @@ h1:focus {
     z-index: 1000;
 }
 
-#blazor-error-ui .dismiss {
-    cursor: pointer;
-    position: absolute;
-    right: 0.75rem;
-    top: 0.5rem;
-}
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
 
 .site-header {
     background-color: var(--neutral-layer-4) !important;
@@ -264,44 +262,44 @@ h1:focus {
     margin-bottom: 0 !important;
 }
 
-.site-header .logo {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    grid-column-gap: 0.5rem;
-    grid-column: 1;
-    text-decoration: none;
-    color: #ff8c00;
-}
+    .site-header .logo {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        grid-column-gap: 0.5rem;
+        grid-column: 1;
+        text-decoration: none;
+        color: #ff8c00;
+    }
 
-.site-header .logo:hover {
-    color: var(--accent-fill-rest);
-}
+        .site-header .logo:hover {
+            color: var(--accent-fill-rest);
+        }
 
-.site-header .search {
-    display: flex;
-    align-items: center;
-    padding-right: 20px;
-}
+    .site-header .search {
+        display: flex;
+        align-items: center;
+        padding-right: 20px;
+    }
 
-.site-header .links {
-    padding-right: 10px;
-    display: flex;
-    align-items: center;
-}
+    .site-header .links {
+        padding-right: 10px;
+        display: flex;
+        align-items: center;
+    }
 
-.site-header .notifications {
-    display: flex;
-    align-items: center;
-}
+    .site-header .notifications {
+        display: flex;
+        align-items: center;
+    }
 
-.site-header .settings {
-    padding-right: 6px;
-    display: flex;
-    align-items: center;
-    margin-left: 0;
-    margin-right: 10px;
-}
+    .site-header .settings {
+        padding-right: 6px;
+        display: flex;
+        align-items: center;
+        margin-left: 0;
+        margin-right: 10px;
+    }
 
 .navmenu {
     /*width: 100%;*/
@@ -352,10 +350,10 @@ nav fluent-anchor {
     color: var(--fill-color);
 }
 
-nav fluent-anchor::part(control) {
-    justify-content: start;
-    background: var(--accent-fill-rest);
-}
+    nav fluent-anchor::part(control) {
+        justify-content: start;
+        background: var(--accent-fill-rest);
+    }
 
 
 .fluent-nav-link.notactive .fluent-nav-text {
@@ -373,4 +371,10 @@ nav fluent-anchor::part(control) {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.input-group-label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
