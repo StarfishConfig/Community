@@ -26,5 +26,7 @@ internal class TeamMemberConfiguration : IEntityTypeConfiguration<TeamMember>
 		       .HasColumnName("user_id")
 		       .HasMaxLength(64)
 		       .IsRequired();
+
+		builder.CreatedAtUtc();
 	}
 }
