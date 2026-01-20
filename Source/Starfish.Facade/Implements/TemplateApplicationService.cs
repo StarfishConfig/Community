@@ -9,7 +9,7 @@ using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Facade.Implements;
 
-internal class TemplateAppService : BaseApplicationService, ITemplateAppService
+internal class TemplateApplicationService : BaseApplicationService, ITemplateApplicationService
 {
 	public Task<TemplateDetailDto> GetAsync(long id, CancellationToken cancellationToken = default)
 	{

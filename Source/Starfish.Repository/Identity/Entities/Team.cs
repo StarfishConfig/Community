@@ -8,7 +8,7 @@ internal class Team : Entity<long>, IAuditable
 
 	public string Name { get; set; }
 
-	public string MemberCount { get; set; }
+	public int MembersCount { get; set; }
 	
 	public string Description { get; set; }
 

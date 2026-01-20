@@ -1,0 +1,176 @@
+using Microsoft.EntityFrameworkCore;
+using Nerosoft.Euonia.Bus;
+using Nerosoft.Euonia.Linq;
+using Nerosoft.Euonia.Security;
+using Nerosoft.Starfish.Repository.Entities;
+using Nerosoft.Starfish.Repository.Models;
+using Nerosoft.Starfish.Repository.Specifications;
+
+namespace Nerosoft.Starfish.Repository.Handlers;
+
+internal class TeamQueryHandler : IHandler<TeamSearchQuery, IList<TeamListModel>>,
+                                  IHandler<TeamCountQuery, int>,
+                                  IHandler<TeamDetailQuery, TeamDetailModel>,
+                                  IHandler<TeamMemberQuery, IList<TeamMemberModel>>
+{
+	private readonly IdentityDataContext _context;
+	private readonly UserPrincipal _user;
+
+	public TeamQueryHandler(IdentityDataContext context, UserPrincipal user)
+	{
+		_context = context;
+		_user = user;
+	}
+
+	public async Task<IList<TeamListModel>> HandleAsync(TeamSearchQuery message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	{
+		var teams = _context.Set<Team>().AsNoTracking();
+		var users = _context.Set<User>().AsNoTracking();
+
+		var query = from team in teams
+		            join user in users on team.OwnerId equals user.Id
+		            orderby team.Id descending
+		            select new TeamListModel
+		            {
+			            Id = team.Id,
+			            Name = team.Name,
+			            Description = team.Description,
+			            MembersCount = team.MembersCount,
+			            CreatedAt = team.CreatedAt,
+			            UpdatedAt = team.UpdatedAt,
+			            OwnerId = team.OwnerId,
+			            OwnerUsername = user.Username,
+			            OwnerNickname = user.Nickname,
+		            };
+
+		var predicate = PredicateBuilder.True<TeamListModel>();
+
+		switch (message.Type)
+		{
+			case 1:
+				predicate = predicate.And(t => t.OwnerId == _user.UserId);
+				break;
+			case 2:
+				var memberTeamIds = _context.Set<TeamMember>()
+				                            .AsNoTracking()
+				                            .Where(m => m.UserId == _user.UserId)
+				                            .Select(m => m.TeamId);
+				predicate = predicate.And(t => memberTeamIds.Contains(t.Id));
+				break;
+		}
+
+		if (!string.IsNullOrWhiteSpace(message.Keyword))
+		{
+			var keyword = message.Keyword.Normalize(TextCaseType.Lower);
+			predicate = predicate.And(t => t.Name.ToLower().Contains(keyword) || t.Description.ToLower().Contains(keyword) || t.OwnerUsername.ToLower().Contains(keyword) || t.OwnerNickname.ToLower().Contains(keyword));
+		}
+
+		{
+		}
+
+		return await query.Where(predicate)
+		                  .OrderByDescending(t => t.Id)
+		                  .Skip(message.Skip).Take(message.Size)
+		                  .ToListAsync(cancellationToken);
+	}
+
+	public Task<int> HandleAsync(TeamCountQuery message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	{
+		var teams = _context.Set<Team>().AsNoTracking();
+		var users = _context.Set<User>().AsNoTracking();
+
+		var query = from team in teams
+		            join user in users on team.OwnerId equals user.Id
+		            orderby team.Id descending
+		            select new TeamListModel
+		            {
+			            Id = team.Id,
+			            Name = team.Name,
+			            Description = team.Description,
+			            MembersCount = team.MembersCount,
+			            CreatedAt = team.CreatedAt,
+			            UpdatedAt = team.UpdatedAt,
+			            OwnerId = team.OwnerId,
+			            OwnerUsername = user.Username,
+			            OwnerNickname = user.Nickname,
+		            };
+
+		var predicate = PredicateBuilder.True<TeamListModel>();
+
+		switch (message.Type)
+		{
+			case 1:
+				predicate = predicate.And(t => t.OwnerId == _user.UserId);
+				break;
+			case 2:
+				var memberTeamIds = _context.Set<TeamMember>()
+				                            .AsNoTracking()
+				                            .Where(m => m.UserId == _user.UserId)
+				                            .Select(m => m.TeamId);
+				predicate = predicate.And(t => memberTeamIds.Contains(t.Id));
+				break;
+		}
+
+		if (!string.IsNullOrWhiteSpace(message.Keyword))
+		{
+			var keyword = message.Keyword.Normalize(TextCaseType.Lower);
+			predicate = predicate.And(t => t.Name.ToLower().Contains(keyword) || t.Description.ToLower().Contains(keyword) || t.OwnerUsername.ToLower().Contains(keyword) || t.OwnerNickname.ToLower().Contains(keyword));
+		}
+
+		{
+		}
+		return query.Where(predicate).CountAsync(cancellationToken);
+	}
+
+	public Task<TeamDetailModel> HandleAsync(TeamDetailQuery message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	{
+		var query = _context.Set<Team>()
+		                    .AsNoTracking()
+		                    .Where(TeamSpecification.IdEquals(message.Id).Satisfy())
+		                    .Select(t => new TeamDetailModel
+		                    {
+			                    Id = t.Id,
+			                    Name = t.Name,
+			                    Description = t.Description,
+			                    MembersCount = t.MembersCount,
+			                    CreatedAt = t.CreatedAt,
+			                    UpdatedAt = t.UpdatedAt
+		                    });
+		return query.FirstOrDefaultAsync(cancellationToken);
+	}
+
+	public async Task<IList<TeamMemberModel>> HandleAsync(TeamMemberQuery message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	{
+		var members = _context.Set<TeamMember>().AsNoTracking();
+		var users = _context.Set<User>().AsNoTracking();
+
+		var query = from member in members
+		            join user in users on member.UserId equals user.Id
+		            where member.TeamId == message.TeamId
+		            orderby member.Id descending
+		            select new TeamMemberModel
+		            {
+			            Id = member.Id,
+			            TeamId = member.TeamId,
+			            UserId = member.UserId,
+			            Username = user.Username,
+			            Nickname = user.Nickname,
+			            Email = user.Email,
+			            Phone = user.Phone,
+			            JoinedAt = member.CreatedAt,
+		            };
+
+		var predicate = PredicateBuilder.True<TeamMemberModel>();
+		if (!string.IsNullOrWhiteSpace(message.Keyword))
+		{
+			var keyword = message.Keyword.Normalize(TextCaseType.Lower);
+			predicate = predicate.And(m => m.Username.ToLower().Contains(keyword) || m.Nickname.ToLower().Contains(keyword));
+		}
+
+		return await query.Where(predicate)
+		                  .OrderByDescending(m => m.Id)
+		                  .Skip(message.Skip)
+		                  .Take(message.Size)
+		                  .ToListAsync(cancellationToken);
+	}
+}

@@ -4,7 +4,7 @@ using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Facade.Interfaces;
 
-public interface ITemplateAppService : IApplicationService
+public interface ITemplateApplicationService : IApplicationService
 {
 	Task<TemplateDetailDto> GetAsync(long id, CancellationToken cancellationToken = default);
 

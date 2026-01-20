@@ -32,8 +32,8 @@ internal class TeamConfiguration : IEntityTypeConfiguration<Team>
 		       .HasMaxLength(500)
 		       .IsUnicode();
 
-		builder.Property(t => t.MemberCount)
-		       .HasColumnName("member_count")
+		builder.Property(t => t.MembersCount)
+		       .HasColumnName("members_count")
 		       .IsRequired()
 		       .HasDefaultValue(0);
 

@@ -25,7 +25,7 @@ public class TeamData : Persistent<long>
 
 	/// <summary>
 	/// Gets or sets the identifier of the user that owns the team.
-	/// Typically this is the user id of the team creator or primary administrator.
+	/// Typically, this is the user id of the team creator or primary administrator.
 	/// </summary>
 	public string OwnerId { get; set; }
 
