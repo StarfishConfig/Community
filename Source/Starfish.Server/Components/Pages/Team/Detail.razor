@@ -1,0 +1,66 @@
+@page "/teams/{Id:long}"
+
+<PageTitle>@TeamResources.IDS_DETAIL_TITLE</PageTitle>
+
+<FluentStack VerticalGap="16" Orientation="Orientation.Vertical" Style="width: 100%">
+    <FluentBreadcrumb Style="margin-bottom: 16px;">
+        <FluentBreadcrumbItem Href="/">@LayoutResources.IDS_MENU_TEXT_HOME</FluentBreadcrumbItem>
+        <FluentBreadcrumbItem Href="/teams">@LayoutResources.IDS_MENU_TEXT_TEAM_MANAGEMENT</FluentBreadcrumbItem>
+        <FluentBreadcrumbItem Href="@($"/teams/{Id}")">@TeamResources.IDS_DETAIL_TITLE</FluentBreadcrumbItem>
+    </FluentBreadcrumb>
+
+    <FluentLabel Typo="Typography.Header">@TeamResources.IDS_DETAIL_TITLE</FluentLabel>
+
+    <FluentAccordion Style="width: 100%">
+        <FluentAccordionItem Heading="@TeamResources.IDS_DETAIL_PANEL_HEADER" Expanded="true">
+            <FluentIcon Value="@(new Icons.Regular.Size20.Info())" Color="@Color.Neutral" Slot="start"/>
+            <FluentGrid Spacing="1" Justify="JustifyContent.FlexStart" Style="padding: 5px;">
+                <FluentGridItem xs="12" sm="6" md="3">
+
+                </FluentGridItem>
+                <FluentGridItem xs="12" sm="6" md="3">
+
+                </FluentGridItem>
+            </FluentGrid>
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End">
+                <FluentButton IconStart="@(new Icons.Regular.Size16.Add())"
+                              Appearance="Appearance.Lightweight"
+                              OnClick="@OnAppendClicked">
+                    @TeamResources.IDS_INDEX_BUTTON_TEXT_NEW
+                </FluentButton>
+                <FluentButton IconStart="@(new Icons.Regular.Size16.Broom())"
+                              Disabled="@Loading"
+                              OnClick="@OnClearClicked">
+                    @CommonResources.IDS_BUTTON_TEXT_CLEAR_FILTER
+                </FluentButton>
+                <FluentButton IconStart="@(new Icons.Regular.Size16.Search())"
+                              Appearance="Appearance.Accent"
+                              Loading="@Loading"
+                              OnClick="@OnSearchClicked">
+                    @CommonResources.IDS_BUTTON_TEXT_SEARCH
+                </FluentButton>
+            </FluentStack>
+        </FluentAccordionItem>
+    </FluentAccordion>
+</FluentStack>
+
+@code {
+
+    [Parameter]
+    public long Id { get; set; }
+
+    private bool Loading { get; set; }
+
+    private async Task OnSearchClicked(MouseEventArgs args)
+    {
+    }
+
+    private async Task OnClearClicked(MouseEventArgs args)
+    {
+    }
+
+    private async Task OnAppendClicked(MouseEventArgs args)
+    {
+    }
+
+}

@@ -1,0 +1,120 @@
+@using Nerosoft.Euonia.Validation
+@implements IDialogContentComponent<long>
+
+@inject ITeamApplicationService Service
+@inject IToastService ToastService
+
+<FluentDialogHeader ShowDismiss="true">
+    <FluentStack VerticalAlignment="VerticalAlignment.Center">
+        <FluentIcon Value="@(new Icons.Regular.Size24.PeopleTeam())"/>
+        <FluentLabel Typo="Typography.PaneHeader">
+            @Dialog.Instance.Parameters.Title
+        </FluentLabel>
+    </FluentStack>
+</FluentDialogHeader>
+
+<FluentDialogBody>
+    <FluentStack Orientation="Orientation.Vertical">
+        <FluentTextField Style="width: 100%"
+                         Label="@TeamResources.IDS_EDIT_LABEL_NAME"
+                         Placeholder="@TeamResources.IDS_EDIT_PLACEHOLDER_NAME"
+                         @bind-Value="Name"/>
+        <FluentTextArea Style="width: 100%"
+                        Label="@TeamResources.IDS_EDIT_LABEL_DESCRIPTION"
+                        Placeholder="@TeamResources.IDS_EDIT_PLACEHOLDER_DESCRIPTION"
+                        @bind-Value="Description"/>
+    </FluentStack>
+</FluentDialogBody>
+
+<FluentDialogFooter>
+    <FluentButton Appearance="Appearance.Accent" OnClick="@SaveAsync"
+                  Loading="Loading">@(CommonResources.IDS_COMMON_SAVE)</FluentButton>
+    <FluentButton Appearance="Appearance.Neutral"
+                  OnClick="@CancelAsync">@(CommonResources.IDS_COMMON_CANCEL)</FluentButton>
+</FluentDialogFooter>
+
+@code {
+
+    /// <summary>
+    /// The ID of the team to edit. If zero or less, a new team will be created.
+    /// </summary>
+    [Parameter]
+    public long Content { get; set; }
+
+    /// <summary>
+    /// The dialog instance for this component.
+    /// </summary>
+    [CascadingParameter]
+    public FluentDialog Dialog { get; set; }
+
+    private bool Loading { get; set; }
+
+    private string Name { get; set; }
+
+    private string Description { get; set; }
+
+    /// <inheritdoc/>
+    protected override async Task OnInitializedAsync()
+    {
+        // Load existing team data if editing an existing team
+        if (Content > 0)
+        {
+            Loading = true;
+            await Service.GetAsync(Content)
+                         .ContinueWith(task =>
+                         {
+                             Name = task.Result.Name;
+                             Description = task.Result.Description;
+                         });
+            Loading = false;
+        }
+    }
+
+    private async Task SaveAsync(MouseEventArgs args)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                throw new ValidationException(TeamResources.IDS_EDIT_ERROR_NAME_REQUIED);
+            }
+
+            if (Name.Length is > 20 or < 2)
+            {
+                throw new ValidationException(TeamResources.IDS_EDIT_ERROR_NAME_LENGTH);
+            }
+
+            if (!string.IsNullOrWhiteSpace(Description) && Description.Length > 1000)
+            {
+                throw new ValidationException(TeamResources.IDS_EDIT_ERROR_DESC_LENGTH);
+            }
+
+            var dto = new TeamEditDto
+            {
+                Name = Name,
+                Description = Description
+            };
+
+            if (Content > 0)
+            {
+                await Service.UpdateAsync(Content, dto);
+            }
+            else
+            {
+                await Service.CreateAsync(dto);
+            }
+
+            await Dialog.CloseAsync();
+        }
+        catch (Exception exception)
+        {
+            ToastService.ShowError(exception.Message);
+        }
+    }
+
+    private async Task CancelAsync(MouseEventArgs args)
+    {
+        await Dialog.CloseAsync();
+    }
+
+}

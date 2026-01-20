@@ -1,5 +1,168 @@
 ﻿@page "/teams"
 
+@inject IDialogService DialogService
+@inject NavigationManager Navigation
+@inject ITeamApplicationService Service
+
+<PageTitle>@TeamResources.IDS_INDEX_TITLE</PageTitle>
+
+<FluentStack VerticalGap="16" Orientation="Orientation.Vertical" Style="width: 100%">
+    <FluentBreadcrumb Style="margin-bottom: 16px;">
+        <FluentBreadcrumbItem Href="/">@LayoutResources.IDS_MENU_TEXT_HOME</FluentBreadcrumbItem>
+        <FluentBreadcrumbItem Href="/teams">@LayoutResources.IDS_MENU_TEXT_TEAM_MANAGEMENT</FluentBreadcrumbItem>
+    </FluentBreadcrumb>
+
+    <FluentLabel Typo="Typography.Header">@TeamResources.IDS_INDEX_TITLE</FluentLabel>
+
+    <FluentAccordion Style="width: 100%">
+        <FluentAccordionItem Heading="@CommonResources.IDS_LABEL_TEXT_FILTER" Expanded="true">
+            <FluentIcon Value="@(new Icons.Regular.Size20.FilterAdd())" Color="@Color.Neutral" Slot="start"/>
+            <FluentGrid Spacing="1" Justify="JustifyContent.FlexStart" Style="padding: 5px;">
+                <FluentGridItem xs="12" sm="6" md="3">
+                    <FluentTextField @bind-Value="Keyword" Label="@CommonResources.IDS_LABEL_TEXT_KEYWORD"
+                                     Style="width: 100%"
+                                     Placeholder="@CommonResources.IDS_PLACEHOLDER_KEYWORD"/>
+                </FluentGridItem>
+                <FluentGridItem xs="12" sm="6" md="3">
+                    <FluentSelect TOption="Option<int?>"
+                                  Items="@TypeOptions"
+                                  OptionValue="@(i => i.Value.ToString())"
+                                  OptionText="@(i => i.Text)"
+                                  Label="@TeamResources.IDS_INDEX_FILTER_LABEL_TYPE"
+                                  Style="width: 100%"
+                                  @bind-SelectedOption="@SelectedTypeOption"/>
+                </FluentGridItem>
+            </FluentGrid>
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End">
+                <FluentButton IconStart="@(new Icons.Regular.Size16.Add())"
+                              Appearance="Appearance.Lightweight"
+                              OnClick="@(() => OnEditClicked())">
+                    @TeamResources.IDS_INDEX_BUTTON_TEXT_NEW
+                </FluentButton>
+                <FluentButton IconStart="@(new Icons.Regular.Size16.Broom())"
+                              Disabled="@Loading"
+                              OnClick="@OnClearClicked">
+                    @CommonResources.IDS_BUTTON_TEXT_CLEAR_FILTER
+                </FluentButton>
+                <FluentButton IconStart="@(new Icons.Regular.Size16.Search())"
+                              Appearance="Appearance.Accent"
+                              Loading="@Loading"
+                              OnClick="@OnSearchClicked">
+                    @CommonResources.IDS_BUTTON_TEXT_SEARCH
+                </FluentButton>
+            </FluentStack>
+        </FluentAccordionItem>
+    </FluentAccordion>
+
+    <FluentDataGrid @ref="_dataGrid" Style="width: 100%"
+                    TGridItem="TeamListDto"
+                    Items="_dataSource"
+                    RowSize="DataGridRowSize.Large"
+                    GenerateHeader="GenerateHeaderOption.Sticky"
+                    Loading="Loading"
+                    Pagination="Pagination"
+                    RefreshItems="@RefreshItemsAsync">
+        <TemplateColumn Title="@TeamResources.IDS_INDEX_COLUMN_NAME">
+            <FluentAnchor Appearance="Appearance.Hypertext"
+                          Href="@($"/teams/{context.Id}")">@context.Name</FluentAnchor>
+        </TemplateColumn>
+        <PropertyColumn Title="@TeamResources.IDS_INDEX_COLUMN_DESCRIPTION"
+                        Property="@(p => p.Description)"/>
+        <PropertyColumn Title="@TeamResources.IDS_INDEX_COLUMN_OWNER"
+                        Property="@(p => p.OwnerName)"/>
+        <PropertyColumn Title="@TeamResources.IDS_INDEX_COLUMN_MEMBER_COUNT"
+                        Property="@(p => p.MembersCount)"/>
+        <PropertyColumn Title="@CommonResources.IDS_COMMON_COLUMN_UPDATE_TIME"
+                        Property="@(p => p.UpdatedAt)"/>
+        <TemplateColumn Title="@CommonResources.IDS_COMMON_COLUMN_ACTIONS" Align="@Align.Center">
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center">
+                <FluentButton OnClick="@(() => OnEditClicked(context.Id))"
+                              IconStart="@(new Icons.Regular.Size16.Edit())"
+                              Appearance="Appearance.Accent">@CommonResources.IDS_BUTTON_TEXT_EDIT</FluentButton>
+                <FluentButton OnClick="@(() => OnDeleteClicked(context.Id, context.Name))"
+                              IconStart="@(new Icons.Regular.Size16.Delete())"
+                              Appearance="Appearance.Lightweight">@CommonResources.IDS_BUTTON_TEXT_DELETE</FluentButton>
+            </FluentStack>
+        </TemplateColumn>
+    </FluentDataGrid>
+</FluentStack>
+
 @code {
+    private bool Loading { get; set; }
+
+    private string Keyword { get; set; } = string.Empty;
+
+    private FluentDataGrid<TeamListDto> _dataGrid;
+    private IQueryable<TeamListDto> _dataSource = Enumerable.Empty<TeamListDto>().AsQueryable();
+    private PaginationState Pagination { get; } = new() { ItemsPerPage = 10 };
+
+    private List<Option<int?>> TypeOptions { get; } =
+    [
+        new() { Value = null, Text = CommonResources.IDS_COMMON_ALL, Selected = true },
+        new() { Value = 1, Text = TeamResources.IDS_RELATION_TYPE_OWNED },
+        new() { Value = 2, Text = TeamResources.IDS_RELATION_TYPE_JOINED }
+    ];
+
+    private Option<int?> SelectedTypeOption { get; set; }
+
+    private async Task OnSearchClicked(MouseEventArgs args)
+    {
+        await _dataGrid.RefreshDataAsync(true);
+    }
+
+    private async Task OnClearClicked(MouseEventArgs args)
+    {
+        Keyword = string.Empty;
+        await _dataGrid.RefreshDataAsync(true);
+    }
+
+    private async Task OnEditClicked(long? id = null)
+    {
+        var title = id > 0 ? TeamResources.IDS_EDIT_TITLE_UPDATE : TeamResources.IDS_EDIT_TITLE_CREATE;
+        var dialog = await DialogService.ShowDialogAsync<Edit>(id ?? 0, new DialogParameters { Title = title, PreventDismissOnOverlayClick = true });
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            await Pagination.SetCurrentPageIndexAsync(0);
+        }
+    }
+
+    private async Task OnDeleteClicked(long id, string name)
+    {
+        // var parameters = new DialogParameters
+        // {
+        //     Title = CommonResources.IDS_DIALOG_TITLE_CONFIRMATION,
+        //     Content = string.Format(IdentityResources.IDS_TEAM_INDEX_DIALOG_CONTENT_DELETE_CONFIRMATION, name),
+        //     PreventDismissOnOverlayClick = true
+        // };
+        // var dialog = await DialogService.ShowDialogAsync<Confirm>(parameters);
+        // var result = await dialog.Result;
+        // if (!result.Cancelled)
+        // {
+        //     Loading = true;
+        //     await InvokeAsync(StateHasChanged);
+        //
+        //     await Service.DeleteAsync(id);
+        //
+        //     Loading = false;
+        //
+        //     await _dataGrid.RefreshDataAsync(true);
+        // }
+    }
+
+    private async Task RefreshItemsAsync(GridItemsProviderRequest<TeamListDto> request)
+    {
+        Loading = true;
+
+        await InvokeAsync(StateHasChanged);
+
+        var result = await Service.SearchAsync(Keyword, SelectedTypeOption?.Value, 0, Pagination.ItemsPerPage);
+
+        _dataSource = result.AsQueryable();
+
+        Loading = false;
+
+        await InvokeAsync(StateHasChanged);
+    }
 
 }

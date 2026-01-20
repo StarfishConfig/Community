@@ -74,6 +74,11 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>SystemResources.resx</DependentUpon>
         </Compile>
+        <Compile Update="Properties\TeamResources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>TeamResources.resx</DependentUpon>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>
@@ -104,6 +109,10 @@
         <EmbeddedResource Update="Properties\SystemResources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>SystemResources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Properties\TeamResources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>TeamResources.Designer.cs</LastGenOutput>
         </EmbeddedResource>
     </ItemGroup>
 

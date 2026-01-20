@@ -216,4 +216,34 @@
   <data name="IDS_USER_EDIT_PLACEHOLDER_PHONE" xml:space="preserve">
     <value>The phone number.</value>
   </data>
+  <data name="IDS_TEAM_INDEX_TITLE" xml:space="preserve">
+      <value>Teams</value>
+  </data>
+  <data name="IDS_TEAM_INDEX_BUTTON_TEXT_NEW" xml:space="preserve">
+      <value>New Team</value>
+  </data>
+  <data name="IDS_TEAM_INDEX_LABEL_TYPE" xml:space="preserve">
+      <value>Owned/Joined</value>
+  </data>
+  <data name="IDS_TEAM_MEMBER_TYPE_OWNED" xml:space="preserve">
+      <value>Owned</value>
+  </data>
+  <data name="IDS_TEAM_MEMBER_TYPE_JOINED" xml:space="preserve">
+      <value>Joined</value>
+  </data>
+  <data name="IDS_TEAM_EDIT_LABEL_NAME" xml:space="preserve">
+      <value>Name</value>
+  </data>
+  <data name="IDS_TEAM_EDIT_LABEL_DESCRIPTION" xml:space="preserve">
+      <value>Description</value>
+  </data>
+  <data name="IDS_TEAM_EDIT_TITLE_CREATE" xml:space="preserve">
+      <value>New Team</value>
+  </data>
+  <data name="IDS_TEAM_EDIT_TITLE_UPDATE" xml:space="preserve">
+      <value>Edit Team</value>
+  </data>
+  <data name="IDS_TEAM_DETAIL_TITLE" xml:space="preserve">
+      <value>Team Information</value>
+  </data>
 </root>
