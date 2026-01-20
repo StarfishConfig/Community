@@ -178,4 +178,22 @@
     <data name="IDS_DETAIL_PANEL_HEADER" xml:space="preserve">
         <value>Information</value>
     </data>
+    <data name="IDS_DETAIL_COLUMN_USERNAME" xml:space="preserve">
+        <value>User Name</value>
+    </data>
+    <data name="IDS_DETAIL_COLUMN_NICKNAME" xml:space="preserve">
+        <value>Nick Name</value>
+    </data>
+    <data name="IDS_DETAIL_COLUMN_EMAIL" xml:space="preserve">
+        <value>Email Address</value>
+    </data>
+    <data name="IDS_DETAIL_COLUMN_PHONE" xml:space="preserve">
+        <value>Phone Number</value>
+    </data>
+    <data name="IDS_DETAIL_COLUMN_JOINED_TIME" xml:space="preserve">
+        <value>Joined At</value>
+    </data>
+    <data name="IDS_DETAIL_LABEL_NAME" xml:space="preserve">
+        <value>Name</value>
+    </data>
 </root>
