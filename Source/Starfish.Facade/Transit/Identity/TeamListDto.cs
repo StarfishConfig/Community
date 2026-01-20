@@ -29,4 +29,9 @@ public class TeamListDto : TeamBaseDto
 	/// Gets or sets the timestamp when the team was created.
 	/// </summary>
 	public DateTime CreatedAt { get; set; }
+
+	/// <summary>
+	/// Gets or sets the timestamp when the team was last updated.
+	/// </summary>
+	public DateTime UpdatedAt { get; set; }
 }

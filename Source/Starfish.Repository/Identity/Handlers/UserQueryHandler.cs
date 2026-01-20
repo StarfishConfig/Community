@@ -22,7 +22,7 @@ internal class UserQueryHandler : IHandler<UserPasswordVerifyRequest, bool>,
 		_context = context;
 	}
 
-	public async Task<bool> HandleAsync(UserPasswordVerifyRequest message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	public async Task<bool> HandleAsync(UserPasswordVerifyRequest message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		var query = from user in _context.Set<User>()
 		            where user.Id == message.Id
@@ -34,7 +34,7 @@ internal class UserQueryHandler : IHandler<UserPasswordVerifyRequest, bool>,
 		return string.Equals(password.PasswordHash, secretHash, StringComparison.Ordinal);
 	}
 
-	public async Task<UserDetailModel> HandleAsync(UserDetailQuery message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	public async Task<UserDetailModel> HandleAsync(UserDetailQuery message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		var specification = UserSpecification.IdEquals(message.Id);
 
@@ -64,7 +64,7 @@ internal class UserQueryHandler : IHandler<UserPasswordVerifyRequest, bool>,
 		return model;
 	}
 
-	public async Task<List<UserListModel>> HandleAsync(UserSearchQuery message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	public async Task<List<UserListModel>> HandleAsync(UserSearchQuery message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		var specification = UserSpecification.True()
 		                                     .AndIf(!string.IsNullOrWhiteSpace(message.Keyword), () => UserSpecification.ContainsKeyword(message.Keyword))
@@ -83,7 +83,7 @@ internal class UserQueryHandler : IHandler<UserPasswordVerifyRequest, bool>,
 		return TypeAdapter.ProjectedAs<List<UserListModel>>(entities);
 	}
 
-	public Task<int> HandleAsync(UserCountQuery message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	public Task<int> HandleAsync(UserCountQuery message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		var specification = UserSpecification.True()
 		                                     .AndIf(!string.IsNullOrWhiteSpace(message.Keyword), () => UserSpecification.ContainsKeyword(message.Keyword))

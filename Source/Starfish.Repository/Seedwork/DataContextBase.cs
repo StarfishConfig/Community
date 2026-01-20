@@ -47,7 +47,7 @@ internal abstract class DataContextBase<TContext> : Euonia.Repository.EfCore.Dat
 		base.OnConfiguring(optionsBuilder);
 	}
 
-	public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
+	public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
 	{
 		SetEntryValues(ChangeTracker.Entries());
 		return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
@@ -80,25 +80,25 @@ internal abstract class DataContextBase<TContext> : Euonia.Repository.EfCore.Dat
 			switch (entry.State)
 			{
 				case EntityState.Added:
-					entry.CurrentValues[nameof(IAuditable.CreatedBy)] = user;
-					entry.CurrentValues[nameof(IAuditable.CreatedAt)] = dateTime;
-					entry.CurrentValues[nameof(IAuditable.UpdatedBy)] = user;
-					entry.CurrentValues[nameof(IAuditable.UpdatedAt)] = dateTime;
+					entry.TrySetProperty(nameof(IAuditable.CreatedBy), user);
+					entry.TrySetProperty(nameof(IAuditable.CreatedAt), dateTime);
+					entry.TrySetProperty(nameof(IAuditable.UpdatedBy), user);
+					entry.TrySetProperty(nameof(IAuditable.UpdatedAt), dateTime);
 
 					break;
 				case EntityState.Deleted:
 					if (entry.Entity is IAuditable)
 					{
 						entry.State = EntityState.Modified;
-						entry.CurrentValues[nameof(IAuditable.DeletedBy)] = user;
-						entry.CurrentValues[nameof(IAuditable.DeletedAt)] = dateTime;
-						entry.CurrentValues[nameof(IAuditable.IsDeleted)] = true;
+						entry.TrySetProperty(nameof(IAuditable.DeletedBy), user);
+						entry.TrySetProperty(nameof(IAuditable.DeletedAt), dateTime);
+						entry.TrySetProperty(nameof(IAuditable.IsDeleted), true);
 					}
 
 					break;
 				case EntityState.Modified:
-					entry.CurrentValues[nameof(IAuditable.UpdatedBy)] = user;
-					entry.CurrentValues[nameof(IAuditable.UpdatedAt)] = dateTime;
+					entry.TrySetProperty(nameof(IAuditable.UpdatedBy), user);
+					entry.TrySetProperty(nameof(IAuditable.UpdatedAt), dateTime);
 					break;
 			}
 		}

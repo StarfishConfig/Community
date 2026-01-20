@@ -38,9 +38,9 @@ internal class TeamApplicationService : BaseApplicationService, ITeamApplication
 		          }, cancellationToken);
 	}
 
-	public Task<List<TeamMemberDto>> GetMemberAsync(long teamId, string keyword, int skip, int size, CancellationToken cancellationToken = default)
+	public Task<List<TeamMemberDto>> GetMemberListAsync(long teamId, string keyword, int skip, int size, CancellationToken cancellationToken = default)
 	{
-		var request = new TeamMemberQuery(teamId, keyword, skip, size);
+		var request = new TeamMemberListQuery(teamId, keyword, skip, size);
 		return Bus.CallAsync(request, cancellationToken)
 		          .ContinueWith(task =>
 		          {
@@ -49,6 +49,12 @@ internal class TeamApplicationService : BaseApplicationService, ITeamApplication
 			          var members = TypeAdapter.ProjectedAs<List<TeamMemberDto>>(task.Result);
 			          return members;
 		          }, cancellationToken);
+	}
+
+	public Task<int> GetMemberCountAsync(long teamId, string keyword, CancellationToken cancellationToken = default)
+	{
+		var request = new TeamMemberCountQuery(teamId, keyword);
+		return Bus.CallAsync(request, cancellationToken);
 	}
 
 	public Task CreateAsync(TeamEditDto data, CancellationToken cancellationToken = default)
@@ -61,6 +67,18 @@ internal class TeamApplicationService : BaseApplicationService, ITeamApplication
 	{
 		var command = new TeamUpdateCommand(id);
 		TypeAdapter.ProjectedAs(data, command);
+		return Bus.SendAsync(command, cancellationToken);
+	}
+
+	public Task AppendMemberAsync(long teamId, IList<string> userIds, CancellationToken cancellationToken = default)
+	{
+		var command = new TeamMemberAppendCommand(teamId, userIds);
+		return Bus.SendAsync(command, cancellationToken);
+	}
+
+	public Task RemoveMemberAsync(long teamId, IList<string> userIds, CancellationToken cancellationToken = default)
+	{
+		var command = new TeamMemberRemoveCommand(teamId, userIds);
 		return Bus.SendAsync(command, cancellationToken);
 	}
 }

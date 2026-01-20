@@ -70,7 +70,7 @@ internal sealed class UserCommandHandler(IServiceProvider provider)
 					   .ExecuteAsync(cancellationToken);
 	}
 
-	public Task HandleAsync(UserFailedCountChangeCommand message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	public Task HandleAsync(UserFailedCountChangeCommand message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		return Actuator.For<User>()
 					   .Fetch(message.Id, cancellationToken)

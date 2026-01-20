@@ -1,4 +1,5 @@
 using AutoMapper;
+using Nerosoft.Starfish.Domain.Commands;
 using Nerosoft.Starfish.Facade.Transit;
 using Nerosoft.Starfish.Repository.Models;
 
@@ -15,5 +16,8 @@ internal class TeamMapperProfile : Profile
 			});
 
 		CreateMap<TeamDetailModel, TeamDetailDto>();
+
+		CreateMap<TeamEditDto, TeamCreateCommand>();
+		CreateMap<TeamEditDto, TeamUpdateCommand>();
 	}
 }

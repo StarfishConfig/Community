@@ -80,11 +80,16 @@ internal sealed class Team : EditableObjectBase<Team, long>
 	/// <summary>
 	/// Appends a member to the team.
 	/// </summary>
-	/// <param name="userId"></param>
-	internal void AppendMember(string userId)
+	/// <param name="userIds"></param>
+	internal void AppendMember(params string[] userIds)
 	{
-		if (!Members.Contains(userId))
+		foreach (var userId in userIds)
 		{
+			if (Members.Contains(userId))
+			{
+				continue;
+			}
+
 			Members.Add(userId);
 		}
 	}
@@ -92,10 +97,13 @@ internal sealed class Team : EditableObjectBase<Team, long>
 	/// <summary>
 	/// Removes a member from the team.
 	/// </summary>
-	/// <param name="userId">The user identifier.</param>
-	internal void RemoveMember(string userId)
+	/// <param name="userIds">The user identifier.</param>
+	internal void RemoveMember(params string[] userIds)
 	{
-		Members.Remove(userId);
+		foreach (var userId in userIds)
+		{
+			Members.Remove(userId);
+		}
 	}
 
 	/// <summary>

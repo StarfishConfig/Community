@@ -19,6 +19,7 @@ internal class TeamMapperProfile : Profile
 			.ForMember(t => t.Members, opt => opt.Ignore())
 			.AfterMap((src, dest, _) =>
 			{
+				dest.Members ??= [];
 				dest.Members.RemoveWhere(t => src.Members.Contains(t.UserId));
 				foreach (var member in src.Members)
 				{
@@ -28,7 +29,7 @@ internal class TeamMapperProfile : Profile
 					}
 				}
 
-				dest.MembersCount = src.Members?.Count ?? 0;
+				dest.MembersCount = dest.Members?.Count ?? 0;
 			});
 	}
 }

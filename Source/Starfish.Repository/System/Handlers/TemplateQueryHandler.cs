@@ -77,7 +77,7 @@ internal class TemplateQueryHandler : IHandler<TemplateDetailQuery, TemplateDeta
 		return TypeAdapter.ProjectedAs<IList<TemplateListModel>>(entities);
 	}
 
-	public Task<int> HandleAsync(TemplateCountRequest message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	public Task<int> HandleAsync(TemplateCountRequest message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		var specification = TemplateSpecification.True()
 		                                         .AndIf(message.Type > TemplateType.None, () => TemplateSpecification.TypeEquals(message.Type!.Value))

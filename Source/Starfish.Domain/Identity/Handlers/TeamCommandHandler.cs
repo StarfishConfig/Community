@@ -13,7 +13,7 @@ internal class TeamCommandHandler(IServiceProvider provider)
 	  IHandler<TeamMemberAppendCommand>,
 	  IHandler<TeamMemberRemoveCommand>
 {
-	public Task HandleAsync(TeamCreateCommand message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	public Task HandleAsync(TeamCreateCommand message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		return Actuator.For<Team>()
 		               .Create(message.Name, cancellationToken)
@@ -25,7 +25,7 @@ internal class TeamCommandHandler(IServiceProvider provider)
 		               .ExecuteAsync(cancellationToken);
 	}
 
-	public Task HandleAsync(TeamUpdateCommand message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	public Task HandleAsync(TeamUpdateCommand message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		return Actuator.For<Team>()
 		               .Fetch(message.Id, cancellationToken)
@@ -38,7 +38,7 @@ internal class TeamCommandHandler(IServiceProvider provider)
 		               .ExecuteAsync(cancellationToken);
 	}
 
-	public Task HandleAsync(TeamDeleteCommand message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	public Task HandleAsync(TeamDeleteCommand message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		return Actuator.For<Team>()
 		               .Fetch(message.Id, cancellationToken)
@@ -49,7 +49,7 @@ internal class TeamCommandHandler(IServiceProvider provider)
 		               .ExecuteAsync(cancellationToken);
 	}
 
-	public Task HandleAsync(TeamTransferCommand message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	public Task HandleAsync(TeamTransferCommand message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		return Actuator.For<Team>()
 		               .Fetch(message.Id, cancellationToken)
@@ -61,25 +61,25 @@ internal class TeamCommandHandler(IServiceProvider provider)
 		               .ExecuteAsync(cancellationToken);
 	}
 
-	public Task HandleAsync(TeamMemberAppendCommand message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	public Task HandleAsync(TeamMemberAppendCommand message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		return Actuator.For<Team>()
 		               .Fetch(message.Id, cancellationToken)
 		               .Handle(target =>
 		               {
-			               target.AppendMember(message.UserId);
+			               target.AppendMember(message.UserIds?.ToArray());
 			               target.MarkAsChanged();
 		               })
 		               .ExecuteAsync(cancellationToken);
 	}
 
-	public Task HandleAsync(TeamMemberRemoveCommand message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	public Task HandleAsync(TeamMemberRemoveCommand message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		return Actuator.For<Team>()
 		               .Fetch(message.Id, cancellationToken)
 		               .Handle(target =>
 		               {
-			               target.RemoveMember(message.UserId);
+			               target.RemoveMember(message.UserIds?.ToArray());
 			               target.MarkAsChanged();
 		               })
 		               .ExecuteAsync(cancellationToken);
