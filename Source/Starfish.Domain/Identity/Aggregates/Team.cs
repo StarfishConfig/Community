@@ -11,9 +11,11 @@ namespace Nerosoft.Starfish.Domain.Aggregates;
 /// </summary>
 internal sealed class Team : EditableObjectBase<Team, long>
 {
+	private readonly ObservableCollection<string> _members = new();
+
 	public Team()
 	{
-		Members.CollectionChanged += OnMembersChanged;
+		_members.CollectionChanged += OnMembersChanged;
 	}
 
 	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
@@ -48,7 +50,10 @@ internal sealed class Team : EditableObjectBase<Team, long>
 		private set => SetProperty(OwnerIdProperty, value);
 	}
 
-	public ObservableCollection<string> Members => GetProperty(MembersProperty);
+	public IReadOnlyCollection<string> Members
+	{
+		get => _members;
+	}
 
 	protected override void AddRules()
 	{
@@ -85,12 +90,12 @@ internal sealed class Team : EditableObjectBase<Team, long>
 	{
 		foreach (var userId in userIds)
 		{
-			if (Members.Contains(userId))
+			if (_members.Contains(userId))
 			{
 				continue;
 			}
 
-			Members.Add(userId);
+			_members.Add(userId);
 		}
 	}
 
@@ -102,7 +107,7 @@ internal sealed class Team : EditableObjectBase<Team, long>
 	{
 		foreach (var userId in userIds)
 		{
-			Members.Remove(userId);
+			_members.Remove(userId);
 		}
 	}
 
@@ -135,7 +140,7 @@ internal sealed class Team : EditableObjectBase<Team, long>
 
 	protected override void Dispose(bool disposing)
 	{
-		Members.CollectionChanged -= OnMembersChanged;
+		_members.CollectionChanged -= OnMembersChanged;
 		base.Dispose(disposing);
 	}
 
@@ -165,7 +170,7 @@ internal sealed class Team : EditableObjectBase<Team, long>
 		{
 			foreach (var memberId in data.Members)
 			{
-				Members.Add(memberId);
+				_members.Add(memberId);
 			}
 		}
 	}

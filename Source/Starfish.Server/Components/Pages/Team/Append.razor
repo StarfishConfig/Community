@@ -1,0 +1,171 @@
+﻿@using Nerosoft.Euonia.Validation
+@implements IDialogContentComponent<long>
+
+@inject ITeamApplicationService TeamService
+@inject IUserApplicationService UserService
+@inject IToastService ToastService
+
+<FluentDialogHeader ShowDismiss="true">
+    <FluentStack VerticalAlignment="VerticalAlignment.Center">
+        <FluentIcon Value="@(new Icons.Regular.Size24.PeopleTeam())" />
+        <FluentLabel Typo="Typography.PaneHeader">
+            @Dialog.Instance.Parameters.Title
+        </FluentLabel>
+    </FluentStack>
+</FluentDialogHeader>
+
+<FluentDialogBody>
+    <FluentStack Orientation="Orientation.Vertical">
+        <FluentAutocomplete @ref="Members"
+                            TOption="UserListDto"
+                            Width="100%"
+                            Placeholder="search"
+                            OnOptionsSearch="@OnSearchAsync"
+                            ShowProgressIndicator="true"
+                            KeepOpen="true"
+                            OptionText="@(item => item.Nickname)"
+                            OptionStyle="min-height: 40px;"
+                            MaxAutoHeight="500px"
+                            OptionComparer="@UserListDtoComparer.Instance"
+                            Style="max-width:752px;"
+                            @bind-SelectedOptions="@SelectedItems">
+            <LabelTemplate>
+                Select a person
+                <FluentIcon Value="@(new Icons.Regular.Size20.Person())" Style="margin: 0 4px;" />
+            </LabelTemplate>
+
+            @* Template used with each Selected items *@
+            <SelectedOptionTemplate>
+                <FluentPersona ImageSize="24px"
+                               Image="https://"
+                               Name="@($"{context.Nickname} {context.Username}")"
+                               DismissTitle="Remove"
+                               Status="PresenceStatus.Available"
+                               OnDismissClick="@(async () => await Members.RemoveSelectedItemAsync(context))" />
+            </SelectedOptionTemplate>
+
+            @* Template used with each Option items *@
+            <OptionTemplate>
+                <FluentPersona ImageSize="32px"
+                               Image="https://"
+                               Status="PresenceStatus.DoNotDisturb"
+                               StatusSize="PresenceBadgeSize.Small"
+                               Name="@($"{context.Nickname} {context.Username}")" />
+            </OptionTemplate>
+
+            @* Template used when the maximum number of selected items (MaximumSelectedOptions) has been reached *@
+            <MaximumSelectedOptionsMessage>
+                The maximum number of selected items has been reached.
+            </MaximumSelectedOptionsMessage>
+
+            @* Content display at the top of the Popup area *@
+            <HeaderContent>
+                <FluentLabel Color="Color.Accent"
+                             Style="padding: 8px; font-size: 11px; border-bottom: 1px solid var(--neutral-fill-stealth-hover);">
+                    Suggested contacts
+                </FluentLabel>
+                <FluentProgress Style="@($"visibility: {(context.InProgress ? "visible" : "collapse")}")" />
+            </HeaderContent>
+
+            @* Content display at the bottom of the Popup area *@
+            <FooterContent>
+                @if (!context.Items.Any())
+                {
+                    <FluentLabel Style="font-size: 11px; text-align: center; width: 200px;">
+                        No results found
+                    </FluentLabel>
+                }
+            </FooterContent>
+        </FluentAutocomplete>
+    </FluentStack>
+</FluentDialogBody>
+
+<FluentDialogFooter>
+    <FluentButton Appearance="Appearance.Accent" OnClick="@SaveAsync"
+                  Loading="Loading">@(CommonResources.IDS_COMMON_SAVE)</FluentButton>
+    <FluentButton Appearance="Appearance.Neutral"
+                  OnClick="@CancelAsync">@(CommonResources.IDS_COMMON_CANCEL)</FluentButton>
+</FluentDialogFooter>
+
+@code {
+    /// <summary>
+    /// The ID of the team to edit. If zero or less, a new team will be created.
+    /// </summary>
+    [Parameter]
+    public long Content { get; set; }
+
+    /// <summary>
+    /// The dialog instance for this component.
+    /// </summary>
+    [CascadingParameter]
+    public FluentDialog Dialog { get; set; }
+
+    private bool Loading { get; set; }
+
+    FluentAutocomplete<UserListDto> Members = default!;
+    IEnumerable<UserListDto> SelectedItems = Array.Empty<UserListDto>();
+
+    private async Task OnSearchAsync(OptionsSearchEventArgs<UserListDto> e)
+    {
+        e.Items = await UserService.SearchAsync(e.Text, null, 0, 20);
+    }
+
+    private async Task SaveAsync(MouseEventArgs args)
+    {
+        try
+        {
+            Loading = true;
+
+            if (!SelectedItems.Any())
+            {
+                throw new ValidationException("Please select at least one member to add.");
+            }
+
+            var userIds = SelectedItems.Select(t => t.Id).ToList();
+
+            await TeamService.AppendMemberAsync(Content, userIds);
+
+            await Dialog.CloseAsync(true);
+        }
+        catch (Exception exception)
+        {
+            ToastService.ShowError(exception.GetErrorMessage());
+        }
+        finally
+        {
+            Loading = false;
+        }
+    }
+
+    private async Task CancelAsync(MouseEventArgs args)
+    {
+        await Dialog.CloseAsync();
+    }
+
+    private class UserListDtoComparer : IEqualityComparer<UserListDto>
+    {
+        public static readonly UserListDtoComparer Instance = new UserListDtoComparer();
+
+        public UserListDtoComparer()
+        {
+        }
+
+        public bool Equals(UserListDto x, UserListDto y)
+        {
+            if (x == null && y == null)
+            {
+                return true;
+            }
+            if (x == null || y == null)
+            {
+                return false;
+            }
+            return x.Id == y.Id;
+        }
+
+        public int GetHashCode(UserListDto obj)
+        {
+            return obj.Id.GetHashCode();
+        }
+    }
+}

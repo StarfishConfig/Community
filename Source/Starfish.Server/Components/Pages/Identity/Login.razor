@@ -8,6 +8,7 @@
 @inject IAuthApplicationService Service
 @inject ProtectedLocalStorage LocalStorage
 @inject NavigationManager Navigation
+@inject IToastService ToastService
 
 @attribute [AllowAnonymous]
 
@@ -52,22 +53,22 @@
                                 </FluentGridItem>
                             </FluentGrid>
                         </FluentTab>
-                    <!--
-                        <FluentTab Label="Login via OTP" Id="Tab-OTP" Style="padding: 16px 0"
-                                   Disabled="true">
-                            <FluentGrid Columns="12" RowGap="10" ColumnGap="10">
-                                <FluentGridItem md="12">
-                                    <FluentTextField Name="Model.Username" @bind-Value="Model.Username"
-                                                     AutoComplete="off" Required="true"
-                                                     Placeholder="Username/Email/Phone"
-                                                     Style="width: 100%">
-                                        <FluentIcon Value="@(new Icons.Regular.Size24.Person())" Slot="start"
-                                                    Color="Color.Neutral" />
-                                    </FluentTextField>
-                                </FluentGridItem>
-                            </FluentGrid>
-                        </FluentTab>
-                        -->
+                        <!--
+                            <FluentTab Label="Login via OTP" Id="Tab-OTP" Style="padding: 16px 0"
+                                       Disabled="true">
+                                <FluentGrid Columns="12" RowGap="10" ColumnGap="10">
+                                    <FluentGridItem md="12">
+                                        <FluentTextField Name="Model.Username" @bind-Value="Model.Username"
+                                                         AutoComplete="off" Required="true"
+                                                         Placeholder="Username/Email/Phone"
+                                                         Style="width: 100%">
+                                            <FluentIcon Value="@(new Icons.Regular.Size24.Person())" Slot="start"
+                                                        Color="Color.Neutral" />
+                                        </FluentTextField>
+                                    </FluentGridItem>
+                                </FluentGrid>
+                            </FluentTab>
+                            -->
                     </FluentTabs>
                 </FluentBodyContent>
                 <div style="width: 100%; display: flex;align-items: center;">
@@ -110,23 +111,30 @@
 
     private async Task OnSubmitAsync(EditContext context)
     {
-        var dto = new TokenGrantRequestDto
+        try
         {
-            Username = Model.Username,
-            Password = Model.Password,
-            GrantType = "password"
-        };
-        if (HttpContext == null)
-        {
-            var result = await Service.GrantAsync(dto);
-            await LocalStorage.SetAsync(IdentityConstants.BearerScheme, result);
-            Navigation.NavigateTo(ReturnUrl);
+            var dto = new TokenGrantRequestDto
+            {
+                Username = Model.Username,
+                Password = Model.Password,
+                GrantType = "password"
+            };
+            if (HttpContext == null)
+            {
+                var result = await Service.GrantAsync(dto);
+                await LocalStorage.SetAsync(IdentityConstants.BearerScheme, result);
+                Navigation.NavigateTo(ReturnUrl);
+            }
+            else
+            {
+                var result = await Service.SignInAsync(dto);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, result);
+                HttpContext.Response.Redirect(ReturnUrl);
+            }
         }
-        else
+        catch (Exception exception)
         {
-            var result = await Service.SignInAsync(dto);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, result);
-            HttpContext.Response.Redirect(ReturnUrl);
+            ToastService.ShowError(exception.GetErrorMessage());
         }
     }
 

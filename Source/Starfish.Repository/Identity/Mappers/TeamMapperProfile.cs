@@ -20,7 +20,7 @@ internal class TeamMapperProfile : Profile
 			.AfterMap((src, dest, _) =>
 			{
 				dest.Members ??= [];
-				dest.Members.RemoveWhere(t => src.Members.Contains(t.UserId));
+				dest.Members.RemoveWhere(t => !src.Members.Contains(t.UserId));
 				foreach (var member in src.Members)
 				{
 					if (dest.Members.All(t => t.UserId != member))

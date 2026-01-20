@@ -378,3 +378,12 @@ nav fluent-anchor {
     align-items: center;
     justify-content: flex-end;
 }
+
+.input-disabled::part(control):disabled {
+    /*color: var(--neutral-foreground-rest) !important;*/
+    opacity: 100;
+}
+
+.input-disabled{
+    opacity: 1 !important;
+}
