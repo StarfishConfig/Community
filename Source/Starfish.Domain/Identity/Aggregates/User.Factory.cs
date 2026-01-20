@@ -24,6 +24,7 @@ internal partial class User
 			throw new NotFoundException(IdentityResources.IDS_ERROR_USER_NOT_FOUND);
 		}
 
+		LoadProperty(IdProperty, id);
 		LoadProperty(UsernameProperty, data.Username);
 		LoadProperty(NicknameProperty, data.Nickname);
 		LoadProperty(EmailProperty, data.Email);
