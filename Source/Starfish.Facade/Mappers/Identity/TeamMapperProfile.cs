@@ -19,5 +19,6 @@ internal class TeamMapperProfile : Profile
 
 		CreateMap<TeamEditDto, TeamCreateCommand>();
 		CreateMap<TeamEditDto, TeamUpdateCommand>();
+		CreateMap<TeamMemberModel, TeamMemberDto>();
 	}
 }
