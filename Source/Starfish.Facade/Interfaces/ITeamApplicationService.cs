@@ -73,6 +73,14 @@ public interface ITeamApplicationService : IApplicationService
 	Task UpdateAsync(long id, TeamEditDto data, CancellationToken cancellationToken = default);
 
 	/// <summary>
+	/// Deletes the team identified by <paramref name="id"/>.
+	/// </summary>
+	/// <param name="id">Identifier of the team to update.</param>
+	/// <param name="cancellationToken">Token to cancel the operation.</param>
+	/// <returns></returns>
+	Task DeleteAsync(long id, CancellationToken cancellationToken = default);
+
+	/// <summary>
 	/// Appends one or more users to the specified team.
 	/// </summary>
 	/// <param name="teamId">Identifier of the team to which users will be added.</param>

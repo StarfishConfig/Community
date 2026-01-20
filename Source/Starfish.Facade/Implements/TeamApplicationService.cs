@@ -70,6 +70,12 @@ internal class TeamApplicationService : BaseApplicationService, ITeamApplication
 		return Bus.SendAsync(command, cancellationToken);
 	}
 
+	public Task DeleteAsync(long id, CancellationToken cancellationToken = default)
+	{
+		var command = new TeamDeleteCommand(id);
+		return Bus.SendAsync(command, cancellationToken);
+	}
+
 	public Task AppendMemberAsync(long teamId, IList<string> userIds, CancellationToken cancellationToken = default)
 	{
 		var command = new TeamMemberAppendCommand(teamId, userIds);

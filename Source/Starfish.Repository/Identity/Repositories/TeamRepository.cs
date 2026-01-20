@@ -3,6 +3,7 @@ using Nerosoft.Euonia.Mapping;
 using Nerosoft.Starfish.Domain.Repositories;
 using Nerosoft.Starfish.Persistent;
 using Nerosoft.Starfish.Repository.Entities;
+using Nerosoft.Starfish.Repository.Specifications;
 
 namespace Nerosoft.Starfish.Repository.Repositories;
 
@@ -18,7 +19,10 @@ internal class TeamRepository(IdentityDataContext context)
 		}
 		else
 		{
-			var entity = await context.FindAsync<Team>([data.Id], cancellationToken);
+			var expression = TeamSpecification.IdEquals(data.Id).Satisfy();
+			var entity = await context.Set<Team>()
+			                          .Include(t => t.Members)
+			                          .FirstOrDefaultAsync(expression, cancellationToken);
 			if (entity != null)
 			{
 				TypeAdapter.ProjectedAs(data, entity);
@@ -31,7 +35,10 @@ internal class TeamRepository(IdentityDataContext context)
 
 	public async Task<TeamData> GetAsync(long id, CancellationToken cancellationToken = default)
 	{
-		var entity = await context.FindAsync<Team>([id], cancellationToken);
+		var expression = TeamSpecification.IdEquals(id).Satisfy();
+		var entity = await context.Set<Team>()
+		                          .Include(t => t.Members)
+		                          .FirstOrDefaultAsync(expression, cancellationToken);
 		if (entity == null)
 		{
 			throw new NotFoundException($"Team with id '{id}' was not found.");
