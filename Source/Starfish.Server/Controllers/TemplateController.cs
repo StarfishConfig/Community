@@ -11,7 +11,7 @@ namespace Nerosoft.Starfish.Server.Controllers;
 /// <param name="service"></param>
 [Route("api/[controller]")]
 [ApiController]
-public class TemplateController(ITemplateAppService service) : ControllerBase
+public class TemplateController(ITemplateApplicationService service) : ControllerBase
 {
 	/// <summary>
 	/// Gets a message template by its unique identifier.
