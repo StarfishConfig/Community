@@ -81,6 +81,15 @@ public interface ITeamApplicationService : IApplicationService
 	Task DeleteAsync(long id, CancellationToken cancellationToken = default);
 
 	/// <summary>
+	/// Transfers ownership of the specified team to another user.
+	/// </summary>
+	/// <param name="id">Identifier of the team to transfer.</param>
+	/// <param name="data">Parameters contains identifier of the user who will receipt the team.</param>
+	/// <param name="cancellationToken">Token to cancel the operation.</param>
+	/// <returns></returns>
+	Task TransferAsync(long id, TeamTransferDto data, CancellationToken cancellationToken = default);
+
+	/// <summary>
 	/// Appends one or more users to the specified team.
 	/// </summary>
 	/// <param name="teamId">Identifier of the team to which users will be added.</param>

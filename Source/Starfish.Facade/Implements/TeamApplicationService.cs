@@ -76,6 +76,15 @@ internal class TeamApplicationService : BaseApplicationService, ITeamApplication
 		return Bus.SendAsync(command, cancellationToken);
 	}
 
+	public Task TransferAsync(long id, TeamTransferDto data, CancellationToken cancellationToken = default)
+	{
+		var command = new TeamTransferCommand(id, data.UserId)
+		{
+			LeaveAfterTransfer = data.LeaveAfterTransfer
+		};
+		return Bus.SendAsync(command, cancellationToken);
+	}
+
 	public Task AppendMemberAsync(long teamId, IList<string> userIds, CancellationToken cancellationToken = default)
 	{
 		var command = new TeamMemberAppendCommand(teamId, userIds);
