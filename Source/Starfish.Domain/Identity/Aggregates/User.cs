@@ -12,6 +12,10 @@ namespace Nerosoft.Starfish.Domain.Aggregates;
 /// </summary>
 internal sealed class User : EditableObjectBase<User, string>
 {
+	#region Variables
+	private readonly ObservableCollection<string> _roles = [];
+	#endregion
+
 	#region Properties
 
 	public static readonly PropertyInfo<string> UsernameProperty = RegisterProperty<string>(p => p.Username);
@@ -22,7 +26,6 @@ internal sealed class User : EditableObjectBase<User, string>
 	public static readonly PropertyInfo<int> AccessFailedCountProperty = RegisterProperty<int>(p => p.AccessFailedCount);
 	public static readonly PropertyInfo<DateTime?> PasswordChangedAtProperty = RegisterProperty<DateTime?>(p => p.PasswordChangedAt);
 	public static readonly PropertyInfo<DateTime?> LockoutEndProperty = RegisterProperty<DateTime?>(p => p.LockoutEnd);
-	public static readonly PropertyInfo<ObservableCollection<string>> RolesProperty = RegisterProperty<ObservableCollection<string>>(p => p.Roles, nameof(Roles), []);
 
 	/// <summary>
 	/// Gets or sets the username.
@@ -99,7 +102,7 @@ internal sealed class User : EditableObjectBase<User, string>
 	/// <summary>
 	/// Gets or sets the roles associated with the user.
 	/// </summary>
-	public ObservableCollection<string> Roles => GetProperty(RolesProperty);
+	public IReadOnlyCollection<string> Roles => _roles;
 	#endregion
 
 	#region Business Methods
@@ -194,7 +197,7 @@ internal sealed class User : EditableObjectBase<User, string>
 			return;
 		}
 
-		Roles.RemoveAll(t => !roles.Contains(t, StringComparer.OrdinalIgnoreCase));
+		_roles.RemoveAll(t => !roles.Contains(t, StringComparer.OrdinalIgnoreCase));
 
 		foreach (var role in roles)
 		{
@@ -205,10 +208,8 @@ internal sealed class User : EditableObjectBase<User, string>
 				continue;
 			}
 
-			Roles.Add(role);
+			_roles.Add(role);
 		}
-
-		OnPropertyChanged(RolesProperty);
 	}
 
 	/// <summary>
@@ -226,7 +227,6 @@ internal sealed class User : EditableObjectBase<User, string>
 		Rules.AddRule(new PasswordStrengthRule(PasswordProperty));
 		Rules.AddRule(new EmailAddressCheckRule(EmailProperty));
 		Rules.AddRule(new PhoneNumberCheckRule(PhoneProperty));
-		Rules.AddRule(new UserRoleCheckRule(RolesProperty));
 	}
 
 	#endregion
