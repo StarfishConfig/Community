@@ -12,77 +12,81 @@
     </FluentBreadcrumb>
 
     <FluentLabel Typo="Typography.Header">@TeamResources.IDS_INDEX_TITLE</FluentLabel>
+    <FluentCard>
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="16">
+            <FluentAccordion Style="width: 100%">
+                <FluentAccordionItem Heading="@CommonResources.IDS_LABEL_TEXT_FILTER" Expanded="true">
+                    <FluentIcon Value="@(new Icons.Regular.Size20.FilterAdd())" Color="@Color.Neutral" Slot="start" />
+                    <FluentGrid Spacing="1" Justify="JustifyContent.FlexStart" Style="padding: 5px;">
+                        <FluentGridItem xs="12" sm="6" md="3">
+                            <FluentTextField @bind-Value="Keyword" Label="@CommonResources.IDS_LABEL_TEXT_KEYWORD"
+                                             Style="width: 100%"
+                                             Placeholder="@CommonResources.IDS_PLACEHOLDER_KEYWORD" />
+                        </FluentGridItem>
+                        <FluentGridItem xs="12" sm="6" md="3">
+                            <FluentSelect TOption="Option<bool?>"
+                                          Items="@OwnedOptions"
+                                          OptionValue="@(i => i.Value.ToString())"
+                                          OptionText="@(i => i.Text)"
+                                          Label="@TeamResources.IDS_INDEX_FILTER_LABEL_TYPE"
+                                          Style="width: 100%"
+                                          @bind-SelectedOption="@SelectedTypeOption" />
+                        </FluentGridItem>
+                    </FluentGrid>
+                    <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End">
+                        <FluentButton IconStart="@(new Icons.Regular.Size16.Add())"
+                                      Appearance="Appearance.Lightweight"
+                                      OnClick="@(() => OnEditClicked())">
+                            @TeamResources.IDS_INDEX_BUTTON_TEXT_NEW
+                        </FluentButton>
+                        <FluentButton IconStart="@(new Icons.Regular.Size16.Broom())"
+                                      Disabled="@Loading"
+                                      OnClick="@OnClearClicked">
+                            @CommonResources.IDS_BUTTON_TEXT_CLEAR_FILTER
+                        </FluentButton>
+                        <FluentButton IconStart="@(new Icons.Regular.Size16.Search())"
+                                      Appearance="Appearance.Accent"
+                                      Loading="@Loading"
+                                      OnClick="@OnSearchClicked">
+                            @CommonResources.IDS_BUTTON_TEXT_SEARCH
+                        </FluentButton>
+                    </FluentStack>
+                </FluentAccordionItem>
+            </FluentAccordion>
 
-    <FluentAccordion Style="width: 100%">
-        <FluentAccordionItem Heading="@CommonResources.IDS_LABEL_TEXT_FILTER" Expanded="true">
-            <FluentIcon Value="@(new Icons.Regular.Size20.FilterAdd())" Color="@Color.Neutral" Slot="start"/>
-            <FluentGrid Spacing="1" Justify="JustifyContent.FlexStart" Style="padding: 5px;">
-                <FluentGridItem xs="12" sm="6" md="3">
-                    <FluentTextField @bind-Value="Keyword" Label="@CommonResources.IDS_LABEL_TEXT_KEYWORD"
-                                     Style="width: 100%"
-                                     Placeholder="@CommonResources.IDS_PLACEHOLDER_KEYWORD"/>
-                </FluentGridItem>
-                <FluentGridItem xs="12" sm="6" md="3">
-                    <FluentSelect TOption="Option<bool?>"
-                                  Items="@OwnedOptions"
-                                  OptionValue="@(i => i.Value.ToString())"
-                                  OptionText="@(i => i.Text)"
-                                  Label="@TeamResources.IDS_INDEX_FILTER_LABEL_TYPE"
-                                  Style="width: 100%"
-                                  @bind-SelectedOption="@SelectedTypeOption"/>
-                </FluentGridItem>
-            </FluentGrid>
-            <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End">
-                <FluentButton IconStart="@(new Icons.Regular.Size16.Add())"
-                              Appearance="Appearance.Lightweight"
-                              OnClick="@(() => OnEditClicked())">
-                    @TeamResources.IDS_INDEX_BUTTON_TEXT_NEW
-                </FluentButton>
-                <FluentButton IconStart="@(new Icons.Regular.Size16.Broom())"
-                              Disabled="@Loading"
-                              OnClick="@OnClearClicked">
-                    @CommonResources.IDS_BUTTON_TEXT_CLEAR_FILTER
-                </FluentButton>
-                <FluentButton IconStart="@(new Icons.Regular.Size16.Search())"
-                              Appearance="Appearance.Accent"
-                              Loading="@Loading"
-                              OnClick="@OnSearchClicked">
-                    @CommonResources.IDS_BUTTON_TEXT_SEARCH
-                </FluentButton>
-            </FluentStack>
-        </FluentAccordionItem>
-    </FluentAccordion>
+            <FluentDataGrid @ref="_dataGrid" Style="width: 100%"
+                            TGridItem="TeamListDto"
+                            Items="_dataSource"
+                            RowSize="DataGridRowSize.Large"
+                            GenerateHeader="GenerateHeaderOption.Sticky"
+                            Loading="Loading"
+                            Pagination="Pagination"
+                            RefreshItems="@RefreshItemsAsync">
+                <TemplateColumn Title="@TeamResources.IDS_INDEX_COLUMN_NAME">
+                    <FluentAnchor Appearance="Appearance.Hypertext"
+                                  Href="@($"/teams/{context.Id}")">@context.Name</FluentAnchor>
+                </TemplateColumn>
+                <PropertyColumn Title="@TeamResources.IDS_INDEX_COLUMN_DESCRIPTION"
+                                Property="@(p => p.Description)" />
+                <PropertyColumn Title="@TeamResources.IDS_INDEX_COLUMN_OWNER"
+                                Property="@(p => p.OwnerName)" />
+                <PropertyColumn Title="@TeamResources.IDS_INDEX_COLUMN_MEMBER_COUNT"
+                                Property="@(p => p.MembersCount)" />
+                <PropertyColumn Title="@CommonResources.IDS_COMMON_COLUMN_UPDATE_TIME"
+                                Property="@(p => p.UpdatedAt)" />
+                <TemplateColumn Title="@CommonResources.IDS_COMMON_COLUMN_ACTIONS" Align="@Align.Center">
+                    <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center">
+                        <FluentButton OnClick="@(() => OnEditClicked(context.Id))"
+                                      IconStart="@(new Icons.Regular.Size16.Edit())"
+                                      Disabled="@(!string.Equals(Identity.UserId, context.OwnerId))"
+                                      Appearance="Appearance.Accent">@CommonResources.IDS_BUTTON_TEXT_EDIT</FluentButton>
+                    </FluentStack>
+                </TemplateColumn>
+            </FluentDataGrid>
 
-    <FluentDataGrid @ref="_dataGrid" Style="width: 100%"
-                    TGridItem="TeamListDto"
-                    Items="_dataSource"
-                    RowSize="DataGridRowSize.Large"
-                    GenerateHeader="GenerateHeaderOption.Sticky"
-                    Loading="Loading"
-                    Pagination="Pagination"
-                    RefreshItems="@RefreshItemsAsync">
-        <TemplateColumn Title="@TeamResources.IDS_INDEX_COLUMN_NAME">
-            <FluentAnchor Appearance="Appearance.Hypertext"
-                          Href="@($"/teams/{context.Id}")">@context.Name</FluentAnchor>
-        </TemplateColumn>
-        <PropertyColumn Title="@TeamResources.IDS_INDEX_COLUMN_DESCRIPTION"
-                        Property="@(p => p.Description)"/>
-        <PropertyColumn Title="@TeamResources.IDS_INDEX_COLUMN_OWNER"
-                        Property="@(p => p.OwnerName)"/>
-        <PropertyColumn Title="@TeamResources.IDS_INDEX_COLUMN_MEMBER_COUNT"
-                        Property="@(p => p.MembersCount)"/>
-        <PropertyColumn Title="@CommonResources.IDS_COMMON_COLUMN_UPDATE_TIME"
-                        Property="@(p => p.UpdatedAt)"/>
-        <TemplateColumn Title="@CommonResources.IDS_COMMON_COLUMN_ACTIONS" Align="@Align.Center">
-            <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center">
-                <FluentButton OnClick="@(() => OnEditClicked(context.Id))"
-                              IconStart="@(new Icons.Regular.Size16.Edit())"
-                              Appearance="Appearance.Accent">@CommonResources.IDS_BUTTON_TEXT_EDIT</FluentButton>
-            </FluentStack>
-        </TemplateColumn>
-    </FluentDataGrid>
-
-    <FluentDataGridPaginator State="@Pagination"/>
+            <FluentDataGridPaginator State="@Pagination" />
+        </FluentStack>
+    </FluentCard>
 </FluentStack>
 
 @code {

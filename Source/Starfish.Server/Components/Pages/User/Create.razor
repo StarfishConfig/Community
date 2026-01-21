@@ -12,11 +12,10 @@
         <FluentBreadcrumbItem Href="/users/new">@IdentityResources.IDS_USER_EDIT_TITLE_CREATE</FluentBreadcrumbItem>
     </FluentBreadcrumb>
     <FluentLabel Typo="Typography.Header">@IdentityResources.IDS_USER_EDIT_TITLE_CREATE</FluentLabel>
+    <FluentCard>
+        <FluentEditForm EditContext="_editContext" OnSubmit="@OnSubmitAsync" FormName="form" Style="width: 100%">
+            <DataAnnotationsValidator />
 
-    <FluentEditForm EditContext="_editContext" OnSubmit="@OnSubmitAsync" FormName="form" Style="width: 100%">
-        <DataAnnotationsValidator />
-
-        <FluentBodyContent>
             <FluentGrid Columns="12" RowGap="10" ColumnGap="10">
 
                 <FluentGridItem sm="4" md="3" lg="3" Class="input-group-label">
@@ -80,12 +79,13 @@
                 </FluentGridItem>
                 <FluentGridItem md="3" lg="3" HiddenWhen="GridItemHidden.SmAndDown" />
 
+                <FluentGridItem sm="4" md="3" lg="3" />
                 <FluentGridItem>
                     <FluentValidationSummary />
                 </FluentGridItem>
             </FluentGrid>
-        </FluentBodyContent>
-    </FluentEditForm>
+        </FluentEditForm>
+    </FluentCard>
 </FluentStack>
 
 @code {
@@ -133,18 +133,18 @@
             ErrorMessageResourceName = nameof(CommonResources.IDS_ERROR_FIELD_STRING_LENGTH))]
         public string Username { get; set; }
 
-        [StringLength(64, MinimumLength = 2, ErrorMessageResourceType = typeof(CommonResources),
-            ErrorMessageResourceName = nameof(CommonResources.IDS_ERROR_FIELD_STRING_LENGTH))]
+        [StringLength(64, MinimumLength = 2, ErrorMessageResourceType = typeof(UserResources),
+            ErrorMessageResourceName = nameof(UserResources.IDS_EDIT_ERROR_NICKNAME_LENGTH))]
         public string Nickname { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessageResourceType = typeof(CommonResources),
-            ErrorMessageResourceName = nameof(CommonResources.IDS_ERROR_FIELD_REQUIRED))]
-        [RegularExpression(RegexPattern.EmailAddress, ErrorMessageResourceType = typeof(CommonResources),
-           ErrorMessageResourceName = nameof(CommonResources.IDS_ERROR_FIELD_REQUIRED))]
+        [Required(AllowEmptyStrings = false, ErrorMessageResourceType = typeof(UserResources),
+            ErrorMessageResourceName = nameof(UserResources.IDS_EDIT_ERROR_EMAIL_REQUIRED))]
+        [RegularExpression(RegexPattern.EmailAddress, ErrorMessageResourceType = typeof(UserResources),
+           ErrorMessageResourceName = nameof(UserResources.IDS_EDIT_ERROR_EMAIL_FORMAT))]
         public string Email { get; set; }
 
-        [RegularExpression(RegexPattern.PhoneNumber, ErrorMessageResourceType = typeof(CommonResources),
-            ErrorMessageResourceName = nameof(CommonResources.IDS_ERROR_FIELD_REQUIRED))]
+        [RegularExpression(RegexPattern.PhoneNumber, ErrorMessageResourceType = typeof(UserResources),
+            ErrorMessageResourceName = nameof(UserResources.IDS_EDIT_ERROR_PHONE_FORMAT))]
         public string Phone { get; set; }
 
         [Required(AllowEmptyStrings = false, ErrorMessageResourceType = typeof(CommonResources),
