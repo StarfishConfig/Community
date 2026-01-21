@@ -1,7 +1,6 @@
 ﻿@page "/teams"
 
 @inject IDialogService DialogService
-@inject NavigationManager Navigation
 @inject ITeamApplicationService Service
 
 <PageTitle>@TeamResources.IDS_INDEX_TITLE</PageTitle>
@@ -24,8 +23,8 @@
                                      Placeholder="@CommonResources.IDS_PLACEHOLDER_KEYWORD"/>
                 </FluentGridItem>
                 <FluentGridItem xs="12" sm="6" md="3">
-                    <FluentSelect TOption="Option<int?>"
-                                  Items="@TypeOptions"
+                    <FluentSelect TOption="Option<bool?>"
+                                  Items="@OwnedOptions"
                                   OptionValue="@(i => i.Value.ToString())"
                                   OptionText="@(i => i.Text)"
                                   Label="@TeamResources.IDS_INDEX_FILTER_LABEL_TYPE"
@@ -85,9 +84,15 @@
             </FluentStack>
         </TemplateColumn>
     </FluentDataGrid>
+
+    <FluentDataGridPaginator State="@Pagination"/>
 </FluentStack>
 
 @code {
+
+    [CascadingParameter]
+    private UserPrincipal Identity { get; set; }
+
     private bool Loading { get; set; }
 
     private string Keyword { get; set; } = string.Empty;
@@ -96,14 +101,19 @@
     private IQueryable<TeamListDto> _dataSource = Enumerable.Empty<TeamListDto>().AsQueryable();
     private PaginationState Pagination { get; } = new() { ItemsPerPage = 10 };
 
-    private List<Option<int?>> TypeOptions { get; } =
+    private List<Option<bool?>> OwnedOptions { get; } =
     [
         new() { Value = null, Text = CommonResources.IDS_COMMON_ALL, Selected = true },
-        new() { Value = 1, Text = TeamResources.IDS_RELATION_TYPE_OWNED },
-        new() { Value = 2, Text = TeamResources.IDS_RELATION_TYPE_JOINED }
+        new() { Value = true, Text = TeamResources.IDS_RELATION_TYPE_OWNED },
+        new() { Value = false, Text = TeamResources.IDS_RELATION_TYPE_JOINED }
     ];
 
-    private Option<int?> SelectedTypeOption { get; set; }
+    private Option<bool?> SelectedTypeOption { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        SelectedTypeOption = OwnedOptions[0];
+    }
 
     private async Task OnSearchClicked(MouseEventArgs args)
     {

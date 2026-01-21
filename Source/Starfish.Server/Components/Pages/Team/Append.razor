@@ -7,7 +7,7 @@
 
 <FluentDialogHeader ShowDismiss="true">
     <FluentStack VerticalAlignment="VerticalAlignment.Center">
-        <FluentIcon Value="@(new Icons.Regular.Size24.PeopleTeam())" />
+        <FluentIcon Value="@(new Icons.Regular.Size24.PeopleTeam())"/>
         <FluentLabel Typo="Typography.PaneHeader">
             @Dialog.Instance.Parameters.Title
         </FluentLabel>
@@ -16,8 +16,8 @@
 
 <FluentDialogBody>
     <FluentStack Orientation="Orientation.Vertical">
-        <FluentAutocomplete @ref="Members"
-                            TOption="UserListDto"
+        <FluentAutocomplete @ref="_autocomplete"
+                            TOption="UserLookupDto"
                             Width="100%"
                             Placeholder="search"
                             OnOptionsSearch="@OnSearchAsync"
@@ -26,22 +26,22 @@
                             OptionText="@(item => item.Nickname)"
                             OptionStyle="min-height: 40px;"
                             MaxAutoHeight="500px"
-                            OptionComparer="@UserListDtoComparer.Instance"
+                            OptionComparer="@UserLookupDtoComparer.Instance"
                             Style="max-width:752px;"
                             @bind-SelectedOptions="@SelectedItems">
             <LabelTemplate>
                 Select a person
-                <FluentIcon Value="@(new Icons.Regular.Size20.Person())" Style="margin: 0 4px;" />
+                <FluentIcon Value="@(new Icons.Regular.Size20.Person())" Style="margin: 0 4px;"/>
             </LabelTemplate>
 
             @* Template used with each Selected items *@
             <SelectedOptionTemplate>
                 <FluentPersona ImageSize="24px"
                                Image="https://"
-                               Name="@($"{context.Nickname} {context.Username}")"
+                               Name="@context.Name"
                                DismissTitle="Remove"
                                Status="PresenceStatus.Available"
-                               OnDismissClick="@(async () => await Members.RemoveSelectedItemAsync(context))" />
+                               OnDismissClick="@(async () => await _autocomplete.RemoveSelectedItemAsync(context))"/>
             </SelectedOptionTemplate>
 
             @* Template used with each Option items *@
@@ -50,7 +50,7 @@
                                Image="https://"
                                Status="PresenceStatus.DoNotDisturb"
                                StatusSize="PresenceBadgeSize.Small"
-                               Name="@($"{context.Nickname} {context.Username}")" />
+                               Name="@context.Name"/>
             </OptionTemplate>
 
             @* Template used when the maximum number of selected items (MaximumSelectedOptions) has been reached *@
@@ -64,7 +64,7 @@
                              Style="padding: 8px; font-size: 11px; border-bottom: 1px solid var(--neutral-fill-stealth-hover);">
                     Suggested contacts
                 </FluentLabel>
-                <FluentProgress Style="@($"visibility: {(context.InProgress ? "visible" : "collapse")}")" />
+                <FluentProgress Style="@($"visibility: {(context.InProgress ? "visible" : "collapse")}")"/>
             </HeaderContent>
 
             @* Content display at the bottom of the Popup area *@
@@ -88,6 +88,7 @@
 </FluentDialogFooter>
 
 @code {
+
     /// <summary>
     /// The ID of the team to edit. If zero or less, a new team will be created.
     /// </summary>
@@ -102,12 +103,12 @@
 
     private bool Loading { get; set; }
 
-    FluentAutocomplete<UserListDto> Members = default!;
-    IEnumerable<UserListDto> SelectedItems = Array.Empty<UserListDto>();
+    private FluentAutocomplete<UserLookupDto> _autocomplete;
+    private IEnumerable<UserLookupDto> SelectedItems { get; set; } = [];
 
-    private async Task OnSearchAsync(OptionsSearchEventArgs<UserListDto> e)
+    private async Task OnSearchAsync(OptionsSearchEventArgs<UserLookupDto> e)
     {
-        e.Items = await UserService.SearchAsync(e.Text, null, 0, 20);
+        e.Items = await UserService.LookupAsync(e.Text, 20);
     }
 
     private async Task SaveAsync(MouseEventArgs args)
@@ -142,30 +143,29 @@
         await Dialog.CloseAsync();
     }
 
-    private class UserListDtoComparer : IEqualityComparer<UserListDto>
+    private class UserLookupDtoComparer : IEqualityComparer<UserLookupDto>
     {
-        public static readonly UserListDtoComparer Instance = new UserListDtoComparer();
+        public static readonly UserLookupDtoComparer Instance = new();
 
-        public UserListDtoComparer()
-        {
-        }
-
-        public bool Equals(UserListDto x, UserListDto y)
+        public bool Equals(UserLookupDto x, UserLookupDto y)
         {
             if (x == null && y == null)
             {
                 return true;
             }
+
             if (x == null || y == null)
             {
                 return false;
             }
+
             return x.Id == y.Id;
         }
 
-        public int GetHashCode(UserListDto obj)
+        public int GetHashCode(UserLookupDto obj)
         {
             return obj.Id.GetHashCode();
         }
     }
+
 }
