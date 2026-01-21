@@ -37,16 +37,19 @@ public class TeamController(ITeamApplicationService service) : ControllerBase
 	/// Searches for teams based on the specified criteria.
 	/// </summary>
 	/// <param name="keyword">Optional search keyword to filter teams by name or description.</param>
-	/// <param name="type">Optional team type filter.</param>
+	/// <param name="owned">Given a value to indicate if only include the teams which the current user owned.</param>
 	/// <param name="skip">Number of items to skip for paging. Defaults to 0.</param>
 	/// <param name="size">Page size for results. Defaults to 20.</param>
 	/// <returns>
 	/// Returns an <see cref="IActionResult"/> with a paged list of matching teams (HTTP 200).
 	/// </returns>
 	[HttpGet("search")]
-	public async Task<IActionResult> SearchAsync([FromQuery] string keyword, [FromQuery] int? type, [FromQuery] int skip = 0, [FromQuery] int size = 20)
+	public async Task<IActionResult> SearchAsync([FromQuery] string keyword, [FromQuery] bool? owned, [FromQuery] int skip = 0, [FromQuery] int size = 20)
 	{
-		var result = await _service.SearchAsync(keyword, type, skip, size, HttpContext.RequestAborted);
+		// owned=true: only teams owned by current user
+		// owned=false: only teams where current user is a member but not owner
+		// owned=null: all teams where current user is owner or member
+		var result = await _service.SearchAsync(keyword, owned, skip, size, HttpContext.RequestAborted);
 		return Ok(result);
 	}
 
@@ -54,14 +57,14 @@ public class TeamController(ITeamApplicationService service) : ControllerBase
 	/// Counts the number of teams matching the specified criteria.
 	/// </summary>
 	/// <param name="keyword">Optional search keyword to filter teams.</param>
-	/// <param name="type">Optional team type filter.</param>
+	/// <param name="owned">Given a value to indicate if only include the teams which the current user owned.</param>
 	/// <returns>
 	/// Returns an <see cref="IActionResult"/> containing the count of matching teams (HTTP 200).
 	/// </returns>
 	[HttpHead("count")]
-	public async Task<IActionResult> CountAsync([FromQuery] string keyword, [FromQuery] int? type)
+	public async Task<IActionResult> CountAsync([FromQuery] string keyword, [FromQuery] bool? owned)
 	{
-		var result = await _service.CountAsync(keyword, type, HttpContext.RequestAborted);
+		var result = await _service.CountAsync(keyword, owned, HttpContext.RequestAborted);
 		HttpContext.Response.Headers.Append("X-Total-Count", result.ToString());
 		return Ok(result);
 	}
