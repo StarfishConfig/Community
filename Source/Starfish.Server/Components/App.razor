@@ -31,9 +31,22 @@
     [CascadingParameter]
     private HttpContext HttpContext { get; set; }
 
+    private static readonly string[] _staticServerRenderRoutes =
+    [
+        "/login",
+        "/logout",
+        "/app",
+        "/about",
+        "/terms"
+    ];
+
     private IComponentRenderMode GetGlobalRenderMode()
     {
-        return HttpContext.Request.Path.StartsWithSegments("/login", StringComparison.OrdinalIgnoreCase) ? AssignedRenderMode : new InteractiveServerRenderMode(false);
+        var path = HttpContext.Request.Path;
+
+        var ssr = _staticServerRenderRoutes.Any(route => path.StartsWithSegments(route));
+
+        return ssr ? null : new InteractiveServerRenderMode(false);
     }
 
 }

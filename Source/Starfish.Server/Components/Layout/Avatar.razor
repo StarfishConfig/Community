@@ -1,5 +1,8 @@
 @using System.Security.Claims
+@inject NavigationManager Navigation
+
 <FluentProfileMenu Initials="BG"
+                   @ref="_instance"
                    Image="https://s.gravatar.com/avatar/38a519cc759f85fc814868d0656c0c18?s=480">
     <StartTemplate>
         <span style="color: white">@Title</span>
@@ -15,14 +18,16 @@
     </ChildContent>
     <FooterTemplate>
         <FluentStack>
-            <FluentAnchor Appearance="Appearance.Hypertext" Href="/profile">Profile</FluentAnchor>
+            <FluentButton Appearance="Appearance.Lightweight" OnClick="@OnProfileClicked">Profile</FluentButton>
             <FluentSpacer/>
-            <FluentAnchor Appearance="@Appearance.Outline" Href="/logout">Logout</FluentAnchor>
+            <FluentButton Appearance="@Appearance.Outline" OnClick="@OnLogoutClicked">Logout</FluentButton>
         </FluentStack>
     </FooterTemplate>
 </FluentProfileMenu>
 
 @code {
+
+    private FluentProfileMenu _instance;
 
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationState { get; set; }
@@ -40,6 +45,20 @@
         var state = await AuthenticationState;
         Identity = new UserPrincipal(state.User);
         StateHasChanged();
+    }
+
+    private async Task OnProfileClicked(MouseEventArgs args)
+    {
+        _instance?.Open = false;
+
+        Navigation.NavigateTo("/profile");
+        await Task.CompletedTask;
+    }
+
+    private async Task OnLogoutClicked(MouseEventArgs args)
+    {
+        Navigation.NavigateTo("/logout", true);
+        await Task.CompletedTask;
     }
 
 }
