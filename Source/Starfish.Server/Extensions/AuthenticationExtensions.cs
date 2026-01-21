@@ -41,27 +41,32 @@ internal static class AuthenticationExtensions
 			        });
 		}
 
+		// services.AddAuthentication(options =>
+		// {
+		// 	switch (configuration.GetValue<string>(AUTHENTICATION_SECTION_SCHEME)?.Trim())
+		// 	{
+		// 		case null or "":
+		// 			throw new ConfigurationException("Authentication scheme is not configured.");
+		// 		case JwtBearerDefaults.AuthenticationScheme:
+		// 			options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+		// 			options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+		// 			options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+		// 			options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+		// 			break;
+		// 		case CookieAuthenticationDefaults.AuthenticationScheme:
+		// 			options.DefaultScheme = IdentityConstants.ApplicationScheme;
+		// 			options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+		// 			//options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+		// 			options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+		// 			options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+		// 			break;
+		// 	}
+		// 	// custom scheme defined in .AddPolicyScheme() below
+		// });
 		services.AddAuthentication(options =>
 		        {
-			        switch (configuration.GetValue<string>(AUTHENTICATION_SECTION_SCHEME)?.Trim())
-			        {
-				        case null or "":
-					        throw new ConfigurationException("Authentication scheme is not configured.");
-				        case JwtBearerDefaults.AuthenticationScheme:
-					        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-					        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-					        options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-					        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-					        break;
-				        case CookieAuthenticationDefaults.AuthenticationScheme:
-					        options.DefaultScheme = IdentityConstants.ApplicationScheme;
-					        options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-					        //options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-					        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-					        options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-					        break;
-			        }
-			        // custom scheme defined in .AddPolicyScheme() below
+			        options.DefaultScheme = "Default";
+			        options.DefaultAuthenticateScheme = "Default";
 		        })
 		        .AddCookie(options =>
 		        {
@@ -149,11 +154,12 @@ internal static class AuthenticationExtensions
 				        //IssuerSigningKey = new SymmetricSecurityKey("your_signing_key"u8.ToArray())
 			        };
 		        }) // this is the key piece!
-		        .AddPolicyScheme("Authentication", "Authentication Scheme Policy", options =>
+		        .AddPolicyScheme("Default", "Authentication Scheme Policy", options =>
 		        {
 			        // runs on each request
 			        options.ForwardDefaultSelector = context =>
 			        {
+				        return context.Request.Path.StartsWithSegments("/api") ? JwtBearerDefaults.AuthenticationScheme : CookieAuthenticationDefaults.AuthenticationScheme;
 				        // filter by auth type
 				        string authorization = context.Request.Headers.Authorization;
 				        // Returns Bearer if authorization starts with 'Bearer ', otherwise always check for cookie auth
