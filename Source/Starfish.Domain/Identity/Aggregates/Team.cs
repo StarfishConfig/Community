@@ -21,7 +21,6 @@ internal sealed class Team : EditableObjectBase<Team, long>
 	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
 	public static readonly PropertyInfo<string> DescriptionProperty = RegisterProperty<string>(p => p.Description);
 	public static readonly PropertyInfo<string> OwnerIdProperty = RegisterProperty<string>(p => p.OwnerId);
-	public static readonly PropertyInfo<ObservableCollection<string>> MembersProperty = RegisterProperty<ObservableCollection<string>>(p => p.Members, nameof(Members), []);
 
 	/// <summary>
 	/// Gets the name of the team.
