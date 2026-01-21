@@ -11,7 +11,7 @@ namespace Nerosoft.Starfish.Domain.Aggregates;
 /// </summary>
 internal sealed class Team : EditableObjectBase<Team, long>
 {
-	private readonly ObservableCollection<string> _members = new();
+	private readonly ObservableCollection<string> _members = [];
 
 	public Team()
 	{
