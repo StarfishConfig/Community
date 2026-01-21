@@ -1,6 +1,72 @@
 ﻿@page "/users/{Id}"
 
+<PageTitle>@UserResources.IDS_DETAIL_TITLE</PageTitle>
+
+<FluentStack VerticalGap="16" Orientation="Orientation.Vertical" Style="width: 100%">
+    <FluentBreadcrumb Style="margin-bottom: 16px;">
+        <FluentBreadcrumbItem Href="/">@LayoutResources.IDS_MENU_TEXT_HOME</FluentBreadcrumbItem>
+        <FluentBreadcrumbItem Href="/teams">@LayoutResources.IDS_MENU_TEXT_TEAM_MANAGEMENT</FluentBreadcrumbItem>
+        <FluentBreadcrumbItem Href="@($"/users/{Id}")">@UserResources.IDS_DETAIL_TITLE</FluentBreadcrumbItem>
+    </FluentBreadcrumb>
+
+    <FluentLabel Typo="Typography.Header">@UserResources.IDS_DETAIL_TITLE</FluentLabel>
+
+    <FluentCard>
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="16">
+            <FluentAccordion Style="width: 100%">
+                <FluentAccordionItem Heading="@TeamResources.IDS_DETAIL_PANEL_HEADER" Expanded="true">
+                    <FluentIcon Value="@(new Icons.Regular.Size20.Info())" Color="@Color.Neutral" Slot="start" />
+                    <FluentGrid Spacing="2" Justify="JustifyContent.FlexStart" Style="padding: 5px;">
+                        <FluentGridItem md="6" sm="12">
+                            <FluentTextField Value="@Data?.Username" Label="@TeamResources.IDS_DETAIL_LABEL_NAME"
+                                             Style="width: 100%" Disabled="true"
+                                             Class="input-disabled" />
+                        </FluentGridItem>
+
+                        <FluentGridItem md="6" sm="12">
+                            <FluentTextField Value="@Data?.Nickname" Label="@TeamResources.IDS_DETAIL_LABEL_OWNER_NAME"
+                                             Style="width: 100%" Disabled="true"
+                                             Class="input-disabled" />
+                        </FluentGridItem>
+
+                        <FluentGridItem md="6" sm="12">
+                            <FluentTextField Value="@Data?.CreatedAt.ToShortDateString()" Label="@TeamResources.IDS_DETAIL_LABEL_CREATE_TIME"
+                                             Style="width: 100%;" Disabled="true"
+                                             Class="input-disabled" />
+                        </FluentGridItem>
+                        <FluentGridItem md="6" sm="12">
+                            <FluentTextField Value="@Data?.UpdatedAt.ToShortDateString()" Label="@TeamResources.IDS_DETAIL_LABEL_UPDATE_TIME"
+                                             Style="width: 100%;" Disabled="true"
+                                             Class="input-disabled" />
+                        </FluentGridItem>
+
+                        @* <FluentGridItem md="12">
+                            <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End">
+
+                                <FluentButton IconStart="@(new Icons.Regular.Size16.Add())"
+                                              Appearance="Appearance.Lightweight"
+                                              OnClick="@OnAppendClicked">
+                                    @TeamResources.IDS_DETAIL_BUTTON_TEXT_APPEND_MEMBER
+                                </FluentButton>
+                                <FluentButton IconStart="@(new Icons.Regular.Size16.Delete())"
+                                              Appearance="Appearance.Stealth"
+                                              Loading="@Loading"
+                                              OnClick="@OnSearchClicked">
+                                    @CommonResources.IDS_BUTTON_TEXT_DELETE
+                                </FluentButton>
+                            </FluentStack>
+                        </FluentGridItem> *@
+                    </FluentGrid>
+
+                </FluentAccordionItem>
+            </FluentAccordion>
+        </FluentStack>
+    </FluentCard>
+</FluentStack>
+
 @code {
     [Parameter]
     public string Id { get; set; }
+
+    private UserDetailDto Data { get; set; }
 }
