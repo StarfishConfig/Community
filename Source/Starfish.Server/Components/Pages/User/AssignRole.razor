@@ -1,0 +1,83 @@
+@using System.Collections.Immutable
+@using Nerosoft.Starfish.Shared
+@implements IDialogContentComponent<DialogArgs<string>>
+
+@inject IUserApplicationService UserService
+@inject IToastService ToastService
+
+<FluentDialogHeader ShowDismiss="true">
+    <FluentStack VerticalAlignment="VerticalAlignment.Center">
+        <FluentIcon Value="@(new Icons.Regular.Size24.PeopleTeam())"/>
+        <FluentLabel Typo="Typography.PaneHeader">
+            @Dialog.Instance.Parameters.Title
+        </FluentLabel>
+    </FluentStack>
+</FluentDialogHeader>
+
+<FluentDialogBody>
+    <FluentStack Orientation="Orientation.Vertical">
+        @foreach (var role in _roles)
+        {
+            bool isChecked = SelectedRoles.Contains(role);
+            <FluentCheckbox Label="@($"{role} ({isChecked})")"
+                            @bind-Value:get="isChecked"
+                            @bind-Value:set="c => OnStateChanged(role, c)"/>
+        }
+    </FluentStack>
+</FluentDialogBody>
+
+<FluentDialogFooter>
+    <FluentButton Appearance="Appearance.Accent" OnClick="@SaveAsync"
+                  Loading="Loading">@(CommonResources.IDS_COMMON_SAVE)</FluentButton>
+    <FluentButton Appearance="Appearance.Neutral"
+                  OnClick="@CancelAsync">@(CommonResources.IDS_COMMON_CANCEL)</FluentButton>
+</FluentDialogFooter>
+
+@code {
+
+    [CascadingParameter]
+    public DialogArgs<string> Content { get; set; }
+
+    [CascadingParameter]
+    public FluentDialog Dialog { get; set; }
+
+    private readonly ImmutableArray<string> _roles = [..RoleName.All];
+    private HashSet<string> SelectedRoles { get; } = [];
+
+    private bool Loading { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Content.Data.TryGetValue("roles", out var rolesObj))
+        {
+            if (rolesObj is IEnumerable<string> roles)
+            {
+                SelectedRoles.UnionWith(roles);
+            }
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    private void OnStateChanged(string resourceType, bool @checked)
+    {
+        if (@checked)
+        {
+            SelectedRoles.Add(resourceType);
+        }
+        else
+        {
+            SelectedRoles.Remove(resourceType);
+        }
+    }
+
+    private async Task SaveAsync(MouseEventArgs args)
+    {
+    }
+
+    private async Task CancelAsync(MouseEventArgs args)
+    {
+        await Dialog.CloseAsync(false);
+    }
+
+}
