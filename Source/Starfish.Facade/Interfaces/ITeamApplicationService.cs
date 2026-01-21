@@ -13,21 +13,21 @@ public interface ITeamApplicationService : IApplicationService
 	/// Searches teams by keyword and optional type with pagination.
 	/// </summary>
 	/// <param name="keyword">Search term to match against team properties (name, description, etc.).</param>
-	/// <param name="type">Optional team type filter. Null to ignore type filtering.</param>
+	/// <param name="owned">Given a value to indicate if only include the teams which the current user owned.</param>
 	/// <param name="skip">Number of items to skip for pagination.</param>
 	/// <param name="size">Maximum number of items to return.</param>
 	/// <param name="cancellationToken">Token to cancel the operation.</param>
 	/// <returns>A list of <see cref="TeamListDto"/> matching the search criteria.</returns>
-	Task<List<TeamListDto>> SearchAsync(string keyword, int? type, int skip, int size, CancellationToken cancellationToken = default);
+	Task<List<TeamListDto>> SearchAsync(string keyword, bool? owned, int skip, int size, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Counts teams that match the given keyword and optional type filter.
 	/// </summary>
 	/// <param name="keyword">Search term to match against team properties.</param>
-	/// <param name="type">Optional team type filter. Null to ignore type filtering.</param>
+	/// <param name="owned">Given a value to indicate if only include the teams which the current user owned.</param>
 	/// <param name="cancellationToken">Token to cancel the operation.</param>
 	/// <returns>The total number of teams matching the criteria.</returns>
-	Task<int> CountAsync(string keyword, int? type, CancellationToken cancellationToken = default);
+	Task<int> CountAsync(string keyword, bool? owned, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Retrieves detailed information for a specific team by its identifier.

@@ -34,7 +34,8 @@ internal class AuthInfoQueryHandler : IHandler<AuthWithUsernameRequest, AuthInfo
 
 		var specification = UserSpecification.UsernameEquals(message.Username);
 		var predicate = specification.Satisfy();
-		var user = await _context.Set<User>().FirstOrDefaultAsync(predicate, cancellationToken);
+		var user = await _context.Set<User>().Include(t => t.Roles)
+		                         .FirstOrDefaultAsync(predicate, cancellationToken);
 		if (user == null)
 		{
 			throw new AuthenticationException(IdentityResources.IDS_ERROR_INVALID_USERNAME_PASSWORD);

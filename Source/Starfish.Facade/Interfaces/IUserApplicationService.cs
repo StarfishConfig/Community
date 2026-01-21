@@ -11,6 +11,8 @@ public interface IUserApplicationService : IApplicationService
 
 	Task<int> CountAsync(string keywork, bool? locked, CancellationToken cancellationToken = default);
 
+	Task<List<UserLookupDto>> LookupAsync(string keyword, int size, CancellationToken cancellationToken = default);
+	
 	Task<UserProfileDto> GetProfileAsync(CancellationToken cancellationToken = default);
 
 	Task CreateAsync(UserCreateDto data, CancellationToken cancellationToken = default);

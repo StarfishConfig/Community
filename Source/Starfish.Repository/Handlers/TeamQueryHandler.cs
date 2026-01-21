@@ -5,6 +5,7 @@ using Nerosoft.Euonia.Security;
 using Nerosoft.Starfish.Repository.Entities;
 using Nerosoft.Starfish.Repository.Models;
 using Nerosoft.Starfish.Repository.Specifications;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Handlers;
 
@@ -46,19 +47,21 @@ internal class TeamQueryHandler : IHandler<TeamSearchQuery, IList<TeamListModel>
 
 		var predicate = PredicateBuilder.True<TeamListModel>();
 
-		switch (message.Type)
+		if (!_user.IsInRoles("sa"))
 		{
-			case 1:
-				predicate = predicate.And(t => t.OwnerId == _user.UserId);
-				break;
-			case 2:
-				var memberTeamIds = _context.Set<TeamMember>()
-				                            .AsNoTracking()
-				                            .Where(m => m.UserId == _user.UserId)
-				                            .Select(m => m.TeamId);
-				predicate = predicate.And(t => memberTeamIds.Contains(t.Id));
-				break;
+			var memberTeamIds = _context.Set<TeamMember>()
+			                            .AsNoTracking()
+			                            .Where(m => m.UserId == _user.UserId)
+			                            .Select(m => m.TeamId);
+			predicate = predicate.And(t => memberTeamIds.Contains(t.Id));
 		}
+
+		predicate = message.Owned switch
+		{
+			true => predicate.And(t => t.OwnerId == _user.UserId),
+			false => predicate.And(t => t.OwnerId != _user.UserId),
+			_ => predicate
+		};
 
 		if (!string.IsNullOrWhiteSpace(message.Keyword))
 		{
@@ -98,19 +101,21 @@ internal class TeamQueryHandler : IHandler<TeamSearchQuery, IList<TeamListModel>
 
 		var predicate = PredicateBuilder.True<TeamListModel>();
 
-		switch (message.Type)
+		if (!_user.IsInRoles(RoleName.Admin))
 		{
-			case 1:
-				predicate = predicate.And(t => t.OwnerId == _user.UserId);
-				break;
-			case 2:
-				var memberTeamIds = _context.Set<TeamMember>()
-				                            .AsNoTracking()
-				                            .Where(m => m.UserId == _user.UserId)
-				                            .Select(m => m.TeamId);
-				predicate = predicate.And(t => memberTeamIds.Contains(t.Id));
-				break;
+			var memberTeamIds = _context.Set<TeamMember>()
+			                            .AsNoTracking()
+			                            .Where(m => m.UserId == _user.UserId)
+			                            .Select(m => m.TeamId);
+			predicate = predicate.And(t => memberTeamIds.Contains(t.Id));
 		}
+
+		predicate = message.Owned switch
+		{
+			true => predicate.And(t => t.OwnerId == _user.UserId),
+			false => predicate.And(t => t.OwnerId != _user.UserId),
+			_ => predicate
+		};
 
 		if (!string.IsNullOrWhiteSpace(message.Keyword))
 		{

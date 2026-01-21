@@ -8,9 +8,9 @@ namespace Nerosoft.Starfish.Facade.Implements;
 
 internal class TeamApplicationService : BaseApplicationService, ITeamApplicationService
 {
-	public Task<List<TeamListDto>> SearchAsync(string keyword, int? type, int skip, int size, CancellationToken cancellationToken = default)
+	public Task<List<TeamListDto>> SearchAsync(string keyword, bool? owned, int skip, int size, CancellationToken cancellationToken = default)
 	{
-		var request = new TeamSearchQuery(keyword, type, skip, size);
+		var request = new TeamSearchQuery(keyword, owned, skip, size);
 		return Bus.CallAsync(request, cancellationToken)
 		          .ContinueWith(task =>
 		          {
@@ -20,9 +20,9 @@ internal class TeamApplicationService : BaseApplicationService, ITeamApplication
 		          }, cancellationToken);
 	}
 
-	public Task<int> CountAsync(string keyword, int? type, CancellationToken cancellationToken = default)
+	public Task<int> CountAsync(string keyword, bool? owned, CancellationToken cancellationToken = default)
 	{
-		var request = new TeamCountQuery(keyword, type);
+		var request = new TeamCountQuery(keyword, owned);
 		return Bus.CallAsync(request, cancellationToken);
 	}
 

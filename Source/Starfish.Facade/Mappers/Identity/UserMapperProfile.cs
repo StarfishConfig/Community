@@ -15,5 +15,10 @@ internal class UserMapperProfile : Profile
 		CreateMap<UserDetailModel, UserDetailDto>();
 		CreateMap<UserDetailModel, UserProfileDto>();
 		CreateMap<UserListModel, UserListDto>();
+		CreateMap<UserListModel, UserLookupDto>()
+			.AfterMap((src, dest, _) =>
+			{
+				dest.Name = $"{src.Username}/{src.Nickname}";
+			});
 	}
 }

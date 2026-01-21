@@ -30,6 +30,13 @@ internal class UserApplicationService : BaseApplicationService, IUserApplication
 		return Bus.CallAsync(request, cancellationToken);
 	}
 
+	public Task<List<UserLookupDto>> LookupAsync(string keyword, int size, CancellationToken cancellationToken = default)
+	{
+		var request = new UserSearchQuery(keyword, null, 0, size);
+		return Bus.CallAsync(request, cancellationToken)
+		          .ContinueWith(task => TypeAdapter.ProjectedAs<List<UserLookupDto>>(task.Result), cancellationToken);
+	}
+
 	public Task<UserProfileDto> GetProfileAsync(CancellationToken cancellationToken = default)
 	{
 		var request = new UserDetailQuery(User.UserId);
