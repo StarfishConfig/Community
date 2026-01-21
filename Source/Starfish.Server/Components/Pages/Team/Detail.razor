@@ -30,7 +30,7 @@
                                     Style="width: 100%;" Disabled="true"
                                     Class="input-disabled"/>
                 </FluentGridItem>
-                @if (string.Equals(Identity.UserId, Data.OwnerId))
+                @if (IsOwner)
                 {
                     <FluentGridItem md="12">
                         <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End">
@@ -105,6 +105,7 @@
             <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center">
                 <FluentButton OnClick="@(() => OnRemoveClicked(context.UserId, context.Username))"
                               IconStart="@(new Icons.Regular.Size16.PersonDelete())"
+                              Disabled="@(!IsOwner)"
                               Appearance="Appearance.Accent">@TeamResources.IDS_DETAIL_BUTTON_TEXT_REMOVE_MEMBER</FluentButton>
             </FluentStack>
         </TemplateColumn>
@@ -122,6 +123,8 @@
     public long Id { get; set; }
 
     private TeamDetailDto Data { get; set; }
+    
+    private bool IsOwner => string.Equals(Identity.UserId, Data?.OwnerId);
 
     private bool Loading { get; set; }
 
@@ -141,6 +144,7 @@
         else
         {
             Data = detail;
+            await InvokeAsync(StateHasChanged);
         }
     }
 

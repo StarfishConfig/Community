@@ -78,9 +78,6 @@
                 <FluentButton OnClick="@(() => OnEditClicked(context.Id))"
                               IconStart="@(new Icons.Regular.Size16.Edit())"
                               Appearance="Appearance.Accent">@CommonResources.IDS_BUTTON_TEXT_EDIT</FluentButton>
-                <FluentButton OnClick="@(() => OnDeleteClicked(context.Id, context.Name))"
-                              IconStart="@(new Icons.Regular.Size16.Delete())"
-                              Appearance="Appearance.Lightweight">@CommonResources.IDS_BUTTON_TEXT_DELETE</FluentButton>
             </FluentStack>
         </TemplateColumn>
     </FluentDataGrid>
@@ -113,6 +110,7 @@
     protected override async Task OnInitializedAsync()
     {
         SelectedTypeOption = OwnedOptions[0];
+        await base.OnInitializedAsync();
     }
 
     private async Task OnSearchClicked(MouseEventArgs args)
@@ -135,29 +133,6 @@
         {
             await Pagination.SetCurrentPageIndexAsync(0);
         }
-    }
-
-    private async Task OnDeleteClicked(long id, string name)
-    {
-        // var parameters = new DialogParameters
-        // {
-        //     Title = CommonResources.IDS_DIALOG_TITLE_CONFIRMATION,
-        //     Content = string.Format(IdentityResources.IDS_TEAM_INDEX_DIALOG_CONTENT_DELETE_CONFIRMATION, name),
-        //     PreventDismissOnOverlayClick = true
-        // };
-        // var dialog = await DialogService.ShowDialogAsync<Confirm>(parameters);
-        // var result = await dialog.Result;
-        // if (!result.Cancelled)
-        // {
-        //     Loading = true;
-        //     await InvokeAsync(StateHasChanged);
-        //
-        //     await Service.DeleteAsync(id);
-        //
-        //     Loading = false;
-        //
-        //     await _dataGrid.RefreshDataAsync(true);
-        // }
     }
 
     private async Task RefreshItemsAsync(GridItemsProviderRequest<TeamListDto> request)

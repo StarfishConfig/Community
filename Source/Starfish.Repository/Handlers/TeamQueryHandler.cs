@@ -130,18 +130,25 @@ internal class TeamQueryHandler : IHandler<TeamSearchQuery, IList<TeamListModel>
 
 	public Task<TeamDetailModel> HandleAsync(TeamDetailQuery message, MessageContext context, CancellationToken cancellationToken = default)
 	{
-		var query = _context.Set<Team>()
-		                    .AsNoTracking()
-		                    .Where(TeamSpecification.IdEquals(message.Id).Satisfy())
-		                    .Select(t => new TeamDetailModel
-		                    {
-			                    Id = t.Id,
-			                    Name = t.Name,
-			                    Description = t.Description,
-			                    MembersCount = t.MembersCount,
-			                    CreatedAt = t.CreatedAt,
-			                    UpdatedAt = t.UpdatedAt
-		                    });
+		var teams = _context.Set<Team>().AsNoTracking();
+		var users = _context.Set<User>().AsNoTracking();
+
+		var query = from team in teams
+		            join user in users on team.OwnerId equals user.Id
+		            where team.Id == message.Id
+		            select new TeamDetailModel
+		            {
+			            Id = team.Id,
+			            Name = team.Name,
+			            Description = team.Description,
+			            MembersCount = team.MembersCount,
+			            CreatedAt = team.CreatedAt,
+			            UpdatedAt = team.UpdatedAt,
+			            OwnerId = team.OwnerId,
+			            OwnerUsername = user.Username,
+			            OwnerNickname = user.Nickname
+		            };
+
 		return query.FirstOrDefaultAsync(cancellationToken);
 	}
 

@@ -15,7 +15,11 @@ internal class TeamMapperProfile : Profile
 				dest.OwnerName = $"{src.OwnerUsername}/{src.OwnerNickname ?? "--"}";
 			});
 
-		CreateMap<TeamDetailModel, TeamDetailDto>();
+		CreateMap<TeamDetailModel, TeamDetailDto>()
+			.AfterMap((src, dest, _) =>
+			{
+				dest.OwnerName = $"{src.OwnerUsername}/{src.OwnerNickname ?? "--"}";
+			});
 
 		CreateMap<TeamEditDto, TeamCreateCommand>();
 		CreateMap<TeamEditDto, TeamUpdateCommand>();
