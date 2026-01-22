@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <root>
     <!-- 
@@ -118,13 +118,4 @@
     <resheader name="writer">
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
-    <data name="IDS_ERROR_MESSAGE_NOT_FOUND" xml:space="preserve">
-        <value>User not found: '{0}'.</value>
-    </data>
-    <data name="IDS_ERROR_MESSAGE_EMAIL_FORMAT_INCORRECT" xml:space="preserve">
-        <value>The email address is incorrect.</value>
-    </data>
-    <data name="IDS_ERROR_MESSAGE_USERNAME_EXISTS" xml:space="preserve">
-        <value>The username '{0}' already exists. Please choose a different.</value>
-    </data>
 </root>

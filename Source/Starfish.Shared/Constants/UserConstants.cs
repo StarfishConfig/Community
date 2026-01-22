@@ -1,9 +1,9 @@
 namespace Nerosoft.Starfish.Shared;
 
 /// <summary>
-/// Contains constants for validation rules used in the system.
+/// Contains constants related to user properties and constraints.
 /// </summary>
-public static class ValidationConstants
+public static class UserConstants
 {
 	/// <summary>
 	/// Username length constraints(minimum).
@@ -29,7 +29,7 @@ public static class ValidationConstants
 	/// Password length constraints(maximum).
 	/// </summary>
 	public const int PasswordMaximumLength = 32;
-	
+
 	/// <summary>
 	/// Nickname length constraints(maximum).
 	/// </summary>

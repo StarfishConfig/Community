@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nerosoft.Starfish.Repository.Entities;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Configurations;
 
@@ -10,30 +11,30 @@ internal class TeamConfiguration : IEntityTypeConfiguration<Team>
 {
 	public void Configure(EntityTypeBuilder<Team> builder)
 	{
-		builder.ToTable("team");
+		builder.ToTable(TeamConstants.TableName);
 
-		builder.HasIndex(t => t.OwnerId).HasDatabaseName("idx_team_owner_id");
+		builder.HasIndex(t => t.OwnerId).HasDatabaseName(TeamConstants.OwnerIdIndexName);
 
 		builder.SnowflakeId();
 
 		builder.Property(t => t.OwnerId)
-		       .HasColumnName("owner_id")
-		       .HasMaxLength(64)
+		       .HasColumnName(TeamConstants.OwnerIdColumnName)
+		       .HasMaxLength(TeamConstants.OwnerIdLength)
 		       .IsRequired();
 
 		builder.Property(t => t.Name)
-		       .HasColumnName("name")
-		       .HasMaxLength(200)
+		       .HasColumnName(TeamConstants.NameColumnName)
+		       .HasMaxLength(TeamConstants.NameMaximumLength)
 		       .IsRequired()
 		       .IsUnicode();
 
 		builder.Property(t => t.Description)
-		       .HasColumnName("description")
-		       .HasMaxLength(500)
+		       .HasColumnName(TeamConstants.DescriptionColumnName)
+		       .HasMaxLength(TeamConstants.DescriptionMaximumLength)
 		       .IsUnicode();
 
 		builder.Property(t => t.MembersCount)
-		       .HasColumnName("members_count")
+		       .HasColumnName(TeamConstants.MembersCountColumnName)
 		       .IsRequired()
 		       .HasDefaultValue(0);
 
