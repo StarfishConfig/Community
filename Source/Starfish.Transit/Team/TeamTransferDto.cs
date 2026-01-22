@@ -1,4 +1,4 @@
-namespace Nerosoft.Starfish.Facade.Transit;
+namespace Nerosoft.Starfish.Transit;
 
 /// <summary>
 /// Data transfer object used to request a transfer of team ownership or membership.

@@ -1,4 +1,4 @@
-namespace Nerosoft.Starfish.Facade.Transit;
+namespace Nerosoft.Starfish.Transit;
 
 /// <summary>
 /// Data transfer object representing a team member's public profile information

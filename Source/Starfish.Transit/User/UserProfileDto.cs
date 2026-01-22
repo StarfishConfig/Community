@@ -1,4 +1,4 @@
-namespace Nerosoft.Starfish.Facade.Transit;
+namespace Nerosoft.Starfish.Transit;
 
 /// <summary>
 /// Defines the user profile data transfer object.

@@ -9,7 +9,7 @@ using Nerosoft.Euonia.Security;
 using Nerosoft.Starfish.Facade.Events;
 using Nerosoft.Starfish.Facade.ExternalAuth;
 using Nerosoft.Starfish.Facade.Interfaces;
-using Nerosoft.Starfish.Facade.Transit;
+using Nerosoft.Starfish.Transit;
 using Nerosoft.Starfish.Repository.Models;
 using Nerosoft.Starfish.Repository.Requests;
 using Nerosoft.Starfish.Shared;

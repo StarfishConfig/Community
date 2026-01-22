@@ -1,4 +1,4 @@
-namespace Nerosoft.Starfish.Facade.Transit;
+namespace Nerosoft.Starfish.Transit;
 
 /// <summary>
 /// DTO used to carry data required for changing a user's password.

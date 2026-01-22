@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
-using Nerosoft.Starfish.Facade.Transit;
+using Nerosoft.Starfish.Transit;
 
 namespace Nerosoft.Starfish.Server;
 

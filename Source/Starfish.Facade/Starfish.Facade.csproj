@@ -15,6 +15,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Starfish.Domain\Starfish.Domain.csproj" />
         <ProjectReference Include="..\Starfish.Repository\Starfish.Repository.csproj" />
+        <ProjectReference Include="..\Starfish.Transit\Starfish.Transit.csproj" />
     </ItemGroup>
 
     <ItemGroup>

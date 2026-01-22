@@ -1,4 +1,4 @@
-namespace Nerosoft.Starfish.Facade.Transit;
+namespace Nerosoft.Starfish.Transit;
 
 public abstract class BaseLookupDto<TKey>
 {

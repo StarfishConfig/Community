@@ -1,6 +1,6 @@
 ﻿using Nerosoft.Starfish.Shared;
 
-namespace Nerosoft.Starfish.Facade.Transit;
+namespace Nerosoft.Starfish.Transit;
 
 /// <summary>
 /// Represents a data transfer object for editing message templates.

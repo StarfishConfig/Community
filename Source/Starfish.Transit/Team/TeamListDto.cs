@@ -1,9 +1,9 @@
-namespace Nerosoft.Starfish.Facade.Transit;
+namespace Nerosoft.Starfish.Transit;
 
 /// <summary>
-/// Data transfer object representing detailed information about a team.
+/// Data transfer object representing a team entry used in lists or summaries.
 /// </summary>
-public class TeamDetailDto : TeamBaseDto
+public class TeamListDto : TeamBaseDto
 {
 	/// <summary>
 	/// Gets or sets the unique identifier of the team.
@@ -11,7 +11,7 @@ public class TeamDetailDto : TeamBaseDto
 	public long Id { get; set; }
 
 	/// <summary>
-	/// Gets or sets the number of members currently in the team.
+	/// Gets or sets the current number of members in the team.
 	/// </summary>
 	public int MembersCount { get; set; }
 
@@ -26,12 +26,12 @@ public class TeamDetailDto : TeamBaseDto
 	public string OwnerName { get; set; }
 
 	/// <summary>
-	/// Gets or sets the date and time when the team was created.
+	/// Gets or sets the timestamp when the team was created.
 	/// </summary>
 	public DateTime CreatedAt { get; set; }
 
 	/// <summary>
-	/// Gets or sets the date and time when the team was last updated.
+	/// Gets or sets the timestamp when the team was last updated.
 	/// </summary>
 	public DateTime UpdatedAt { get; set; }
 }
