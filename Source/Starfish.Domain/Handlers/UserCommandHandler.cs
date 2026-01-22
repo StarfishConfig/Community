@@ -19,7 +19,7 @@ internal sealed class UserCommandHandler(IServiceProvider provider)
 					   .Create(message.Username, cancellationToken)
 					   .Handle(user =>
 					   {
-						   user.SetPassword(message.Password, UserPasswordUpdateType.Create);
+						   user.SetPassword(message.Password, PasswordUpdateType.Create);
 						   user.SetEmail(message.Email);
 						   user.SetPhone(message.Phone);
 						   user.SetNickname(message.Nickname);
@@ -52,7 +52,7 @@ internal sealed class UserCommandHandler(IServiceProvider provider)
 					   .Fetch(message.Id, cancellationToken)
 					   .Handle(user =>
 					   {
-						   user.SetPassword(message.Password, UserPasswordUpdateType.Change);
+						   user.SetPassword(message.Password, PasswordUpdateType.Change);
 						   user.MarkAsChanged();
 					   })
 					   .ExecuteAsync(cancellationToken);
@@ -64,7 +64,7 @@ internal sealed class UserCommandHandler(IServiceProvider provider)
 					   .Fetch(message.Id, cancellationToken)
 					   .Handle(user =>
 					   {
-						   user.SetPassword(message.Password, UserPasswordUpdateType.Reset);
+						   user.SetPassword(message.Password, PasswordUpdateType.Reset);
 						   user.MarkAsChanged();
 					   })
 					   .ExecuteAsync(cancellationToken);

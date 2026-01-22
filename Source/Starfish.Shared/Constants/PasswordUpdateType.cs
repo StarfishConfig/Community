@@ -3,7 +3,7 @@ namespace Nerosoft.Starfish.Shared;
 /// <summary>
 /// Represents the types of user password updates.
 /// </summary>
-public class UserPasswordUpdateType
+public class PasswordUpdateType
 {
 	/// <summary>
 	/// Represents a password reset initiated by an administrator.
