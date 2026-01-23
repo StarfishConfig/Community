@@ -9,4 +9,10 @@ internal class CreateActuator<TTarget> : ActuatorBase<TTarget>
 		: base(builder, factory)
 	{
 	}
+
+	protected override Task ContinueHandleAsync(TTarget target, CancellationToken cancellationToken = default)
+	{
+		target.MarkAsNew();
+		return base.ContinueHandleAsync(target, cancellationToken);
+	}
 }
