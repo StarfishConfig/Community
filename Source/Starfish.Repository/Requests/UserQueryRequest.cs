@@ -32,3 +32,5 @@ public record UserDetailQuery(string Id) : IRequest<UserDetailModel>;
 public record UserSearchQuery(string Keyword, bool? Locked, int Skip = 0, int Size = 20) : IRequest<List<UserListModel>>;
 
 public record UserCountQuery(string Keyword, bool? Locked) : IRequest<int>;
+
+public record UserAuthInfoQuery(string Provider, string Name) : IRequest<UserAuthInfoModel>;

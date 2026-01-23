@@ -26,11 +26,6 @@ public static class AuthProvider
 	public const string Phone = "phone";
 
 	/// <summary>
-	/// Represents the password key.
-	/// </summary>
-	public const string Password = "password";
-
-	/// <summary>
 	/// Represents the GitHub authentication provider key.
 	/// </summary>
 	public const string Github = "github";

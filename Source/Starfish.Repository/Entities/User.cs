@@ -77,4 +77,9 @@ internal class User : Entity<string>,
 	/// Gets or sets the roles associated with the user.
 	/// </summary>
 	public HashSet<UserRole> Roles { get; set; }
+	
+	/// <summary>
+	/// Gets or sets the authorities associated with the user.
+	/// </summary>
+	public HashSet<UserAuthority> Authorities { get; set; }
 }

@@ -45,7 +45,7 @@ internal class UserMapperProfile : Profile
 				data.Roles = entity.Roles?.Select(r => r.Name).ToHashSet() ?? [];
 			});
 
-		CreateMap<User, AuthInfoModel>()
+		CreateMap<User, UserAuthInfoModel>()
 			.ForMember(dest => dest.Roles, opt => opt.Ignore())
 			.AfterMap((entity, data, _) =>
 			{

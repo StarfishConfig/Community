@@ -11,7 +11,7 @@ using Nerosoft.Starfish.Toolkit;
 
 namespace Nerosoft.Starfish.Repository.Handlers;
 
-internal class AuthInfoQueryHandler : IHandler<AuthWithUsernameRequest, AuthInfoModel>
+internal class AuthInfoQueryHandler : IHandler<AuthWithUsernameRequest, UserAuthInfoModel>
 {
 	private readonly IdentityDataContext _context;
 
@@ -20,7 +20,7 @@ internal class AuthInfoQueryHandler : IHandler<AuthWithUsernameRequest, AuthInfo
 		_context = context;
 	}
 
-	public async Task<AuthInfoModel> HandleAsync(AuthWithUsernameRequest message, MessageContext context, CancellationToken cancellationToken = default)
+	public async Task<UserAuthInfoModel> HandleAsync(AuthWithUsernameRequest message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		if (string.IsNullOrWhiteSpace(message.Username))
 		{
@@ -52,7 +52,7 @@ internal class AuthInfoQueryHandler : IHandler<AuthWithUsernameRequest, AuthInfo
 			throw new AccountLockedException(user.Id, IdentityResources.IDS_ERROR_USER_LOCKED);
 		}
 
-		var result = TypeAdapter.ProjectedAs<AuthInfoModel>(user);
+		var result = TypeAdapter.ProjectedAs<UserAuthInfoModel>(user);
 		return result;
 	}
 }

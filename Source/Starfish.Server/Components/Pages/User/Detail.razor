@@ -1,5 +1,8 @@
 ﻿@page "/users/{Id}"
 
+@inject IUserApplicationService Service
+@inject NavigationManager Navigation
+
 <PageTitle>@UserResources.IDS_DETAIL_TITLE</PageTitle>
 
 <FluentStack VerticalGap="16" Orientation="Orientation.Vertical" Style="width: 100%">
@@ -15,29 +18,43 @@
         <FluentStack Orientation="Orientation.Vertical" VerticalGap="16">
             <FluentAccordion Style="width: 100%">
                 <FluentAccordionItem Heading="@TeamResources.IDS_DETAIL_PANEL_HEADER" Expanded="true">
-                    <FluentIcon Value="@(new Icons.Regular.Size20.Info())" Color="@Color.Neutral" Slot="start" />
+                    <FluentIcon Value="@(new Icons.Regular.Size20.Info())" Color="@Color.Neutral" Slot="start"/>
                     <FluentGrid Spacing="2" Justify="JustifyContent.FlexStart" Style="padding: 5px;">
                         <FluentGridItem md="6" sm="12">
                             <FluentTextField Value="@Data?.Username" Label="@TeamResources.IDS_DETAIL_LABEL_NAME"
                                              Style="width: 100%" Disabled="true"
-                                             Class="input-disabled" />
+                                             Class="input-disabled"/>
                         </FluentGridItem>
 
                         <FluentGridItem md="6" sm="12">
                             <FluentTextField Value="@Data?.Nickname" Label="@TeamResources.IDS_DETAIL_LABEL_OWNER_NAME"
                                              Style="width: 100%" Disabled="true"
-                                             Class="input-disabled" />
+                                             Class="input-disabled"/>
                         </FluentGridItem>
 
                         <FluentGridItem md="6" sm="12">
-                            <FluentTextField Value="@Data?.CreatedAt.ToShortDateString()" Label="@TeamResources.IDS_DETAIL_LABEL_CREATE_TIME"
+                            <FluentTextField Value="@Data?.Email" Label="@TeamResources.IDS_DETAIL_LABEL_NAME"
+                                             Style="width: 100%" Disabled="true"
+                                             Class="input-disabled"/>
+                        </FluentGridItem>
+
+                        <FluentGridItem md="6" sm="12">
+                            <FluentTextField Value="@Data?.Phone" Label="@TeamResources.IDS_DETAIL_LABEL_OWNER_NAME"
+                                             Style="width: 100%" Disabled="true"
+                                             Class="input-disabled"/>
+                        </FluentGridItem>
+
+                        <FluentGridItem md="6" sm="12">
+                            <FluentTextField Value="@Data?.CreatedAt.ToShortDateString()"
+                                             Label="@TeamResources.IDS_DETAIL_LABEL_CREATE_TIME"
                                              Style="width: 100%;" Disabled="true"
-                                             Class="input-disabled" />
+                                             Class="input-disabled"/>
                         </FluentGridItem>
                         <FluentGridItem md="6" sm="12">
-                            <FluentTextField Value="@Data?.UpdatedAt.ToShortDateString()" Label="@TeamResources.IDS_DETAIL_LABEL_UPDATE_TIME"
+                            <FluentTextField Value="@Data?.UpdatedAt.ToShortDateString()"
+                                             Label="@TeamResources.IDS_DETAIL_LABEL_UPDATE_TIME"
                                              Style="width: 100%;" Disabled="true"
-                                             Class="input-disabled" />
+                                             Class="input-disabled"/>
                         </FluentGridItem>
 
                         @* <FluentGridItem md="12">
@@ -65,8 +82,21 @@
 </FluentStack>
 
 @code {
+
     [Parameter]
     public string Id { get; set; }
 
     private UserDetailDto Data { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Data = await Service.GetAsync(Id);
+        if (Data == null)
+        {
+            Navigation.NavigateTo("/not-found");
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
 }

@@ -1,4 +1,3 @@
-using System.Security.Authentication;
 using System.Security.Claims;
 using Duende.IdentityModel;
 using Microsoft.Extensions.Configuration;
@@ -45,105 +44,61 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 	/// <exception cref="BadGatewayException">Thrown when external authentication fails.</exception>
 	public async Task<TokenGrantResponseDto> GrantAsync(TokenGrantRequestDto data, CancellationToken cancellationToken = default)
 	{
-		var events = new List<ApplicationEvent>();
+		var (user, issueAt) = await AuthenticateAsync("Bearer", data, null, cancellationToken);
 
-		try
+		var refreshTokenId = ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N");
+
+		var identity = BuildClaims("Bearer", user);
+		var expiresAt = issueAt.AddDays(1);
+
+		var builder = TokenGenerator.From(identity)
+		                            .WithSigningKey(configuration.GetValue<string>($"{JWT_AUTH_SECTION}:SigningKey"))
+		                            .WithIssuer(configuration.GetValue<string>($"{JWT_AUTH_SECTION}:Issuer:0"))
+		                            .IssuedAt(issueAt);
+
+		var accessToken = builder.Build();
+
+		var events = new List<ApplicationEvent>
 		{
-			var request = await GetRequestAsync(data, cancellationToken);
-			var user = await Bus.CallAsync(request, cancellationToken);
-
-			var issueAt = DateTime.UtcNow;
-
-			@events.Add(new UserAuthSuccessEvent
-			{
-				Source = "Bearer",
-				GrantType = data.GrantType,
-				UserId = user.Id,
-				Username = user.Username,
-				GrantTime = issueAt //DateTimeHelper.GetDateTimeFromUnixTime(result.IssueAt)
-			});
-
-			var refreshTokenId = ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N");
-
-			var identity = BuildClaims("Bearer", user);
-			events.Add(new TokenGeneratedEvent
+			new TokenGeneratedEvent
 			{
 				UserId = user.Id,
 				Username = user.Username,
 				RefreshToken = refreshTokenId,
 				GrantTime = issueAt
+			}
+		};
+
+		if (string.Equals(data.GrantType, AuthProvider.RefreshToken, StringComparison.OrdinalIgnoreCase))
+		{
+			@events.Add(new TokenRefreshedEvent
+			{
+				OriginToken = data.Password
 			});
-			if (string.Equals(data.GrantType, AuthProvider.RefreshToken, StringComparison.OrdinalIgnoreCase))
-			{
-				@events.Add(new TokenRefreshedEvent
-				{
-					OriginToken = data.Password
-				});
-			}
-
-			//var roles = user.Roles?.Select(r => r.Name);
-
-			//var jti = ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N");
-
-			var issueTime = DateTime.UtcNow;
-			var expiresAt = issueTime.AddDays(1);
-
-			var builder = TokenGenerator.From(identity)
-			                            .WithSigningKey(configuration.GetValue<string>($"{JWT_AUTH_SECTION}:SigningKey"))
-			                            .WithIssuer(configuration.GetValue<string>($"{JWT_AUTH_SECTION}:Issuer:0"))
-			                            .IssuedAt(issueTime);
-
-			var accessToken = builder.Build();
-
-			return new TokenGrantResponseDto
-			{
-				AccessToken = accessToken,
-				RefreshToken = ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N"),
-				TokenType = TokenType.Bearer,
-				Username = user.Username,
-				UserId = user.Id,
-				IssueAt = new DateTimeOffset(issueTime).ToUnixTimeSeconds(),
-				ExpiresIn = (long)(expiresAt - issueTime).TotalSeconds
-			};
 		}
-		catch (AuthenticationException exception)
+
+		await Parallel.ForEachAsync(events, cancellationToken, async (@event, token) => await Bus.PublishAsync(@event, token));
+
+		return new TokenGrantResponseDto
 		{
-			var @event = new UserAuthFailureEvent
-			{
-				Source = "Bearer",
-				GrantType = data.GrantType,
-				GrantTime = DateTime.UtcNow,
-				Data = new Dictionary<string, string>
-				{
-					{ "Username", data.Username ?? string.Empty },
-					{ "Password", data.Password != null ? "******" : string.Empty },
-				},
-				Error = exception.Message
-			};
-
-			switch (exception.InnerException)
-			{
-				case CredentialException ex:
-					@event.UserId = ex.Credential as string;
-					break;
-				case AccountLockedException ex:
-					@event.UserId = ex.Identity;
-					break;
-			}
-
-			events.Add(@event);
-			throw;
-		}
-		finally
-		{
-			if (events.Count > 0)
-			{
-				await Parallel.ForEachAsync(events, cancellationToken, async (@event, token) => await Bus.PublishAsync(@event, token));
-			}
-		}
+			AccessToken = accessToken,
+			RefreshToken = refreshTokenId,
+			TokenType = TokenType.Bearer,
+			Username = user.Username,
+			UserId = user.Id,
+			IssueAt = new DateTimeOffset(issueAt).ToUnixTimeSeconds(),
+			ExpiresIn = (long)(expiresAt - issueAt).TotalSeconds
+		};
 	}
 
 	public async Task<ClaimsPrincipal> SignInAsync(TokenGrantRequestDto data, CancellationToken cancellationToken = default)
+	{
+		var (user, _) = await AuthenticateAsync("Cookies", data, null, cancellationToken);
+		var identity = BuildClaims("Cookies", user);
+		return new ClaimsPrincipal(identity);
+	}
+
+	private async Task<Tuple<UserAuthInfoModel, DateTime>> AuthenticateAsync(string authenticationType, TokenGrantRequestDto data, Action<UserAuthInfoModel, List<ApplicationEvent>> eventHandle, CancellationToken cancellationToken = default)
 	{
 		var events = new List<ApplicationEvent>();
 		try
@@ -151,26 +106,63 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 			var request = await GetRequestAsync(data, cancellationToken);
 			var user = await Bus.CallAsync(request, cancellationToken);
 
+			if (user == null)
+			{
+				throw new AccountNotFoundException(authenticationType, AuthResources.IDS_ERROR_MESSAGE_INVALID_USERNAME_PASSWORD);
+			}
+
+			if (string.Equals(data.GrantType, AuthProvider.Username, StringComparison.OrdinalIgnoreCase))
+			{
+				var passwordHash = Cryptography.DES.Encrypt(data.Password, Encoding.UTF8.GetBytes(user.PasswordSalt));
+				if (!string.Equals(passwordHash, user.PasswordHash, StringComparison.Ordinal))
+				{
+					throw new CredentialIncorrectException(user.Id, AuthResources.IDS_ERROR_MESSAGE_INVALID_USERNAME_PASSWORD);
+				}
+			}
+
+			if (user.LockoutEnd > DateTime.UtcNow)
+			{
+				throw new AccountLockedException(user.Id, AuthResources.IDS_ERROR_MESSAGE_USER_LOCKED);
+			}
+
 			var issueAt = DateTime.UtcNow;
 
 			@events.Add(new UserAuthSuccessEvent
 			{
-				Source = "Cookie",
+				Source = "Bearer",
 				GrantType = data.GrantType,
 				UserId = user.Id,
 				Username = user.Username,
 				GrantTime = issueAt //DateTimeHelper.GetDateTimeFromUnixTime(result.IssueAt)
 			});
 
-			var identity = BuildClaims("Cookies", user);
-			return new ClaimsPrincipal(identity);
+			eventHandle?.Invoke(user, events);
+
+			return Tuple.Create(user, issueAt);
+		}
+		catch (AccountLockedException exception)
+		{
+			@events.Add(new UserAuthFailureEvent
+			{
+				UserId = exception.Identity,
+				Source = authenticationType,
+				GrantType = data.GrantType,
+				GrantTime = DateTime.UtcNow,
+				Data = new Dictionary<string, string>
+				{
+					{ "Username", data.Username ?? string.Empty },
+					{ "Password", data.Password != null ? "******" : string.Empty },
+					{ "Locked", "true" },
+				},
+			});
+			throw;
 		}
 		catch (CredentialException exception)
 		{
-			var @event = new UserAuthFailureEvent
+			events.Add(new UserAuthFailureEvent
 			{
 				UserId = exception.Credential as string,
-				Source = "Bearer",
+				Source = authenticationType,
 				GrantType = data.GrantType,
 				GrantTime = DateTime.UtcNow,
 				Data = new Dictionary<string, string>
@@ -179,31 +171,7 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 					{ "Password", data.Password != null ? "******" : string.Empty },
 				},
 				Error = exception.Message
-			};
-			events.Add(@event);
-			throw;
-		}
-		catch (AccountException exception)
-		{
-			var @event = new UserAuthFailureEvent
-			{
-				Source = "Bearer",
-				GrantType = data.GrantType,
-				GrantTime = DateTime.UtcNow,
-				Data = new Dictionary<string, string>
-				{
-					{ "Username", data.Username ?? string.Empty },
-					{ "Password", data.Password != null ? "******" : string.Empty },
-				},
-				Error = exception.Message
-			};
-			if (exception is AccountLockedException ex)
-			{
-				@event.UserId = ex.Identity;
-				@event.Data.Add("Locked", "true");
-			}
-
-			events.Add(@event);
+			});
 			throw;
 		}
 		finally
@@ -215,7 +183,7 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 		}
 	}
 
-	private static ClaimsIdentity BuildClaims(string authenticationType, AuthInfoModel user)
+	private static ClaimsIdentity BuildClaims(string authenticationType, UserAuthInfoModel user)
 	{
 		var identity = new ClaimsIdentity(authenticationType);
 
@@ -255,7 +223,7 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 	/// <remarks>
 	/// Supported authentication providers:
 	/// <list type="bullet">
-	/// <item><description><see cref="AuthProvider.Username"/> and <see cref="AuthProvider.Password"/>: Username/password authentication.</description></item>
+	/// <item><description><see cref="AuthProvider.Username"/>: Username/password authentication.</description></item>
 	/// <item><description><see cref="AuthProvider.RefreshToken"/>: Refresh token authentication.</description></item>
 	/// <item><description><see cref="AuthProvider.Microsoft"/>: Microsoft external authentication.</description></item>
 	/// <item><description><see cref="AuthProvider.Google"/>: Google external authentication.</description></item>
@@ -266,17 +234,63 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 	/// <exception cref="ArgumentException">Thrown when the provider is null or empty.</exception>
 	/// <exception cref="NotSupportedException">Thrown when the specified authentication provider is not supported or the external provider service is not available.</exception>
 	/// <exception cref="BadGatewayException">Thrown when external authentication with a third-party provider fails.</exception>
-	private async Task<IRequest<AuthInfoModel>> GetRequestAsync(TokenGrantRequestDto data, CancellationToken cancellationToken = default)
+	private async Task<IRequest<UserAuthInfoModel>> GetRequestAsync(TokenGrantRequestDto data, CancellationToken cancellationToken = default)
 	{
 		switch (data.GrantType?.ToLowerInvariant())
 		{
 			case null or "":
-				throw new ArgumentException(IdentityResources.IDS_ERROR_AUTH_PROVIDER_REQUIRED, nameof(data));
+				throw new ArgumentException(AuthResources.IDS_ERROR_MESSAGE_GRANT_TYPE_REQUIRED, nameof(data));
 			case AuthProvider.Username:
-			case AuthProvider.Password:
-				return new AuthWithUsernameRequest(data.Username, data.Password);
+			{
+				if (string.IsNullOrWhiteSpace(data.Username))
+				{
+					throw new BadRequestException(AuthResources.IDS_ERROR_MESSAGE_USERNAME_REQUIRED);
+				}
+
+				if (string.IsNullOrWhiteSpace(data.Password))
+				{
+					throw new BadRequestException(AuthResources.IDS_ERROR_MESSAGE_PASSWORD_REQUIRED);
+				}
+			}
+				return new UserAuthInfoQuery(data.GrantType, data.Username);
 			case AuthProvider.RefreshToken:
-				return new AuthWithRefreshTokenRequest(data.Password);
+			{
+				if (string.IsNullOrEmpty(data.Password))
+				{
+					throw new BadRequestException(AuthResources.IDS_ERROR_MESSAGE_REFRESH_TOKEN_REQUIRED);
+				}
+
+				var token = await Bus.CallAsync(new TokenDetailQuery(AuthProvider.RefreshToken, data.Password), cancellationToken);
+				if (token == null)
+				{
+					throw new CredentialIncorrectException(data.Password, AuthResources.IDS_ERROR_MESSAGE_REFRESH_TOKEN_INVALID);
+				}
+
+				if (token.Expires <= DateTime.UtcNow)
+				{
+					throw new CredentialExpiredException(AuthResources.IDS_ERROR_MESSAGE_REFRESH_TOKEN_EXPIRED);
+				}
+
+				{
+				}
+
+				return new UserAuthInfoQuery(AuthProvider.Identifier, token.Subject);
+			}
+			case AuthProvider.Email:
+			case AuthProvider.Phone:
+			{
+				if (string.IsNullOrWhiteSpace(data.Username))
+				{
+					throw new BadRequestException(AuthResources.IDS_ERROR_MESSAGE_USERNAME_REQUIRED);
+				}
+
+				if (string.IsNullOrWhiteSpace(data.Password))
+				{
+					throw new BadRequestException(AuthResources.IDS_ERROR_MESSAGE_OTP_REQUIRED);
+				}
+
+				return new UserAuthInfoQuery(data.GrantType, data.Username);
+			}
 			case AuthProvider.Microsoft:
 			case AuthProvider.Google:
 			case AuthProvider.Github:
@@ -292,16 +306,16 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 
 				if (auth == null)
 				{
-					throw new BadGatewayException(IdentityResources.IDS_ERROR_EXTERNAL_AUTH_FAILED);
+					throw new BadGatewayException(AuthResources.IDS_ERROR_MESSAGE_EXTERNAL_AUTH_FAILED);
 				}
 
 				{
 				}
 
-				return new AuthWithExternalProviderRequest(data.GrantType, auth.Id);
+				return new UserAuthInfoQuery(data.GrantType, auth.Id);
 			}
 			default:
-				throw new NotSupportedException(string.Format(IdentityResources.IDS_ERROR_AUTH_PROVIDER_NOT_SUPPORT, data.GrantType));
+				throw new NotSupportedException(string.Format(AuthResources.IDS_ERROR_MESSAGE_GRANT_TYPE_NOT_SUPPORT, data.GrantType));
 		}
 	}
 }

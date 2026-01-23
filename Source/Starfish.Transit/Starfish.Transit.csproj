@@ -10,4 +10,9 @@
         <ProjectReference Include="..\Starfish.Shared\Starfish.Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Using Include="$(RootNamespace).Properties" />
+        <Using Include="Nerosoft.Starfish.Shared.Properties" />
+    </ItemGroup>
+
 </Project>

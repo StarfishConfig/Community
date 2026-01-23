@@ -4,7 +4,7 @@ namespace Nerosoft.Starfish.Repository.Models;
 /// Represents a query model for user authentication/identity lookups.
 /// Contains identifying fields and the list of roles associated with the user.
 /// </summary>
-public class AuthInfoModel
+public class UserAuthInfoModel
 {
 	/// <summary>
 	/// Gets or sets the unique identifier of the user.
@@ -30,6 +30,21 @@ public class AuthInfoModel
 	/// Gets or sets the user's chosen nickname.
 	/// </summary>
 	public string Nickname { get; set; }
+
+	/// <summary>
+	/// Gets or sets the encrypted password.
+	/// </summary>
+	public string PasswordHash { get; set; }
+
+	/// <summary>
+	/// Gets or sets the salt used to encrypt the password.
+	/// </summary>
+	public string PasswordSalt { get; set; }
+
+	/// <summary>
+	/// Gets or sets the lockout end time.
+	/// </summary>
+	public DateTime? LockoutEnd { get; set; }
 
 	/// <summary>
 	/// Gets or sets the collection of role names assigned to the user.

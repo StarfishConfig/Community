@@ -56,4 +56,14 @@ internal static class UserSpecification
 				x.LockoutEnd == null || x.LockoutEnd <= DateTime.UtcNow);
 		}
 	}
+
+	public static Specification<User> HasRole(string name)
+	{
+		return new DirectSpecification<User>(user => user.Roles.Any(role => role.Name == name));
+	}
+
+	public static ISpecification<User> AuthorityEquals(string provider, string openId)
+	{
+		return new DirectSpecification<User>(t => t.Authorities.Any(a => a.Provider == provider && a.OpenId == openId));
+	}
 }

@@ -6,6 +6,7 @@ using Nerosoft.Starfish.Repository.Entities;
 using Nerosoft.Starfish.Repository.Models;
 using Nerosoft.Starfish.Repository.Requests;
 using Nerosoft.Starfish.Repository.Specifications;
+using Nerosoft.Starfish.Shared;
 using Nerosoft.Starfish.Toolkit;
 
 namespace Nerosoft.Starfish.Repository.Handlers;
@@ -13,7 +14,8 @@ namespace Nerosoft.Starfish.Repository.Handlers;
 internal class UserQueryHandler : IHandler<UserPasswordVerifyRequest, bool>,
                                   IHandler<UserDetailQuery, UserDetailModel>,
                                   IHandler<UserSearchQuery, List<UserListModel>>,
-                                  IHandler<UserCountQuery, int>
+                                  IHandler<UserCountQuery, int>,
+                                  IHandler<UserAuthInfoQuery, UserAuthInfoModel>
 {
 	private readonly IdentityDataContext _context;
 
@@ -95,5 +97,39 @@ internal class UserQueryHandler : IHandler<UserPasswordVerifyRequest, bool>,
 		               .AsNoTracking()
 		               .Where(predicate)
 		               .CountAsync(cancellationToken);
+	}
+
+	public async Task<UserAuthInfoModel> HandleAsync(UserAuthInfoQuery message, MessageContext context, CancellationToken cancellationToken = default)
+	{
+		var specification = message.Provider switch
+		{
+			AuthProvider.Identifier => UserSpecification.IdEquals(message.Name),
+			AuthProvider.Email => UserSpecification.EmailEquals(message.Name),
+			AuthProvider.Phone => UserSpecification.PhoneEquals(message.Name),
+			AuthProvider.Username => UserSpecification.UsernameEquals(message.Name),
+			_ => UserSpecification.AuthorityEquals(message.Provider, message.Name)
+		};
+
+		var predicate = specification.Satisfy();
+
+		var entity = await _context.Set<User>()
+		                           .AsNoTracking()
+		                           .Include(u => u.Roles)
+		                           .Include(u => u.Authorities)
+		                           .FirstOrDefaultAsync(predicate, cancellationToken);
+
+		return TypeAdapter.ProjectedAs<UserAuthInfoModel>(entity);
+
+		// var query = from user in _context.Set<User>().Include(u => u.Authorities)
+		//             where predicate.Compile()(user)
+		//             select new UserAuthModel
+		//             {
+		// 	            Id = user.Id,
+		// 	            Username = user.Username,
+		// 	            Email = user.Email,
+		// 	            Phone = user.Phone,
+		// 	            Nickname = user.Nickname,
+		// 	            Roles = user.Roles.Select(r => r.Name).ToHashSet()
+		//             };
 	}
 }
