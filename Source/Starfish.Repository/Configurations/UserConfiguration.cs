@@ -26,7 +26,7 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
 		builder.HasTombstoneIndex();
 
 		builder.ShortUniqueId();
-		
+
 		builder.Property(x => x.Username)
 		       .HasColumnName("username")
 		       .HasMaxLength(255)
@@ -78,6 +78,11 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
 		builder.HasMany(x => x.Roles)
 		       .WithOne(x => x.User)
 		       .HasForeignKey(x => x.UserId)
+		       .OnDelete(DeleteBehavior.Cascade);
+
+		builder.HasMany(x => x.Authorities)
+		       .WithOne(x => x.User)
+		       .HasForeignKey(a => a.UserId)
 		       .OnDelete(DeleteBehavior.Cascade);
 	}
 }

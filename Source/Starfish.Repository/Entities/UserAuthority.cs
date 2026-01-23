@@ -2,7 +2,10 @@ using Nerosoft.Euonia.Repository;
 
 namespace Nerosoft.Starfish.Repository.Entities;
 
-public class UserAuthority : Entity<long>
+/// <summary>
+/// Represents a third-party user authority entity in the persistence layer.
+/// </summary>
+internal class UserAuthority : Entity<long>, IHasCreateTime
 {
 	/// <summary>
 	/// Gets or sets the user ID associated with this authority.
@@ -28,4 +31,9 @@ public class UserAuthority : Entity<long>
 	/// Gets or sets the creation time of this authority record.
 	/// </summary>
 	public DateTime CreatedAt { get; set; }
+	
+	/// <summary>
+	/// Gets or sets the associated user entity.
+	/// </summary>
+	public User User { get; set; }
 }

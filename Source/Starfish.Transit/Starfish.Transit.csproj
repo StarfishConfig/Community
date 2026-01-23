@@ -11,7 +11,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Using Include="$(RootNamespace).Properties" />
         <Using Include="Nerosoft.Starfish.Shared.Properties" />
     </ItemGroup>
 
