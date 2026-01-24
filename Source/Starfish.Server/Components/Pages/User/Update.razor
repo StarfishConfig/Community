@@ -9,69 +9,75 @@
     <FluentBreadcrumb Style="margin-bottom: 16px;">
         <FluentBreadcrumbItem Href="/">@LayoutResources.IDS_MENU_TEXT_HOME</FluentBreadcrumbItem>
         <FluentBreadcrumbItem Href="/users">@LayoutResources.IDS_MENU_TEXT_USER_MANAGEMENT</FluentBreadcrumbItem>
-        <FluentBreadcrumbItem Href="@($"/users/{Id}/edit")">@IdentityResources.IDS_USER_EDIT_TITLE_UPDATE</FluentBreadcrumbItem>
+        <FluentBreadcrumbItem
+            Href="@($"/users/{Id}/edit")">@UserResources.IDS_PAGE_EDIT_TITLE_UPDATE</FluentBreadcrumbItem>
     </FluentBreadcrumb>
-    <FluentLabel Typo="Typography.Header">@IdentityResources.IDS_USER_EDIT_TITLE_UPDATE</FluentLabel>
+    <FluentLabel Typo="Typography.Header">@UserResources.IDS_PAGE_EDIT_TITLE_UPDATE</FluentLabel>
 
     <FluentCard>
         <FluentEditForm EditContext="_editContext" OnSubmit="@OnSubmitAsync" FormName="form" Style="width: 100%">
-            <DataAnnotationsValidator />
+            <DataAnnotationsValidator/>
 
             <FluentGrid Columns="12" RowGap="10" ColumnGap="10">
 
                 <FluentGridItem sm="4" md="3" lg="3" Class="input-group-label">
-                    <FluentLabel Alignment="HorizontalAlignment.Right">@IdentityResources.IDS_USER_EDIT_LABEL_USERNAME</FluentLabel>
+                    <FluentLabel
+                        Alignment="HorizontalAlignment.Right">@UserResources.IDS_PAGE_EDIT_LABEL_USERNAME</FluentLabel>
                 </FluentGridItem>
                 <FluentGridItem sm="8" md="6" lg="6">
-                    <FluentTextField Placeholder="@IdentityResources.IDS_USER_EDIT_PLACEHOLDER_USERNAME"
+                    <FluentTextField Placeholder="@UserResources.IDS_PAGE_EDIT_PLACEHOLDER_USERNAME"
                                      Style="width: 100%"
                                      ReadOnly="true"
-                                     Value="@Model.Username" TextFieldType="TextFieldType.Text" />
+                                     Value="@Model.Username" TextFieldType="TextFieldType.Text"/>
                 </FluentGridItem>
-                <FluentGridItem md="3" lg="3" HiddenWhen="GridItemHidden.SmAndDown" />
+                <FluentGridItem md="3" lg="3" HiddenWhen="GridItemHidden.SmAndDown"/>
 
                 <FluentGridItem sm="4" md="3" lg="3" Class="input-group-label">
-                    <FluentLabel Alignment="HorizontalAlignment.Right">@IdentityResources.IDS_USER_EDIT_LABEL_NICKNAME</FluentLabel>
+                    <FluentLabel
+                        Alignment="HorizontalAlignment.Right">@UserResources.IDS_PAGE_EDIT_LABEL_NICKNAME</FluentLabel>
                 </FluentGridItem>
                 <FluentGridItem sm="8" md="6" lg="6">
-                    <FluentTextField Placeholder="@IdentityResources.IDS_USER_EDIT_PLACEHOLDER_NICKNAME"
+                    <FluentTextField Placeholder="@UserResources.IDS_PAGE_EDIT_PLACEHOLDER_NICKNAME"
                                      Style="width: 100%"
-                                     @bind-Value="Model.Nickname" TextFieldType="TextFieldType.Text" />
+                                     @bind-Value="Model.Nickname" TextFieldType="TextFieldType.Text"/>
 
                 </FluentGridItem>
-                <FluentGridItem md="3" lg="3" HiddenWhen="GridItemHidden.SmAndDown" />
+                <FluentGridItem md="3" lg="3" HiddenWhen="GridItemHidden.SmAndDown"/>
 
                 <FluentGridItem sm="4" md="3" lg="3" Class="input-group-label">
-                    <FluentLabel Alignment="HorizontalAlignment.Right">@IdentityResources.IDS_USER_EDIT_LABEL_EMAIL</FluentLabel>
+                    <FluentLabel
+                        Alignment="HorizontalAlignment.Right">@UserResources.IDS_PAGE_EDIT_LABEL_EMAIL</FluentLabel>
                 </FluentGridItem>
                 <FluentGridItem md="8" lg="6" sm="6">
-                    <FluentTextField Placeholder="@IdentityResources.IDS_USER_EDIT_PLACEHOLDER_EMAIL"
+                    <FluentTextField Placeholder="@UserResources.IDS_PAGE_EDIT_PLACEHOLDER_EMAIL"
                                      Style="width: 100%"
-                                     @bind-Value="Model.Email" TextFieldType="TextFieldType.Email" />
+                                     @bind-Value="Model.Email" TextFieldType="TextFieldType.Email"/>
 
                 </FluentGridItem>
-                <FluentGridItem md="3" lg="3" HiddenWhen="GridItemHidden.SmAndDown" />
+                <FluentGridItem md="3" lg="3" HiddenWhen="GridItemHidden.SmAndDown"/>
 
                 <FluentGridItem sm="4" md="3" lg="3" Class="input-group-label">
-                    <FluentLabel Alignment="HorizontalAlignment.Right">@IdentityResources.IDS_USER_EDIT_LABEL_PHONE</FluentLabel>
+                    <FluentLabel
+                        Alignment="HorizontalAlignment.Right">@UserResources.IDS_PAGE_EDIT_LABEL_PHONE</FluentLabel>
                 </FluentGridItem>
                 <FluentGridItem md="8" lg="6" sm="6">
-                    <FluentTextField Placeholder="@IdentityResources.IDS_USER_EDIT_PLACEHOLDER_PHONE"
+                    <FluentTextField Placeholder="@UserResources.IDS_PAGE_EDIT_PLACEHOLDER_PHONE"
                                      Style="width: 100%"
-                                     @bind-Value="Model.Phone" TextFieldType="TextFieldType.Tel" />
+                                     @bind-Value="Model.Phone" TextFieldType="TextFieldType.Tel"/>
 
                 </FluentGridItem>
-                <FluentGridItem md="3" lg="3" HiddenWhen="GridItemHidden.SmAndDown" />
+                <FluentGridItem md="3" lg="3" HiddenWhen="GridItemHidden.SmAndDown"/>
 
-                <FluentGridItem sm="4" md="3" lg="3" />
+                <FluentGridItem sm="4" md="3" lg="3"/>
                 <FluentGridItem md="8" lg="6" sm="6">
-                    <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent">@CommonResources.IDS_BUTTON_TEXT_SUBMIT</FluentButton>
+                    <FluentButton Type="ButtonType.Submit"
+                                  Appearance="Appearance.Accent">@CommonResources.IDS_BUTTON_TEXT_SUBMIT</FluentButton>
                 </FluentGridItem>
-                <FluentGridItem md="3" lg="3" HiddenWhen="GridItemHidden.SmAndDown" />
+                <FluentGridItem md="3" lg="3" HiddenWhen="GridItemHidden.SmAndDown"/>
 
-                <FluentGridItem sm="4" md="3" lg="3" />
+                <FluentGridItem sm="4" md="3" lg="3"/>
                 <FluentGridItem>
-                    <FluentValidationSummary />
+                    <FluentValidationSummary/>
                 </FluentGridItem>
             </FluentGrid>
 
@@ -135,17 +141,17 @@
         public string Username { get; set; }
 
         [StringLength(64, MinimumLength = 2, ErrorMessageResourceType = typeof(UserResources),
-            ErrorMessageResourceName = nameof(UserResources.IDS_EDIT_ERROR_NICKNAME_LENGTH))]
+            ErrorMessageResourceName = nameof(UserResources.IDS_ERROR_NICKNAME_LENGTH))]
         public string Nickname { get; set; }
 
         [Required(AllowEmptyStrings = false, ErrorMessageResourceType = typeof(UserResources),
-          ErrorMessageResourceName = nameof(UserResources.IDS_EDIT_ERROR_EMAIL_REQUIRED))]
+            ErrorMessageResourceName = nameof(UserResources.IDS_ERROR_EMAIL_REQUIRED))]
         [RegularExpression(RegexPattern.EmailAddress, ErrorMessageResourceType = typeof(UserResources),
-         ErrorMessageResourceName = nameof(UserResources.IDS_EDIT_ERROR_EMAIL_FORMAT))]
+            ErrorMessageResourceName = nameof(UserResources.IDS_ERROR_EMAIL_FORMAT_INCORRECT))]
         public string Email { get; set; }
 
         [RegularExpression(RegexPattern.PhoneNumber, ErrorMessageResourceType = typeof(UserResources),
-            ErrorMessageResourceName = nameof(UserResources.IDS_EDIT_ERROR_PHONE_FORMAT))]
+            ErrorMessageResourceName = nameof(UserResources.IDS_ERROR_PHONE_FORMAT))]
         public string Phone { get; set; }
     }
 

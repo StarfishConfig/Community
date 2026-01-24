@@ -31,6 +31,18 @@
             <Generator>PublicResXFileCodeGenerator</Generator>
             <LastGenOutput>AuthResources.Designer.cs</LastGenOutput>
         </EmbeddedResource>
+        <EmbeddedResource Update="Properties\LayoutResources.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>LayoutResources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Properties\ProfileResources.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>ProfileResources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Properties\HomeResources.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>HomeResources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -63,6 +75,21 @@
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
             <DependentUpon>AuthResources.resx</DependentUpon>
+        </Compile>
+        <Compile Update="Properties\LayoutResources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>LayoutResources.resx</DependentUpon>
+        </Compile>
+        <Compile Update="Properties\ProfileResources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>ProfileResources.resx</DependentUpon>
+        </Compile>
+        <Compile Update="Properties\HomeResources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>HomeResources.resx</DependentUpon>
         </Compile>
     </ItemGroup>
 

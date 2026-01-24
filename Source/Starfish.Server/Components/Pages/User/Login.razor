@@ -13,7 +13,7 @@
 
 @attribute [AllowAnonymous]
 
-<PageTitle>@IdentityResources.IDS_LOGIN_PAGE_TITLE</PageTitle>
+<PageTitle>@UserResources.IDS_PAGE_LOGIN_TITLE</PageTitle>
 
 <div class="main" style="width: 468px; margin: 50px auto auto;">
 
@@ -74,9 +74,9 @@
                 </FluentBodyContent>
                 <div style="width: 100%; display: flex;align-items: center;">
                     <FluentButton Style="width: 100px;" Loading="Loading" Appearance="Appearance.Accent"
-                                  Type="ButtonType.Submit">@IdentityResources.IDS_LOGIN_PAGE_BUTTON_TEXT_LOGIN</FluentButton>
+                                  Type="ButtonType.Submit">@UserResources.IDS_PAGE_LOGIN_BUTTON_TEXT_SUBMIT</FluentButton>
                     <FluentSpacer />
-                    <a href="/password/reset">@IdentityResources.IDS_LOGIN_PAGE_LINK_TEXT_FORGOT_PASSWORD</a>
+                    <a href="/password/reset">@UserResources.IDS_PAGE_LOGIN_BUTTON_TEXT_FORGET_PASSWORD</a>
                 </div>
             </FluentEditForm>
         </FluentCard>

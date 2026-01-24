@@ -117,37 +117,151 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="IDS_ERROR_MESSAGE_NOT_FOUND" xml:space="preserve">
+  <data name="IDS_ERROR_NOT_FOUND" xml:space="preserve">
     <value>User not found: '{0}'.</value>
   </data>
-  <data name="IDS_ERROR_MESSAGE_EMAIL_FORMAT_INCORRECT" xml:space="preserve">
+  <data name="IDS_ERROR_EMAIL_FORMAT_INCORRECT" xml:space="preserve">
     <value>The email address is incorrect.</value>
   </data>
-  <data name="IDS_ERROR_MESSAGE_USERNAME_EXISTS" xml:space="preserve">
+  <data name="IDS_ERROR_USERNAME_EXISTS" xml:space="preserve">
     <value>The username '{0}' already exists. Please choose a different.</value>
   </data>
-  <data name="IDS_INDEX_PAGE_TITLE" xml:space="preserve">
+  <data name="IDS_PAGE_INDEX_TITLE" xml:space="preserve">
     <value>Users</value>
   </data>
-  <data name="IDS_DETAIL_PAGE_TITLE" xml:space="preserve">
+  <data name="IDS_PAGE_DETAIL_TITLE" xml:space="preserve">
     <value>User Information</value>
   </data>
-  <data name="IDS_INDEX_PAGE_COLUMN_USERNAME" xml:space="preserve">
-    <value>Username</value>
+  <data name="IDS_PAGE_INDEX_COLUMN_USERNAME" xml:space="preserve">
+      <value>User Name</value>
   </data>
-  <data name="IDS_INDEX_PAGE_COLUMN_NICKNAME" xml:space="preserve">
+  <data name="IDS_PAGE_INDEX_COLUMN_NICKNAME" xml:space="preserve">
     <value>Nick Name</value>
   </data>
-  <data name="IDS_INDEX_PAGE_COLUMN_EMAIL" xml:space="preserve">
+  <data name="IDS_PAGE_INDEX_COLUMN_EMAIL" xml:space="preserve">
     <value>Email Address</value>
   </data>
-  <data name="IDS_INDEX_PAGE_COLUMN_PHONE" xml:space="preserve">
+  <data name="IDS_PAGE_INDEX_COLUMN_PHONE" xml:space="preserve">
     <value>Phone Number</value>
   </data>
-  <data name="IDS_INDEX_PAGE_BUTTON_TEXT_CREATE" xml:space="preserve">
+  <data name="IDS_PAGE_INDEX_BUTTON_TEXT_CREATE" xml:space="preserve">
     <value>New User</value>
   </data>
-  <data name="IDS_INDEX_PAGE_COLUMN_LOCKOUT" xml:space="preserve">
+  <data name="IDS_PAGE_INDEX_COLUMN_LOCKOUT" xml:space="preserve">
     <value>Lockout End</value>
+  </data>
+  <data name="IDS_PAGE_DETAIL_LABEL_USERNAME" xml:space="preserve">
+      <value>User Name</value>
+  </data>
+  <data name="IDS_PAGE_DETAIL_LABEL_NICKNAME" xml:space="preserve">
+      <value>Nick Name</value>
+  </data>
+  <data name="IDS_PAGE_DETAIL_LABEL_EMAIL" xml:space="preserve">
+      <value>Email Address</value>
+  </data>
+  <data name="IDS_PAGE_DETAIL_LABEL_PHONE" xml:space="preserve">
+      <value>Phone Number</value>
+  </data>
+  <data name="IDS_PAGE_DETAIL_LABEL_CREATE_TIME" xml:space="preserve">
+      <value>Created At</value>
+  </data>
+  <data name="IDS_PAGE_DETAIL_LABEL_LOCKOUT_END" xml:space="preserve">
+      <value>Locked Until</value>
+  </data>
+  <data name="IDS_PAGE_DETAIL_LABEL_FAILED_COUNT" xml:space="preserve">
+      <value>Access Failure</value>
+  </data>
+  <data name="IDS_PAGE_DETAIL_LABEL_UPDATE_TIME" xml:space="preserve">
+      <value>Last Update</value>
+  </data>
+  <data name="IDS_ERROR_EMAIL_REQUIRED" xml:space="preserve">
+      <value>The email address can not be empty.</value>
+  </data>
+  <data name="IDS_ERROR_USERNAME_REQUIRED" xml:space="preserve">
+      <value>The username can not be empty.</value>
+  </data>
+  <data name="IDS_ERROR_NICKNAME_LENGTH" xml:space="preserve">
+      <value>The nickname must be {2} to {1} characters.</value>
+  </data>
+  <data name="IDS_ERROR_PHONE_FORMAT" xml:space="preserve">
+      <value>The phone number is incorrect.</value>
+  </data>
+  <data name="IDS_PAGE_DETAIL_LABEL_LAST_LOGIN_TIME" xml:space="preserve">
+      <value>Last Login At</value>
+  </data>
+  <data name="IDS_PAGE_DETAIL_LABEL_LAST_LOGIN_IP" xml:space="preserve">
+      <value>Last Login IP</value>
+  </data>
+  <data name="IDS_MESSAGE_RESTPWD_COMFIRMATION" xml:space="preserve">
+      <value>Are you sure want to reset password for user '{0}'?</value>
+  </data>
+  <data name="IDS_MESSAGE_RESTPWD_SUCCEED" xml:space="preserve">
+      <value>The password has been reset to the a new password '{0}'.</value>
+  </data>
+  <data name="IDS_PAGE_EDIT_TITLE_CREATE" xml:space="preserve">
+      <value>New User</value>
+  </data>
+  <data name="IDS_PAGE_EDIT_LABEL_USERNAME" xml:space="preserve">
+      <value>User Name</value>
+  </data>
+  <data name="IDS_PAGE_EDIT_LABEL_NICKNAME" xml:space="preserve">
+      <value>Nick Name</value>
+  </data>
+  <data name="IDS_PAGE_EDIT_LABEL_PASSWORD" xml:space="preserve">
+      <value>Password</value>
+  </data>
+  <data name="IDS_PAGE_EDIT_LABEL_EMAIL" xml:space="preserve">
+      <value>Email Address</value>
+  </data>
+  <data name="IDS_PAGE_EDIT_LABEL_PHONE" xml:space="preserve">
+      <value>Phone Number</value>
+  </data>
+  <data name="IDS_PAGE_EDIT_PLACEHOLDER_USERNAME" xml:space="preserve">
+      <value>The unique user name.</value>
+  </data>
+  <data name="IDS_PAGE_EDIT_PLACEHOLDER_NICKNAME" xml:space="preserve">
+      <value>The user display name.</value>
+  </data>
+  <data name="IDS_PAGE_EDIT_PLACEHOLDER_EMAIL" xml:space="preserve">
+      <value>yourname@sample.com</value>
+  </data>
+  <data name="IDS_PAGE_EDIT_PLACEHOLDER_PHONE" xml:space="preserve">
+      <value>e.g. 130xxxxxxxx</value>
+  </data>
+  <data name="IDS_PAGE_EDIT_PLACEHOLDER_PASSWORD" xml:space="preserve">
+      <value>Password to login.</value>
+  </data>
+  <data name="IDS_PAGE_EDIT_TITLE_UPDATE" xml:space="preserve">
+      <value>Edit User</value>
+  </data>
+  <data name="IDS_PAGE_LOGIN_TITLE" xml:space="preserve">
+      <value>Login</value>
+  </data>
+  <data name="IDS_PAGE_LOGIN_BUTTON_TEXT_SUBMIT" xml:space="preserve">
+      <value>Login</value>
+  </data>
+  <data name="IDS_PAGE_LOGIN_BUTTON_TEXT_FORGET_PASSWORD" xml:space="preserve">
+      <value>Forget password?</value>
+  </data>
+  <data name="IDS_PAGE_RESET_PASSWORD_TITLE" xml:space="preserve">
+      <value>Reset Password</value>
+  </data>
+  <data name="IDS_PAGE_RESET_PASSWORD_BUTTON_TEXT_BACK_LOGIN" xml:space="preserve">
+      <value>Back to login</value>
+  </data>
+  <data name="IDS_PAGE_RESET_PASSWORD_BUTTON_TEXT_SEND_OTP" xml:space="preserve">
+      <value>Send</value>
+  </data>
+  <data name="IDS_PAGE_RESET_PASSWORD_BUTTON_TEXT_COUNTING" xml:space="preserve">
+      <value>{0} seconds</value>
+  </data>
+  <data name="IDS_RESET_PASSWORD_PLACEHOLDER_PASSWORD" xml:space="preserve">
+      <value>The new password.</value>
+  </data>
+  <data name="IDS_PAGE_RESET_PASSWORD_PLACEHOLDER_VERIFY_CODE" xml:space="preserve">
+      <value>Verify code in 6 digits</value>
+  </data>
+  <data name="IDS_PAGE_RESET_PASSWORD_PLACEHOLDER_EMAIL" xml:space="preserve">
+      <value>The registered email address.</value>
   </data>
 </root>

@@ -31,6 +31,16 @@ public class UserDetailDto
 	public string Nickname { get; set; }
 
 	/// <summary>
+	/// Gets or sets a value indicating whether the user is enabled.
+	/// </summary>
+	public int AccessFailedCount { get; set; }
+
+	/// <summary>
+	/// Gets or sets a value indicating whether the user is enabled.
+	/// </summary>
+	public DateTime? LockoutEnd { get; set; }
+
+	/// <summary>
 	/// Gets or sets the time when the user was created.
 	/// </summary>
 	public DateTime CreatedAt { get; set; }
@@ -44,6 +54,11 @@ public class UserDetailDto
 	/// Gets or sets the time when the user last logged in.
 	/// </summary>
 	public DateTime? LastLoginAt { get; set; }
+
+	/// <summary>
+	/// Gets or sets the IP address from which the user last logged in.
+	/// </summary>
+	public string LastLoginIp { get; set; }
 
 	/// <summary>
 	/// Gets or sets the time when the password was last changed.

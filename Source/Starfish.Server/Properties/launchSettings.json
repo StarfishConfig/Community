@@ -14,9 +14,13 @@
             "commandName": "Project",
             "dotnetRunMessages": true,
             "launchBrowser": true,
-            "applicationUrl": "https://starfish.dev.localhost:7141;http://starfish.dev.localhost:5131",
+            "applicationUrl": "https://localhost:7141;http://starfish.dev.localhost:5131",
             "environmentVariables": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "COMPLUS_ZapDisable": "1",
+                "COMPLUS_JitMinOpts": "1",
+                "COMPlus_TieredCompilation": "0",
+                "COMPLUS_ReadyToRun": "0"
             }
         }
     }
