@@ -129,7 +129,12 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 
 			@events.Add(new UserAuthSuccessEvent
 			{
-				Source = "Bearer",
+				Source = authenticationType switch
+				{
+					"Bearer" => "Api",
+					"Cookies" or "Cookie" => "Web",
+					_ => authenticationType
+				},
 				GrantType = data.GrantType,
 				UserId = user.Id,
 				Username = user.Username,

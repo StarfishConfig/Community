@@ -14,14 +14,22 @@ internal class UserApplicationService : BaseApplicationService, IUserApplication
 	{
 		var request = new UserDetailQuery(id);
 		return Bus.CallAsync(request, cancellationToken)
-		          .ContinueWith(task => TypeAdapter.ProjectedAs<UserDetailDto>(task.Result), cancellationToken);
+				  .ContinueWith(task =>
+				  {
+					  task.WaitAndUnwrapException(cancellationToken);
+					  return TypeAdapter.ProjectedAs<UserDetailDto>(task.Result);
+				  }, cancellationToken);
 	}
 
 	public Task<List<UserListDto>> SearchAsync(string keywork, bool? locked, int skip, int size, CancellationToken cancellationToken = default)
 	{
 		var request = new UserSearchQuery(keywork, locked, skip, size);
 		return Bus.CallAsync(request, cancellationToken)
-		          .ContinueWith(task => TypeAdapter.ProjectedAs<List<UserListDto>>(task.Result), cancellationToken);
+				  .ContinueWith(task =>
+				  {
+					  task.WaitAndUnwrapException(cancellationToken);
+					  return TypeAdapter.ProjectedAs<List<UserListDto>>(task.Result);
+				  }, cancellationToken);
 	}
 
 	public Task<int> CountAsync(string keywork, bool? locked, CancellationToken cancellationToken = default)
@@ -34,14 +42,14 @@ internal class UserApplicationService : BaseApplicationService, IUserApplication
 	{
 		var request = new UserSearchQuery(keyword, null, 0, size);
 		return Bus.CallAsync(request, cancellationToken)
-		          .ContinueWith(task => TypeAdapter.ProjectedAs<List<UserLookupDto>>(task.Result), cancellationToken);
+				  .ContinueWith(task => TypeAdapter.ProjectedAs<List<UserLookupDto>>(task.Result), cancellationToken);
 	}
 
 	public Task<UserProfileDto> GetProfileAsync(CancellationToken cancellationToken = default)
 	{
 		var request = new UserDetailQuery(User.UserId);
 		return Bus.CallAsync(request, cancellationToken)
-		          .ContinueWith(task => TypeAdapter.ProjectedAs<UserProfileDto>(task.Result), cancellationToken);
+				  .ContinueWith(task => TypeAdapter.ProjectedAs<UserProfileDto>(task.Result), cancellationToken);
 	}
 
 	public Task CreateAsync(UserCreateDto data, CancellationToken cancellationToken = default)
@@ -92,7 +100,7 @@ internal class UserApplicationService : BaseApplicationService, IUserApplication
 	public async Task<string> ResetPasswordAsync(string id, CancellationToken cancellationToken = default)
 	{
 		const PasswordComplexity complexity = PasswordComplexity.ContainsUppercase | PasswordComplexity.ContainsLowercase |
-		                                      PasswordComplexity.ContainsDigit | PasswordComplexity.ContainsSymbol;
+											  PasswordComplexity.ContainsDigit | PasswordComplexity.ContainsSymbol;
 		var password = PasswordGenerator.GeneratePassword(complexity, 12, 24);
 		var command = new UserPasswordResetCommand(id, password)
 		{

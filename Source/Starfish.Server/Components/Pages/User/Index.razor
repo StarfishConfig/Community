@@ -3,6 +3,8 @@
 @inject IUserApplicationService Service
 @inject IDialogService DialogService
 
+@attribute [Authorize(Roles = RoleName.Admin)]
+
 <PageTitle>@UserResources.IDS_PAGE_INDEX_TITLE</PageTitle>
 
 <FluentStack VerticalGap="16" Orientation="Orientation.Vertical" Style="width: 100%">
@@ -80,8 +82,6 @@
                     <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center">
                         <FluentButton
                             OnClick="@(() => OnEditClicked(context.Id))">@CommonResources.IDS_BUTTON_TEXT_EDIT</FluentButton>
-                        @* <FluentButton OnClick="@(() => OnResetPasswordClicked(context.Id, context.Username))" *@
-                        @*               Appearance="Appearance.Lightweight">@IdentityResources.IDS_USER_INDEX_BUTTON_TEXT_RESETPWD</FluentButton> *@
                     </FluentStack>
                 </TemplateColumn>
             </FluentDataGrid>

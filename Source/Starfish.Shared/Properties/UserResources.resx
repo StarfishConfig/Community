@@ -133,7 +133,7 @@
     <value>User Information</value>
   </data>
   <data name="IDS_PAGE_INDEX_COLUMN_USERNAME" xml:space="preserve">
-      <value>User Name</value>
+    <value>User Name</value>
   </data>
   <data name="IDS_PAGE_INDEX_COLUMN_NICKNAME" xml:space="preserve">
     <value>Nick Name</value>
@@ -151,123 +151,228 @@
     <value>Lockout End</value>
   </data>
   <data name="IDS_PAGE_DETAIL_LABEL_USERNAME" xml:space="preserve">
-      <value>User Name</value>
+    <value>User Name</value>
   </data>
   <data name="IDS_PAGE_DETAIL_LABEL_NICKNAME" xml:space="preserve">
-      <value>Nick Name</value>
+    <value>Nick Name</value>
   </data>
   <data name="IDS_PAGE_DETAIL_LABEL_EMAIL" xml:space="preserve">
-      <value>Email Address</value>
+    <value>Email Address</value>
   </data>
   <data name="IDS_PAGE_DETAIL_LABEL_PHONE" xml:space="preserve">
-      <value>Phone Number</value>
+    <value>Phone Number</value>
   </data>
   <data name="IDS_PAGE_DETAIL_LABEL_CREATE_TIME" xml:space="preserve">
-      <value>Created At</value>
+    <value>Created At</value>
   </data>
   <data name="IDS_PAGE_DETAIL_LABEL_LOCKOUT_END" xml:space="preserve">
-      <value>Locked Until</value>
+    <value>Locked Until</value>
   </data>
   <data name="IDS_PAGE_DETAIL_LABEL_FAILED_COUNT" xml:space="preserve">
-      <value>Access Failure</value>
+    <value>Access Failure</value>
   </data>
   <data name="IDS_PAGE_DETAIL_LABEL_UPDATE_TIME" xml:space="preserve">
-      <value>Last Update</value>
+    <value>Last Update</value>
   </data>
   <data name="IDS_ERROR_EMAIL_REQUIRED" xml:space="preserve">
-      <value>The email address can not be empty.</value>
+    <value>The email address can not be empty.</value>
   </data>
   <data name="IDS_ERROR_USERNAME_REQUIRED" xml:space="preserve">
-      <value>The username can not be empty.</value>
+    <value>The username can not be empty.</value>
   </data>
   <data name="IDS_ERROR_NICKNAME_LENGTH" xml:space="preserve">
-      <value>The nickname must be {2} to {1} characters.</value>
+    <value>The nickname must be {2} to {1} characters.</value>
   </data>
   <data name="IDS_ERROR_PHONE_FORMAT" xml:space="preserve">
-      <value>The phone number is incorrect.</value>
+    <value>The phone number is incorrect.</value>
   </data>
   <data name="IDS_PAGE_DETAIL_LABEL_LAST_LOGIN_TIME" xml:space="preserve">
-      <value>Last Login At</value>
+    <value>Last Login At</value>
   </data>
   <data name="IDS_PAGE_DETAIL_LABEL_LAST_LOGIN_IP" xml:space="preserve">
-      <value>Last Login IP</value>
+    <value>Last Login IP</value>
   </data>
   <data name="IDS_MESSAGE_RESTPWD_COMFIRMATION" xml:space="preserve">
-      <value>Are you sure want to reset password for user '{0}'?</value>
+    <value>Are you sure want to reset password for user '{0}'?</value>
   </data>
   <data name="IDS_MESSAGE_RESTPWD_SUCCEED" xml:space="preserve">
-      <value>The password has been reset to the a new password '{0}'.</value>
+    <value>The password has been reset to the a new password '{0}'.</value>
   </data>
   <data name="IDS_PAGE_EDIT_TITLE_CREATE" xml:space="preserve">
-      <value>New User</value>
+    <value>New User</value>
   </data>
   <data name="IDS_PAGE_EDIT_LABEL_USERNAME" xml:space="preserve">
-      <value>User Name</value>
+    <value>User Name</value>
   </data>
   <data name="IDS_PAGE_EDIT_LABEL_NICKNAME" xml:space="preserve">
-      <value>Nick Name</value>
+    <value>Nick Name</value>
   </data>
   <data name="IDS_PAGE_EDIT_LABEL_PASSWORD" xml:space="preserve">
-      <value>Password</value>
+    <value>Password</value>
   </data>
   <data name="IDS_PAGE_EDIT_LABEL_EMAIL" xml:space="preserve">
-      <value>Email Address</value>
+    <value>Email Address</value>
   </data>
   <data name="IDS_PAGE_EDIT_LABEL_PHONE" xml:space="preserve">
-      <value>Phone Number</value>
+    <value>Phone Number</value>
   </data>
   <data name="IDS_PAGE_EDIT_PLACEHOLDER_USERNAME" xml:space="preserve">
-      <value>The unique user name.</value>
+    <value>The unique user name.</value>
   </data>
   <data name="IDS_PAGE_EDIT_PLACEHOLDER_NICKNAME" xml:space="preserve">
-      <value>The user display name.</value>
+    <value>The user display name.</value>
   </data>
   <data name="IDS_PAGE_EDIT_PLACEHOLDER_EMAIL" xml:space="preserve">
-      <value>yourname@sample.com</value>
+    <value>yourname@sample.com</value>
   </data>
   <data name="IDS_PAGE_EDIT_PLACEHOLDER_PHONE" xml:space="preserve">
-      <value>e.g. 130xxxxxxxx</value>
+    <value>e.g. 130xxxxxxxx</value>
   </data>
   <data name="IDS_PAGE_EDIT_PLACEHOLDER_PASSWORD" xml:space="preserve">
-      <value>Password to login.</value>
+    <value>Password to login.</value>
   </data>
   <data name="IDS_PAGE_EDIT_TITLE_UPDATE" xml:space="preserve">
-      <value>Edit User</value>
+    <value>Edit User</value>
   </data>
   <data name="IDS_PAGE_LOGIN_TITLE" xml:space="preserve">
-      <value>Login</value>
+    <value>Login</value>
   </data>
   <data name="IDS_PAGE_LOGIN_BUTTON_TEXT_SUBMIT" xml:space="preserve">
-      <value>Login</value>
+    <value>Login</value>
   </data>
   <data name="IDS_PAGE_LOGIN_BUTTON_TEXT_FORGET_PASSWORD" xml:space="preserve">
-      <value>Forget password?</value>
+    <value>Forget password?</value>
   </data>
   <data name="IDS_PAGE_RESET_PASSWORD_TITLE" xml:space="preserve">
-      <value>Reset Password</value>
+    <value>Reset Password</value>
   </data>
   <data name="IDS_PAGE_RESET_PASSWORD_BUTTON_TEXT_BACK_LOGIN" xml:space="preserve">
-      <value>Back to login</value>
+    <value>Back to login</value>
   </data>
   <data name="IDS_PAGE_RESET_PASSWORD_BUTTON_TEXT_SEND_OTP" xml:space="preserve">
-      <value>Send</value>
+    <value>Send</value>
   </data>
   <data name="IDS_PAGE_RESET_PASSWORD_BUTTON_TEXT_COUNTING" xml:space="preserve">
-      <value>{0} seconds</value>
+    <value>{0} seconds</value>
   </data>
   <data name="IDS_RESET_PASSWORD_PLACEHOLDER_PASSWORD" xml:space="preserve">
-      <value>The new password.</value>
+    <value>The new password.</value>
   </data>
   <data name="IDS_PAGE_RESET_PASSWORD_PLACEHOLDER_VERIFY_CODE" xml:space="preserve">
-      <value>Verify code in 6 digits</value>
+    <value>Verify code in 6 digits</value>
   </data>
   <data name="IDS_PAGE_RESET_PASSWORD_PLACEHOLDER_EMAIL" xml:space="preserve">
-      <value>The registered email address.</value>
+    <value>The registered email address.</value>
   </data>
   <data name="IDS_PAGE_PROFILE_TITLE" xml:space="preserve">
-      <value>Profile</value>
+    <value>Profile</value>
   </data>
   <data name="IDS_PAGE_DETAIL_BUTTON_TEXT_RESET_PASSWORD" xml:space="preserve">
-      <value>Reset Password</value>
+    <value>Reset Password</value>
+  </data>
+  <data name="IDS_PAGE_DETAIL_PANEL_HEADER_INFO" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="IDS_PAGE_DETAIL_PANEL_HEADER_AUTHLOG" xml:space="preserve">
+    <value>Login logs</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_COLUMN_GRANT_TYPE" xml:space="preserve">
+    <value>Grant Type</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_COLUMN_SOURCE" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_COLUMN_OS_PLATFORM" xml:space="preserve">
+    <value>OS Platform</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_COLUMN_TIMESTAMP" xml:space="preserve">
+    <value>Request Time</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_COLUMN_IP_ADDRESS" xml:space="preserve">
+    <value>IP Address</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_COLUMN_REQUEST_ID" xml:space="preserve">
+    <value>Request ID</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_COLUMN_RESULT" xml:space="preserve">
+    <value>Result</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_CELL_TEXT_RESULT_SUCCESS" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_CELL_TEXT_RESULT_FAILURE" xml:space="preserve">
+    <value>Failure</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_CELL_TEXT_GRANT_TYPE_USERNAME" xml:space="preserve">
+    <value>User Name/Password</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_CELL_TEXT_GRANT_TYPE_REFRESH_TOKEN" xml:space="preserve">
+    <value>Refresh Token</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_CELL_TEXT_GRANT_TYPE_EMAIL" xml:space="preserve">
+    <value>Email Verify Code</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_CELL_TEXT_GRANT_TYPE_PHONE" xml:space="preserve">
+    <value>SMS Verify Code</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_CELL_TEXT_GRANT_TYPE_GITHUB" xml:space="preserve">
+    <value>Github Account</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_CELL_TEXT_GRANT_TYPE_GOOGLE" xml:space="preserve">
+    <value>Google Account</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_CELL_TEXT_GRANT_TYPE_MICROSOFT" xml:space="preserve">
+    <value>Microsoft Account</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_CELL_TEXT_GRANT_TYPE_FACEBOOK" xml:space="preserve">
+    <value>Facebook Account</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_OPTION_RESULT_SUCCESS" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_OPTION_RESULT_FAILURE" xml:space="preserve">
+    <value>Failure</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_OPTION_SOURCE_WEB" xml:space="preserve">
+    <value>Web</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_OPTION_SOURCE_API" xml:space="preserve">
+    <value>Api</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_OPTION_GRANT_TYPE_USERNAME" xml:space="preserve">
+    <value>User Name</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_OPTION_GRANT_TYPE_EMAIL" xml:space="preserve">
+    <value>Email Verify Code</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_OPTION_GRANT_TYPE_PHONE" xml:space="preserve">
+    <value>SMS Verify Code</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_OPTION_GRANT_TYPE_GITHUB" xml:space="preserve">
+    <value>Github Account</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_OPTION_GRANT_TYPE_GOOGLE" xml:space="preserve">
+    <value>Google Account</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_OPTION_GRANT_TYPE_MICROSOFT" xml:space="preserve">
+    <value>Microsoft Account</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_OPTION_GRANT_TYPE_FACEBOOK" xml:space="preserve">
+    <value>Facebook Account</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_OPTION_GRANT_TYPE_REFRESH_TOKEN" xml:space="preserve">
+    <value>Refresh Token</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_LABEL_GRANT_TYPE" xml:space="preserve">
+    <value>Grant Type</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_LABEL_SOURCE" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_LABEL_TIME_AFTER" xml:space="preserve">
+    <value>Date From</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_LABEL_TIME_BEFORE" xml:space="preserve">
+    <value>Date To</value>
   </data>
 </root>

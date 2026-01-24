@@ -141,6 +141,7 @@ internal sealed class Authlog : EditableObjectBase<Authlog, long>
 			AppName = AppName, 
 			AppVersion = AppVersion, 
 			OsPlatform = OsPlatform,
+			Source = Source,
 			Success = Success,
 			Remark = Remark,
 			Timestamp = Timestamp
