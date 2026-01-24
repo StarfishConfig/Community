@@ -58,7 +58,7 @@ internal class AuthlogQueryHandler : IHandler<AuthlogSearchQuery, IList<AuthlogL
 
 	private Expression<Func<Authlog, bool>> ApplyCriteria(AuthlogCriteriaModel criteria)
 	{
-		if (_user.IsInRole(RoleName.Admin) != true)
+		if (!_user.IsInRoles(RoleName.Admin))
 		{
 			criteria.Username = _user.Username;
 		}

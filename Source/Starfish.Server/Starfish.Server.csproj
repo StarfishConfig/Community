@@ -45,11 +45,6 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>Resources.resx</DependentUpon>
         </Compile>
-        <Compile Update="Properties\ProfileResources.Designer.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ProfileResources.resx</DependentUpon>
-        </Compile>
         <Compile Update="Properties\SystemResources.Designer.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
@@ -61,10 +56,6 @@
         <EmbeddedResource Update="Properties\Resources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Properties\ProfileResources.resx">
-            <Generator>ResXFileCodeGenerator</Generator>
-            <LastGenOutput>ProfileResources.Designer.cs</LastGenOutput>
         </EmbeddedResource>
         <EmbeddedResource Update="Properties\SystemResources.resx">
             <Generator>ResXFileCodeGenerator</Generator>

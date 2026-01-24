@@ -1,7 +1,9 @@
 ﻿@page "/users/{Id}"
+@using Nerosoft.Starfish.Shared
 
 @inject IUserApplicationService Service
 @inject NavigationManager Navigation
+@inject IDialogService DialogService
 
 <PageTitle>@UserResources.IDS_PAGE_DETAIL_TITLE</PageTitle>
 
@@ -53,7 +55,7 @@
                                              Class="input-disabled"/>
                         </FluentGridItem>
                         <FluentGridItem md="6" sm="12">
-                            <FluentTextField Value="@Data?.LockoutEnd?.ToShortDateString()"
+                            <FluentTextField Value="@Data?.LockoutEnd.ToString()"
                                              Label="@UserResources.IDS_PAGE_DETAIL_LABEL_LOCKOUT_END"
                                              Style="width: 100%;" Disabled="true"
                                              Class="input-disabled"/>
@@ -85,22 +87,31 @@
                                              Class="input-disabled"/>
                         </FluentGridItem>
 
-                        @* <FluentGridItem md="12">
-                            <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End">
+                        @if (Identity.IsInRoles(RoleName.Admin) && Data != null)
+                        {
+                            <FluentGridItem md="12">
+                                <FluentStack Orientation="Orientation.Horizontal"
+                                             HorizontalAlignment="HorizontalAlignment.End">
 
-                                <FluentButton IconStart="@(new Icons.Regular.Size16.Add())"
-                                              Appearance="Appearance.Lightweight"
-                                              OnClick="@OnAppendClicked">
-                                    @TeamResources.IDS_DETAIL_BUTTON_TEXT_APPEND_MEMBER
-                                </FluentButton>
-                                <FluentButton IconStart="@(new Icons.Regular.Size16.Delete())"
-                                              Appearance="Appearance.Stealth"
-                                              Loading="@Loading"
-                                              OnClick="@OnSearchClicked">
-                                    @CommonResources.IDS_BUTTON_TEXT_DELETE
-                                </FluentButton>
-                            </FluentStack>
-                        </FluentGridItem> *@
+                                    <FluentButton IconStart="@(new Icons.Regular.Size16.Add())"
+                                                  Appearance="Appearance.Lightweight"
+                                                  OnClick="@OnResetPasswordClicked">
+
+                                        @UserResources.IDS_PAGE_DETAIL_BUTTON_TEXT_RESET_PASSWORD
+                                    </FluentButton>
+                                    @*
+                                    <FluentButton IconStart="@(new Icons.Regular.Size16.Delete())"
+                                                  Appearance="Appearance.Stealth"
+                                                  Loading="@Loading"
+                                                  OnClick="@OnSearchClicked">
+
+                                        @CommonResources.IDS_BUTTON_TEXT_DELETE
+                                    </FluentButton>
+                                    *@
+                                </FluentStack>
+                            </FluentGridItem>
+                        }
+
                     </FluentGrid>
 
                 </FluentAccordionItem>
@@ -119,6 +130,9 @@
     [Parameter]
     public string Id { get; set; }
 
+    [CascadingParameter]
+    private UserPrincipal Identity { get; set; }
+
     private UserDetailDto Data { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -130,6 +144,21 @@
         }
 
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnResetPasswordClicked(MouseEventArgs args)
+    {
+        var message = string.Format(UserResources.IDS_MESSAGE_RESTPWD_COMFIRMATION, Data.Username);
+
+        var dialog = await DialogService.ShowConfirmationAsync(message, CommonResources.IDS_COMMON_YES, CommonResources.IDS_COMMON_NO, CommonResources.IDS_DIALOG_TITLE_CONFIRM);
+
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            var password = await Service.ResetPasswordAsync(Id);
+            await DialogService.ShowSuccessAsync(string.Format(UserResources.IDS_MESSAGE_RESTPWD_SUCCEED, password), CommonResources.IDS_DIALOG_TITLE_NOTICE);
+        }
     }
 
 }

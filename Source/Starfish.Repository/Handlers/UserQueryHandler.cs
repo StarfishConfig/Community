@@ -61,6 +61,7 @@ internal class UserQueryHandler : IHandler<UserPasswordVerifyRequest, bool>,
 		if (authlog != null)
 		{
 			model.LastLoginAt = authlog.Timestamp;
+			model.LastLoginIp = authlog.IpAddress;
 		}
 
 		return model;

@@ -161,20 +161,4 @@
 
         await InvokeAsync(StateHasChanged);
     }
-
-    private async Task OnResetPasswordClicked(string id, string username)
-    {
-        var message = string.Format(UserResources.IDS_MESSAGE_RESTPWD_COMFIRMATION, username);
-
-        var dialog = await DialogService.ShowConfirmationAsync(message, CommonResources.IDS_COMMON_YES, CommonResources.IDS_COMMON_NO, CommonResources.IDS_DIALOG_TITLE_CONFIRM);
-
-        var result = await dialog.Result;
-
-        if (!result.Cancelled)
-        {
-            var password = await Service.ResetPasswordAsync(id);
-            await DialogService.ShowSuccessAsync(string.Format(UserResources.IDS_MESSAGE_RESTPWD_SUCCEED, password), CommonResources.IDS_DIALOG_TITLE_NOTICE);
-        }
-    }
-
 }

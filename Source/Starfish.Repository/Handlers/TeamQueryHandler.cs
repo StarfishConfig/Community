@@ -47,7 +47,7 @@ internal class TeamQueryHandler : IHandler<TeamSearchQuery, IList<TeamListModel>
 
 		var predicate = PredicateBuilder.True<TeamListModel>();
 
-		if (!_user.IsInRoles("sa"))
+		if (!_user.IsInRoles(RoleName.Admin))
 		{
 			var memberTeamIds = _context.Set<TeamMember>()
 			                            .AsNoTracking()

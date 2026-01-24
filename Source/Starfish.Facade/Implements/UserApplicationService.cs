@@ -12,7 +12,7 @@ internal class UserApplicationService : BaseApplicationService, IUserApplication
 {
 	public Task<UserDetailDto> GetAsync(string id, CancellationToken cancellationToken = default)
 	{
-		var request = new UserDetailQuery(User.UserId);
+		var request = new UserDetailQuery(id);
 		return Bus.CallAsync(request, cancellationToken)
 		          .ContinueWith(task => TypeAdapter.ProjectedAs<UserDetailDto>(task.Result), cancellationToken);
 	}
