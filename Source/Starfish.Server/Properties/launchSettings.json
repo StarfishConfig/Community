@@ -1,5 +1,5 @@
 {
-  "$schema": "https://json.schemastore.org/launchsettings.json",
+    "$schema": "https://json.schemastore.org/launchsettings.json",
     "profiles": {
         "http": {
             "commandName": "Project",
@@ -14,7 +14,16 @@
             "commandName": "Project",
             "dotnetRunMessages": true,
             "launchBrowser": true,
-            "applicationUrl": "https://localhost:7141;http://starfish.dev.localhost:5131",
+            "applicationUrl": "https://starfish.dev.localhost:7141;http://starfish.dev.localhost:5131",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        "rider": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "applicationUrl": "https://localhost:7141;http://localhost:5131",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "COMPLUS_ZapDisable": "1",
@@ -24,4 +33,4 @@
             }
         }
     }
-  }
+}
