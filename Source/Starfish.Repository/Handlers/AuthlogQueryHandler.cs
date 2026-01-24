@@ -75,9 +75,9 @@ internal class AuthlogQueryHandler : IHandler<AuthlogSearchQuery, IList<AuthlogL
 			specification &= AuthlogSpecification.UsernameEquals(criteria.Username);
 		}
 
-		if (criteria.Success is not null)
+		if (criteria.Result is not null)
 		{
-			specification &= AuthlogSpecification.ResultEquals(criteria.Success.Value);
+			specification &= AuthlogSpecification.ResultEquals(criteria.Result.Value);
 		}
 
 		if (criteria.From is not null)

@@ -131,8 +131,8 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 			{
 				Source = authenticationType switch
 				{
-					"Bearer" => "Api",
-					"Cookies" or "Cookie" => "Web",
+					"Bearer" => "api",
+					"Cookies" or "Cookie" => "web",
 					_ => authenticationType
 				},
 				GrantType = data.GrantType,

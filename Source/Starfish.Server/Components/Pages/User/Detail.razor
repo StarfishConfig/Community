@@ -135,17 +135,19 @@
                                           TOption="Option<string>" Items="@OptionsSource"
                                           OptionText="@(i => i.Text)"
                                           OptionValue="@(i => i.Value)"
-                                          @bind-Value="Criteria.Source" />
+                                          @bind-SelectedOption="SelectedOptionSource" />
                         </FluentGridItem>
                         <FluentGridItem xs="12" sm="6" md="3">
                             <FluentDatePicker Appearance="FluentInputAppearance.Filled"
                                               Label="@UserResources.IDS_PAGE_AUTHLOG_LABEL_TIME_AFTER"
-                                              @bind-Value="Criteria.From" />
+                                              @bind-Value="Criteria.From"
+                                              DisabledDateFunc="@(date=> date > Criteria.To)" />
                         </FluentGridItem>
                         <FluentGridItem xs="12" sm="6" md="3">
                             <FluentDatePicker Appearance="FluentInputAppearance.Filled"
                                               Label="@UserResources.IDS_PAGE_AUTHLOG_LABEL_TIME_BEFORE"
-                                              @bind-Value="Criteria.To" />
+                                              @bind-Value="Criteria.To"
+                                              DisabledDateFunc="@(date=> date < Criteria.From || date > DateTime.Today)" />
                         </FluentGridItem>
                         <FluentGridItem xs="12" sm="12" md="12">
                             <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End">
@@ -179,8 +181,18 @@
                                 <span>@UserResources.ResourceManager.GetString($"IDS_PAGE_AUTHLOG_CELL_TEXT_GRANT_TYPE_{context.GrantType.ToUpper()}")</span>
                             </div>
                         </TemplateColumn>
-                        <PropertyColumn Title="@UserResources.IDS_PAGE_AUTHLOG_COLUMN_SOURCE"
-                                        Property="@(p => p.Source)" />
+                        <TemplateColumn Title="@UserResources.IDS_PAGE_AUTHLOG_COLUMN_SOURCE">
+                            <div style="display: flex;align-items: center">
+                                @if (!string.IsNullOrEmpty(context.Source))
+                                {
+                                    <span>@UserResources.ResourceManager.GetString($"IDS_PAGE_AUTHLOG_CELL_TEXT_SOURCE_{context.Source.ToUpper()}")</span>
+                                }
+                                else
+                                {
+                                    <span>--</span>
+                                }
+                            </div>
+                        </TemplateColumn>
                         <PropertyColumn Title="@UserResources.IDS_PAGE_AUTHLOG_COLUMN_TIMESTAMP"
                                         Property="@(p => p.Timestamp)" Format="yyyy-MM-dd HH:mm:ss" />
                         <PropertyColumn Title="@UserResources.IDS_PAGE_AUTHLOG_COLUMN_IP_ADDRESS"
@@ -224,8 +236,8 @@
     private List<Option<string>> OptionsSource { get; } =
     [
         new(){ Value = null, Text = CommonResources.IDS_COMMON_ALL },
-        new(){ Value = "Web", Text = UserResources.IDS_PAGE_AUTHLOG_OPTION_SOURCE_WEB},
-        new(){ Value = "Api", Text = UserResources.IDS_PAGE_AUTHLOG_OPTION_SOURCE_WEB}
+        new(){ Value = "web", Text = UserResources.IDS_PAGE_AUTHLOG_OPTION_SOURCE_WEB},
+        new(){ Value = "api", Text = UserResources.IDS_PAGE_AUTHLOG_OPTION_SOURCE_API}
     ];
 
     private List<Option<bool?>> OptionsResult { get; } =
@@ -316,15 +328,20 @@
 
     private async Task OnClearClicked(MouseEventArgs args)
     {
+        SelectedOptionResult = OptionsResult[0];
+        SelectedOptionSource = OptionsSource[0];
+
         Criteria.Username = Data.Username;
         Criteria.From = Criteria.To = null;
-        Criteria.Success = null;
+        Criteria.Result = null;
+        Criteria.Source = null;
         await _dataGrid.RefreshDataAsync(true);
     }
 
     private async Task OnSearchClicked(MouseEventArgs args)
     {
-        Criteria.Success = SelectedOptionResult?.Value;
+        Criteria.Result = SelectedOptionResult?.Value;
+        Criteria.Source = SelectedOptionSource?.Value;
         await _dataGrid.RefreshDataAsync(true);
     }
 }

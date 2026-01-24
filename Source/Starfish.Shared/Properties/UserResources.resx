@@ -334,10 +334,10 @@
     <value>Failure</value>
   </data>
   <data name="IDS_PAGE_AUTHLOG_OPTION_SOURCE_WEB" xml:space="preserve">
-    <value>Web</value>
+    <value>Web App</value>
   </data>
   <data name="IDS_PAGE_AUTHLOG_OPTION_SOURCE_API" xml:space="preserve">
-    <value>Api</value>
+    <value>Web API</value>
   </data>
   <data name="IDS_PAGE_AUTHLOG_OPTION_GRANT_TYPE_USERNAME" xml:space="preserve">
     <value>User Name</value>
@@ -374,5 +374,11 @@
   </data>
   <data name="IDS_PAGE_AUTHLOG_LABEL_TIME_BEFORE" xml:space="preserve">
     <value>Date To</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_CELL_TEXT_SOURCE_WEB" xml:space="preserve">
+    <value>Web App</value>
+  </data>
+  <data name="IDS_PAGE_AUTHLOG_CELL_TEXT_SOURCE_API" xml:space="preserve">
+    <value>Web API</value>
   </data>
 </root>
