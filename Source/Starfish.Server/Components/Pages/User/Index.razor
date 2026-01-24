@@ -73,9 +73,9 @@
                 <PropertyColumn Title="@IdentityResources.IDS_USER_INDEX_COLUMN_PHONE"
                                 Property="@(p => p.Phone)" />
                 <PropertyColumn Title="@CommonResources.IDS_COMMON_COLUMN_CREATE_TIME"
-                                Property="@(p => p.CreatedAt)" />
+                                Property="@(p => p.LockoutEnd)" />
                 <PropertyColumn Title="@CommonResources.IDS_COMMON_COLUMN_UPDATE_TIME"
-                                Property="@(p => p.UpdatedAt)" />
+                                Property="@(p => p.CreatedAt)" />
                 <TemplateColumn Title="@CommonResources.IDS_COMMON_COLUMN_ACTIONS" Align="@Align.Center">
                     <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center">
                         <FluentAnchor Href="@($"/users/{context.Id}/edit")">@CommonResources.IDS_BUTTON_TEXT_EDIT</FluentAnchor>

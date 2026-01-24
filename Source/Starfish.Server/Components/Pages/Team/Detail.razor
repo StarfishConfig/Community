@@ -73,9 +73,7 @@
                     </FluentGrid>
 
                 </FluentAccordionItem>
-            </FluentAccordion>
 
-            <FluentAccordion Style="width: 100%">
                 <FluentAccordionItem Heading="@CommonResources.IDS_LABEL_TEXT_FILTER" Expanded="true">
                     <FluentIcon Value="@(new Icons.Regular.Size20.Info())" Color="@Color.Neutral" Slot="start" />
                     <FluentGrid Spacing="1" Justify="JustifyContent.FlexStart" Style="padding: 5px;">
@@ -101,38 +99,38 @@
                         </FluentGridItem>
                     </FluentGrid>
 
+                    <FluentDataGrid @ref="_dataGrid" Style="width: 100%"
+                                    TGridItem="TeamMemberDto"
+                                    Items="_dataSource"
+                                    RowSize="DataGridRowSize.Large"
+                                    GenerateHeader="GenerateHeaderOption.Sticky"
+                                    Loading="Loading"
+                                    Pagination="Pagination"
+                                    RefreshItems="@RefreshItemsAsync">
+                        <PropertyColumn Title="@TeamResources.IDS_DETAIL_COLUMN_USERNAME"
+                                        Property="@(p => p.Username)" />
+                        <PropertyColumn Title="@TeamResources.IDS_DETAIL_COLUMN_NICKNAME"
+                                        Property="@(p => p.Nickname)" />
+                        <PropertyColumn Title="@TeamResources.IDS_DETAIL_COLUMN_EMAIL"
+                                        Property="@(p => p.Email)" />
+                        <PropertyColumn Title="@TeamResources.IDS_DETAIL_COLUMN_PHONE"
+                                        Property="@(p => p.Phone)" />
+                        <PropertyColumn Title="@TeamResources.IDS_DETAIL_COLUMN_JOINED_TIME"
+                                        Property="@(p => p.JoinedAt)" />
+                        <TemplateColumn Title="@CommonResources.IDS_COMMON_COLUMN_ACTIONS" Align="@Align.Center">
+                            <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center">
+                                <FluentButton OnClick="@(() => OnRemoveClicked(context.UserId, context.Username))"
+                                              IconStart="@(new Icons.Regular.Size16.PersonDelete())"
+                                              Disabled="@(!IsOwner)"
+                                              Appearance="Appearance.Accent">@TeamResources.IDS_DETAIL_BUTTON_TEXT_REMOVE_MEMBER</FluentButton>
+                            </FluentStack>
+                        </TemplateColumn>
+                    </FluentDataGrid>
+
+                    <FluentDataGridPaginator State="@Pagination" />
+
                 </FluentAccordionItem>
             </FluentAccordion>
-
-            <FluentDataGrid @ref="_dataGrid" Style="width: 100%"
-                            TGridItem="TeamMemberDto"
-                            Items="_dataSource"
-                            RowSize="DataGridRowSize.Large"
-                            GenerateHeader="GenerateHeaderOption.Sticky"
-                            Loading="Loading"
-                            Pagination="Pagination"
-                            RefreshItems="@RefreshItemsAsync">
-                <PropertyColumn Title="@TeamResources.IDS_DETAIL_COLUMN_USERNAME"
-                                Property="@(p => p.Username)" />
-                <PropertyColumn Title="@TeamResources.IDS_DETAIL_COLUMN_NICKNAME"
-                                Property="@(p => p.Nickname)" />
-                <PropertyColumn Title="@TeamResources.IDS_DETAIL_COLUMN_EMAIL"
-                                Property="@(p => p.Email)" />
-                <PropertyColumn Title="@TeamResources.IDS_DETAIL_COLUMN_PHONE"
-                                Property="@(p => p.Phone)" />
-                <PropertyColumn Title="@TeamResources.IDS_DETAIL_COLUMN_JOINED_TIME"
-                                Property="@(p => p.JoinedAt)" />
-                <TemplateColumn Title="@CommonResources.IDS_COMMON_COLUMN_ACTIONS" Align="@Align.Center">
-                    <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center">
-                        <FluentButton OnClick="@(() => OnRemoveClicked(context.UserId, context.Username))"
-                                      IconStart="@(new Icons.Regular.Size16.PersonDelete())"
-                                      Disabled="@(!IsOwner)"
-                                      Appearance="Appearance.Accent">@TeamResources.IDS_DETAIL_BUTTON_TEXT_REMOVE_MEMBER</FluentButton>
-                    </FluentStack>
-                </TemplateColumn>
-            </FluentDataGrid>
-
-            <FluentDataGridPaginator State="@Pagination" />
         </FluentStack>
     </FluentCard>
 </FluentStack>
