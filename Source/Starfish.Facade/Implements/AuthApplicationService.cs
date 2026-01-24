@@ -52,9 +52,9 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 		var expiresAt = issueAt.AddDays(1);
 
 		var builder = TokenGenerator.From(identity)
-		                            .WithSigningKey(configuration.GetValue<string>($"{JWT_AUTH_SECTION}:SigningKey"))
-		                            .WithIssuer(configuration.GetValue<string>($"{JWT_AUTH_SECTION}:Issuer:0"))
-		                            .IssuedAt(issueAt);
+									.WithSigningKey(configuration.GetValue<string>($"{JWT_AUTH_SECTION}:SigningKey"))
+									.WithIssuer(configuration.GetValue<string>($"{JWT_AUTH_SECTION}:Issuer:0"))
+									.IssuedAt(issueAt);
 
 		var accessToken = builder.Build();
 
@@ -236,84 +236,103 @@ internal class AuthApplicationService(IConfiguration configuration) : BaseApplic
 	/// <exception cref="BadGatewayException">Thrown when external authentication with a third-party provider fails.</exception>
 	private async Task<IRequest<UserAuthInfoModel>> GetRequestAsync(TokenGrantRequestDto data, CancellationToken cancellationToken = default)
 	{
-		switch (data.GrantType?.ToLowerInvariant())
+		switch (data.GrantType)
 		{
 			case null or "":
 				throw new ArgumentException(AuthResources.IDS_ERROR_MESSAGE_GRANT_TYPE_REQUIRED, nameof(data));
 			case AuthProvider.Username:
-			{
-				if (string.IsNullOrWhiteSpace(data.Username))
 				{
-					throw new BadRequestException(AuthResources.IDS_ERROR_MESSAGE_USERNAME_REQUIRED);
-				}
+					if (string.IsNullOrWhiteSpace(data.Username))
+					{
+						throw new BadRequestException(AuthResources.IDS_ERROR_MESSAGE_USERNAME_REQUIRED);
+					}
 
-				if (string.IsNullOrWhiteSpace(data.Password))
-				{
-					throw new BadRequestException(AuthResources.IDS_ERROR_MESSAGE_PASSWORD_REQUIRED);
+					if (string.IsNullOrWhiteSpace(data.Password))
+					{
+						throw new BadRequestException(AuthResources.IDS_ERROR_MESSAGE_PASSWORD_REQUIRED);
+					}
 				}
-			}
 				return new UserAuthInfoQuery(data.GrantType, data.Username);
 			case AuthProvider.RefreshToken:
-			{
-				if (string.IsNullOrEmpty(data.Password))
 				{
-					throw new BadRequestException(AuthResources.IDS_ERROR_MESSAGE_REFRESH_TOKEN_REQUIRED);
-				}
+					if (string.IsNullOrEmpty(data.Password))
+					{
+						throw new BadRequestException(AuthResources.IDS_ERROR_MESSAGE_REFRESH_TOKEN_REQUIRED);
+					}
 
-				var token = await Bus.CallAsync(new TokenDetailQuery(AuthProvider.RefreshToken, data.Password), cancellationToken);
-				if (token == null)
-				{
-					throw new CredentialIncorrectException(data.Password, AuthResources.IDS_ERROR_MESSAGE_REFRESH_TOKEN_INVALID);
-				}
+					var token = await Bus.CallAsync(new TokenDetailQuery(AuthProvider.RefreshToken, data.Password), cancellationToken);
+					if (token == null)
+					{
+						throw new CredentialIncorrectException(data.Password, AuthResources.IDS_ERROR_MESSAGE_REFRESH_TOKEN_INVALID);
+					}
 
-				if (token.Expires <= DateTime.UtcNow)
-				{
-					throw new CredentialExpiredException(AuthResources.IDS_ERROR_MESSAGE_REFRESH_TOKEN_EXPIRED);
-				}
+					if (token.Expires <= DateTime.UtcNow)
+					{
+						throw new CredentialExpiredException(AuthResources.IDS_ERROR_MESSAGE_REFRESH_TOKEN_EXPIRED);
+					}
 
-				{
-				}
+					{
+					}
 
-				return new UserAuthInfoQuery(AuthProvider.Identifier, token.Subject);
-			}
+					return new UserAuthInfoQuery(AuthProvider.Identifier, token.Subject);
+				}
 			case AuthProvider.Email:
 			case AuthProvider.Phone:
-			{
-				if (string.IsNullOrWhiteSpace(data.Username))
 				{
-					throw new BadRequestException(AuthResources.IDS_ERROR_MESSAGE_USERNAME_REQUIRED);
-				}
+					if (string.IsNullOrWhiteSpace(data.Username))
+					{
+						throw new BadRequestException(AuthResources.IDS_ERROR_MESSAGE_USERNAME_REQUIRED);
+					}
 
-				if (string.IsNullOrWhiteSpace(data.Password))
-				{
-					throw new BadRequestException(AuthResources.IDS_ERROR_MESSAGE_OTP_REQUIRED);
-				}
+					if (string.IsNullOrWhiteSpace(data.Password))
+					{
+						throw new BadRequestException(AuthResources.IDS_ERROR_MESSAGE_OTP_REQUIRED);
+					}
 
-				return new UserAuthInfoQuery(data.GrantType, data.Username);
-			}
+					var otp = await Bus.CallAsync(new OnetimePasswordDetailQuery(data.RequestId), cancellationToken);
+
+					var isValid = PriorityValueFinder.Find(queue =>
+					{
+						queue.Enqueue(() => otp != null, 1);
+						queue.Enqueue(() => string.Equals(otp.Code, data.Password, StringComparison.Ordinal), 2);
+						queue.Enqueue(() => string.Equals(otp.Recipient, data.Username), 3);
+						queue.Enqueue(() => otp.Expiration == null || otp.Expiration <= DateTime.UtcNow, 4);
+						queue.Enqueue(() => otp.Checked == null, 5);
+					}, value => !value, true);
+
+					if (!isValid)
+					{
+						throw new CredentialIncorrectException(data.Username, AuthResources.IDS_ERROR_MESSAGE_INVALID_ONETIME_PASSWORD);
+					}
+
+					{
+					}
+
+					return new UserAuthInfoQuery(data.GrantType, data.Username);
+				}
 			case AuthProvider.Microsoft:
 			case AuthProvider.Google:
 			case AuthProvider.Github:
 			case AuthProvider.Facebook:
-			{
-				var provider = LazyServiceProvider.GetKeyedService<IExternalAuthProvider>(data.GrantType.ToLowerInvariant());
-				if (provider == null)
 				{
-					throw new NotSupportedException();
+					var provider = LazyServiceProvider.GetKeyedService<IExternalAuthProvider>(data.GrantType.ToLowerInvariant());
+					if (provider == null)
+					{
+						throw new NotSupportedException();
+					}
+
+					var auth = await provider.AuthenticateAsync(data.Username, cancellationToken);
+
+					if (auth == null)
+					{
+						throw new BadGatewayException(AuthResources.IDS_ERROR_MESSAGE_EXTERNAL_AUTH_FAILED);
+					}
+
+					{
+					}
+
+					return new UserAuthInfoQuery(data.GrantType, auth.Id);
 				}
-
-				var auth = await provider.AuthenticateAsync(data.Username, cancellationToken);
-
-				if (auth == null)
-				{
-					throw new BadGatewayException(AuthResources.IDS_ERROR_MESSAGE_EXTERNAL_AUTH_FAILED);
-				}
-
-				{
-				}
-
-				return new UserAuthInfoQuery(data.GrantType, auth.Id);
-			}
 			default:
 				throw new NotSupportedException(string.Format(AuthResources.IDS_ERROR_MESSAGE_GRANT_TYPE_NOT_SUPPORT, data.GrantType));
 		}
