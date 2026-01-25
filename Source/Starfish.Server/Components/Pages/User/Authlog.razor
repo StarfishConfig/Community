@@ -1,0 +1,172 @@
+﻿@inject IAuthlogApplicationService Service
+
+<FluentGrid Spacing="1" Justify="JustifyContent.FlexStart" Style="padding: 5px;">
+    <FluentGridItem xs="12" sm="6" md="3">
+        <FluentSelect Appearance="Appearance.Filled"
+                      Label="@UserResources.IDS_PAGE_AUTHLOG_LABEL_GRANT_TYPE"
+                      TOption="Option<bool?>" Items="@OptionsResult"
+                      OptionText="@(i => i.Text)"
+                      OptionValue="@(i => i.Value.ToString())"
+                      @bind-SelectedOption="SelectedOptionResult" />
+    </FluentGridItem>
+    <FluentGridItem xs="12" sm="6" md="3">
+        <FluentSelect Appearance="Appearance.Filled"
+                      Label="@UserResources.IDS_PAGE_AUTHLOG_LABEL_SOURCE"
+                      TOption="Option<string>" Items="@OptionsSource"
+                      OptionText="@(i => i.Text)"
+                      OptionValue="@(i => i.Value)"
+                      @bind-SelectedOption="SelectedOptionSource" />
+    </FluentGridItem>
+    <FluentGridItem xs="12" sm="6" md="3">
+        <FluentDatePicker Appearance="FluentInputAppearance.Filled"
+                          Label="@UserResources.IDS_PAGE_AUTHLOG_LABEL_TIME_AFTER"
+                          @bind-Value="Criteria.From"
+                          DisabledDateFunc="@(date=> date > Criteria.To)" />
+    </FluentGridItem>
+    <FluentGridItem xs="12" sm="6" md="3">
+        <FluentDatePicker Appearance="FluentInputAppearance.Filled"
+                          Label="@UserResources.IDS_PAGE_AUTHLOG_LABEL_TIME_BEFORE"
+                          @bind-Value="Criteria.To"
+                          DisabledDateFunc="@(date=> date < Criteria.From || date > DateTime.Today)" />
+    </FluentGridItem>
+    <FluentGridItem xs="12" sm="12" md="12">
+        <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End">
+            <FluentButton IconStart="@(new Icons.Regular.Size16.Broom())"
+                          Disabled="@Loading"
+                          OnClick="@OnClearClicked">
+                @CommonResources.IDS_BUTTON_TEXT_CLEAR_FILTER
+            </FluentButton>
+            <FluentButton IconStart="@(new Icons.Regular.Size16.Search())"
+                          Appearance="Appearance.Accent"
+                          Loading="@Loading"
+                          OnClick="@OnSearchClicked">
+                @CommonResources.IDS_BUTTON_TEXT_SEARCH
+            </FluentButton>
+        </FluentStack>
+    </FluentGridItem>
+</FluentGrid>
+
+<FluentDataGrid @ref="_dataGrid" Style="width: 100%"
+                TGridItem="AuthlogListDto"
+                Items="_dataSource"
+                RowSize="DataGridRowSize.Large"
+                GenerateHeader="GenerateHeaderOption.Sticky"
+                Loading="Loading"
+                Pagination="Pagination"
+                RefreshItems="@RefreshItemsAsync">
+    <PropertyColumn Title="@UserResources.IDS_PAGE_AUTHLOG_COLUMN_REQUEST_ID"
+                    Property="@(p => p.RequestId)" />
+    <TemplateColumn Title="@UserResources.IDS_PAGE_AUTHLOG_COLUMN_GRANT_TYPE">
+        <div style="display: flex;align-items: center">
+            <span>@UserResources.ResourceManager.GetString($"IDS_PAGE_AUTHLOG_CELL_TEXT_GRANT_TYPE_{context.GrantType.ToUpper()}")</span>
+        </div>
+    </TemplateColumn>
+    <TemplateColumn Title="@UserResources.IDS_PAGE_AUTHLOG_COLUMN_SOURCE">
+        <div style="display: flex;align-items: center">
+            @if (!string.IsNullOrEmpty(context.Source))
+            {
+                <span>@UserResources.ResourceManager.GetString($"IDS_PAGE_AUTHLOG_CELL_TEXT_SOURCE_{context.Source.ToUpper()}")</span>
+            }
+            else
+            {
+                <span>--</span>
+            }
+        </div>
+    </TemplateColumn>
+    <PropertyColumn Title="@UserResources.IDS_PAGE_AUTHLOG_COLUMN_TIMESTAMP"
+                    Property="@(p => p.Timestamp)" Format="yyyy-MM-dd HH:mm:ss" />
+    <PropertyColumn Title="@UserResources.IDS_PAGE_AUTHLOG_COLUMN_IP_ADDRESS"
+                    Property="@(p => p.IpAddress)" />
+    <TemplateColumn Title="@UserResources.IDS_PAGE_AUTHLOG_COLUMN_RESULT">
+        <div style="display: flex;align-items: center">
+            @if (context.Success)
+            {
+                <span>@UserResources.IDS_PAGE_AUTHLOG_CELL_TEXT_RESULT_SUCCESS</span>
+            }
+            else
+            {
+                <span style="color: orangered">@UserResources.IDS_PAGE_AUTHLOG_CELL_TEXT_RESULT_FAILURE</span>
+
+                <FluentIcon Value="@(new Icons.Regular.Size20.Warning())" Title="@context.Remark" />
+            }
+        </div>
+    </TemplateColumn>
+</FluentDataGrid>
+
+<FluentDataGridPaginator State="@Pagination" />
+
+@code {
+
+    [Parameter]
+    public string Username
+    {
+        get; set
+        {
+            field = value;
+            Criteria.Username = value;
+        }
+    }
+
+    private bool Loading { get; set; }
+
+    private List<Option<string>> OptionsSource { get; } =
+    [
+        new(){ Value = null, Text = CommonResources.IDS_COMMON_ALL },
+        new(){ Value = "web", Text = UserResources.IDS_PAGE_AUTHLOG_OPTION_SOURCE_WEB},
+        new(){ Value = "api", Text = UserResources.IDS_PAGE_AUTHLOG_OPTION_SOURCE_API}
+    ];
+
+    private List<Option<bool?>> OptionsResult { get; } =
+    [
+        new(){ Value = null, Text = CommonResources.IDS_COMMON_ALL },
+        new(){ Value = true, Text = UserResources.IDS_PAGE_AUTHLOG_OPTION_RESULT_SUCCESS },
+        new(){ Value = false, Text =UserResources.IDS_PAGE_AUTHLOG_OPTION_RESULT_FAILURE}
+    ];
+
+    private Option<string> SelectedOptionSource { get; set; }
+    private Option<bool?> SelectedOptionResult { get; set; }
+
+    private FluentDataGrid<AuthlogListDto> _dataGrid;
+    private IQueryable<AuthlogListDto> _dataSource = Enumerable.Empty<AuthlogListDto>().AsQueryable();
+    private PaginationState Pagination { get; } = new() { ItemsPerPage = 10 };
+    private AuthlogCriteriaDto Criteria { get; } = new();
+
+    private async Task RefreshItemsAsync(GridItemsProviderRequest<AuthlogListDto> request)
+    {
+        Loading = true;
+
+        await InvokeAsync(StateHasChanged);
+
+        var result = await Service.SearchAsync(Criteria, Pagination.CurrentPageIndex * Pagination.ItemsPerPage, Pagination.ItemsPerPage);
+
+        _dataSource = result.AsQueryable();
+
+        Loading = false;
+
+        if (Pagination.CurrentPageIndex == 0)
+        {
+            var count = await Service.CountAsync(Criteria);
+            await Pagination.SetTotalItemCountAsync(count);
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnClearClicked(MouseEventArgs args)
+    {
+        SelectedOptionResult = OptionsResult[0];
+        SelectedOptionSource = OptionsSource[0];
+
+        Criteria.From = Criteria.To = null;
+        Criteria.Result = null;
+        Criteria.Source = null;
+        await Pagination.SetCurrentPageIndexAsync(0);
+    }
+
+    private async Task OnSearchClicked(MouseEventArgs args)
+    {
+        Criteria.Result = SelectedOptionResult?.Value;
+        Criteria.Source = SelectedOptionSource?.Value;
+        await Pagination.SetCurrentPageIndexAsync(0);
+    }
+}

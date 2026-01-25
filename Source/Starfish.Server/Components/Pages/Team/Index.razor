@@ -125,6 +125,7 @@
     private async Task OnClearClicked(MouseEventArgs args)
     {
         Keyword = string.Empty;
+        SelectedTypeOption = OwnedOptions[0];
         await _dataGrid.RefreshDataAsync(true);
     }
 
@@ -145,11 +146,17 @@
 
         await InvokeAsync(StateHasChanged);
 
-        var result = await Service.SearchAsync(Keyword, SelectedTypeOption?.Value, 0, Pagination.ItemsPerPage);
+        var result = await Service.SearchAsync(Keyword, SelectedTypeOption?.Value, Pagination.CurrentPageIndex * Pagination.ItemsPerPage, Pagination.ItemsPerPage);
 
         _dataSource = result.AsQueryable();
 
         Loading = false;
+
+        if (Pagination.CurrentPageIndex == 0)
+        {
+            var count = await Service.CountAsync(Keyword, SelectedTypeOption?.Value);
+            await Pagination.SetTotalItemCountAsync(count);
+        }
 
         await InvokeAsync(StateHasChanged);
     }
