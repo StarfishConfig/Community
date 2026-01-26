@@ -387,4 +387,13 @@
   <data name="IDS_PAGE_LOGIN_PLACEHOLDER_PASSWORD" xml:space="preserve">
       <value>Password to login</value>
   </data>
+  <data name="IDS_ERROR_PASSWORD_REQUIRED" xml:space="preserve">
+      <value>The password can not be empty.</value>
+  </data>
+  <data name="IDS_ERROR_USERNAME_STRING_LENGTH" xml:space="preserve">
+      <value>The username length must between {2} and {1}.</value>
+  </data>
+  <data name="IDS_ERROR_PASSWORD_STRING_LENGTH" xml:space="preserve">
+      <value>The password length must between {2} and {1}.</value>
+  </data>
 </root>

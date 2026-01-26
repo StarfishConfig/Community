@@ -1,7 +1,6 @@
 ﻿@implements IDialogContentComponent
 
 @using System.ComponentModel.DataAnnotations
-@using Nerosoft.Starfish.Shared
 
 @inject IUserApplicationService Service
 
@@ -94,6 +93,7 @@
             return;
         }
 
+        Loading = true;
         var data = new UserCreateDto
         {
             Username = Model.Username,
@@ -103,16 +103,17 @@
             Phone = Model.Phone
         };
         await Service.CreateAsync(data);
-
+        Loading = false;
+        
         await Dialog.CloseAsync();
     }
 
     private class ViewModel
     {
-        [Required(AllowEmptyStrings = false, ErrorMessageResourceType = typeof(CommonResources),
-            ErrorMessageResourceName = nameof(CommonResources.IDS_ERROR_FIELD_REQUIRED))]
-        [StringLength(255, MinimumLength = 4, ErrorMessageResourceType = typeof(CommonResources),
-            ErrorMessageResourceName = nameof(CommonResources.IDS_ERROR_FIELD_STRING_LENGTH))]
+        [Required(AllowEmptyStrings = false, ErrorMessageResourceType = typeof(UserResources),
+            ErrorMessageResourceName = nameof(UserResources.IDS_ERROR_USERNAME_REQUIRED))]
+        [StringLength(255, MinimumLength = 4, ErrorMessageResourceType = typeof(UserResources),
+            ErrorMessageResourceName = nameof(UserResources.IDS_ERROR_USERNAME_STRING_LENGTH))]
         public string Username { get; set; }
 
         [StringLength(64, MinimumLength = 2, ErrorMessageResourceType = typeof(UserResources),
@@ -129,8 +130,10 @@
             ErrorMessageResourceName = nameof(UserResources.IDS_ERROR_PHONE_FORMAT))]
         public string Phone { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessageResourceType = typeof(CommonResources),
-            ErrorMessageResourceName = nameof(CommonResources.IDS_ERROR_FIELD_REQUIRED))]
+        [Required(AllowEmptyStrings = false, ErrorMessageResourceType = typeof(UserResources),
+            ErrorMessageResourceName = nameof(UserResources.IDS_ERROR_PASSWORD_REQUIRED))]
+        [StringLength(32, MinimumLength = 6, ErrorMessageResourceType = typeof(UserResources),
+            ErrorMessageResourceName = nameof(UserResources.IDS_ERROR_PASSWORD_STRING_LENGTH))]
         public string Password { get; set; }
     }
 
