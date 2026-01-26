@@ -9,10 +9,9 @@ namespace Nerosoft.Starfish.Server.Controllers;
 /// The controller for identity operations.
 /// </summary>
 /// <param name="service"></param>
-/// <param name="configuration"></param>
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(IAuthApplicationService service, IConfiguration configuration) : ControllerBase
+public class AuthController(IAuthApplicationService service) : ControllerBase
 {
 	/// <summary>
 	/// Grant token

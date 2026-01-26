@@ -2,26 +2,71 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <base href="/"/>
-    <ResourcePreloader @rendermode="@GetGlobalRenderMode()"/>
-    <link rel="stylesheet" href="@Assets["_content/Microsoft.FluentUI.AspNetCore.Components/css/reboot.css"]"/>
-    <link rel="stylesheet" href="@Assets["app.css"]"/>
-    <link rel="stylesheet" href="@Assets["Starfish.Server.styles.css"]"/>
-    <ImportMap/>
-    <link rel="icon" type="image/png" href="favicon.png"/>
-    <HeadOutlet @rendermode="@GetGlobalRenderMode()"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <ResourcePreloader @rendermode="@GetGlobalRenderMode()" />
+    <link rel="stylesheet" href="@Assets["_content/Microsoft.FluentUI.AspNetCore.Components/css/reboot.css"]" />
+    <link rel="stylesheet" href="@Assets["app.css"]" />
+    <link rel="stylesheet" href="@Assets["Starfish.Server.styles.css"]" />
+    <ImportMap />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <HeadOutlet @rendermode="@GetGlobalRenderMode()" />
     <title></title>
 </head>
 
 <body>
-<Routes @rendermode="@GetGlobalRenderMode()"/>
-<ReconnectModal/>
-<script src="@Assets["_framework/blazor.web.js"]"></script>
-<script
-    src="@Assets["_content/Microsoft.FluentUI.AspNetCore.Components/Microsoft.FluentUI.AspNetCore.Components.lib.module.js"]"
-    type="module" async></script>
+    <Routes @rendermode="@GetGlobalRenderMode()" />
+    <ReconnectModal />
+    <script src="@Assets["_framework/blazor.web.js"]"></script>
+    <script src="@Assets["_content/Microsoft.FluentUI.AspNetCore.Components/Microsoft.FluentUI.AspNetCore.Components.lib.module.js"]"
+            type="module" async></script>
+    <script src="https://unpkg.com/axios@1.13.3/dist/axios.min.js"></script>
+    <script>
+        window.apiCall = {
+            post: async (url, data) => {
+                console.log(data);
+                return await axios.post(url, JSON.stringify(data),{
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value,
+                    }
+                }).then(response=> {
+                    return response.data;
+                }).catch(exception=>{
+                    return exception.response.data;
+                });
+            }
+        };
+        window.cookies = {
+            // set: (name, value, days) => {
+            //     let expires = "";
+            //     if (days) {
+            //         const date = new Date();
+            //         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            //         expires = "; expires=" + date.toUTCString();
+            //     }
+            //     document.cookie = name + "=" + (value || "") + expires + "; path=/";
+            // },
+            set:(content) => {
+                //document.cookie = "'" + content "'";
+                console.log("document.cookie = \""+content+"\";")
+            },
+            get: (name) => {
+                const nameEQ = name + "=";
+                const ca = document.cookie.split(';');
+                for (let i = 0; i < ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+                }
+                return null;
+            },
+            erase: (name) => {
+                document.cookie = name + '=; Max-Age=-99999999;';
+            }
+        };
+    </script>
 </body>
 
 </html>

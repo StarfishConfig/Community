@@ -1,17 +1,13 @@
 @page "/login"
-@using global::System.ComponentModel.DataAnnotations
+@using System.Security.Claims
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authentication.Cookies
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@using Microsoft.AspNetCore.Identity
-@using Nerosoft.Starfish.Shared
+@using Nerosoft.Euonia.Caching
 @layout EmptyLayout
-@inject IAuthApplicationService Service
-@inject ProtectedLocalStorage LocalStorage
-@inject NavigationManager Navigation
-@inject IToastService ToastService
 
+@attribute [ExcludeFromInteractiveRouting]
 @attribute [AllowAnonymous]
+
 
 <PageTitle>@UserResources.IDS_PAGE_LOGIN_TITLE</PageTitle>
 
@@ -25,64 +21,28 @@
             </div>
             <div class="desc">@(CommonResources.IDS_COMMON_SUBTITLE)</div>
         </div>
-        <FluentCard>
-            <FluentEditForm OnSubmit="@OnSubmitAsync" EditContext="_editContext" FormName="form">
-                <DataAnnotationsValidator />
-                <FluentValidationSummary />
-
-                <FluentBodyContent>
+        <CascadingValue Value="@HttpContext">
+            <FluentCard>
+                @if (string.IsNullOrEmpty(Ticket))
+                {
                     <FluentTabs Size="TabSize.Large">
                         <FluentTab Label="Login via Password" Id="Tab-Password" Style="padding:16px 0">
-                            <FluentGrid Columns="12" RowGap="10" ColumnGap="10">
-                                <FluentGridItem md="12">
-                                    <FluentTextField Name="Model.Username" @bind-Value="Model.Username"
-                                                     AutoComplete="off" Required="true"
-                                                     Placeholder="Username/Email/Phone"
-                                                     Style="width: 100%">
-                                        <FluentIcon Value="@(new Icons.Regular.Size24.Person())" Slot="start"
-                                                    Color="Color.Neutral" />
-                                    </FluentTextField>
-                                </FluentGridItem>
-                                <FluentGridItem md="12">
-                                    <FluentTextField Name="Model.Password" @bind-Value="Model.Password"
-                                                     AutoComplete="off" Required="true" Placeholder="Password to login"
-                                                     Style="width: 100%"
-                                                     TextFieldType="TextFieldType.Password">
-                                        <FluentIcon Value="@(new Icons.Regular.Size24.ShieldKeyhole())" Slot="start"
-                                                    Color="Color.Neutral" />
-                                    </FluentTextField>
-                                </FluentGridItem>
-                            </FluentGrid>
+                            <LoginWithPassword ReturnUrl="@ReturnUrl"
+                                               @rendermode="InteractiveServer" />
                         </FluentTab>
-                        <!--
-                            <FluentTab Label="Login via OTP" Id="Tab-OTP" Style="padding: 16px 0"
-                                       Disabled="true">
-                                <FluentGrid Columns="12" RowGap="10" ColumnGap="10">
-                                    <FluentGridItem md="12">
-                                        <FluentTextField Name="Model.Username" @bind-Value="Model.Username"
-                                                         AutoComplete="off" Required="true"
-                                                         Placeholder="Username/Email/Phone"
-                                                         Style="width: 100%">
-                                            <FluentIcon Value="@(new Icons.Regular.Size24.Person())" Slot="start"
-                                                        Color="Color.Neutral" />
-                                        </FluentTextField>
-                                    </FluentGridItem>
-                                </FluentGrid>
-                            </FluentTab>
-                            -->
+                        <FluentTab Label="Login via OTP" Id="Tab-OTP" Style="padding: 16px 0"
+                                   Disabled="true">
+                            <LoginWithOnetimeCode />
+                        </FluentTab>
                     </FluentTabs>
-                </FluentBodyContent>
-                <div style="width: 100%; display: flex;align-items: center;">
-                    <FluentButton Style="width: 100px;" Loading="Loading" Appearance="Appearance.Accent"
-                                  Type="ButtonType.Submit">@UserResources.IDS_PAGE_LOGIN_BUTTON_TEXT_SUBMIT</FluentButton>
-                    <FluentSpacer />
-                    <a href="/password/reset">@UserResources.IDS_PAGE_LOGIN_BUTTON_TEXT_FORGET_PASSWORD</a>
-                </div>
-            </FluentEditForm>
-        </FluentCard>
+                }
+                else
+                {
+                    <LoginWithTicket Ticket="@Ticket" ReturnUrl="@ReturnUrl" />
+                }
+            </FluentCard>
+        </CascadingValue>
     </FluentStack>
-
-
 </div>
 
 @code {
@@ -90,62 +50,15 @@
     [CascadingParameter]
     private HttpContext HttpContext { get; set; }
 
-    private EditContext _editContext;
+    [SupplyParameterFromQuery]
+    public string Ticket { get; set; }
 
     [SupplyParameterFromQuery]
     private string ReturnUrl { get; set; } // => HttpContext?.Request.Query["returnUrl"] ?? "/";
 
-    [SupplyParameterFromForm]
-    private LoginModel Model { get; set; }
-
-    private bool Loading { get; set; } = false;
-
-    /// <summary>
-    /// Initializes the component.
-    /// </summary>
-    protected override async Task OnInitializedAsync()
+    private async Task OnSuccessAsync(ClaimsPrincipal principal)
     {
-        Model ??= new LoginModel();
-        _editContext = new EditContext(Model);
-        await base.OnInitializedAsync();
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+        HttpContext.Response.Redirect(ReturnUrl);
     }
-
-    private async Task OnSubmitAsync(EditContext context)
-    {
-        try
-        {
-            var dto = new TokenGrantRequestDto
-            {
-                Username = Model.Username,
-                Password = Model.Password,
-                GrantType = AuthProvider.Username
-            };
-            if (HttpContext == null)
-            {
-                var result = await Service.GrantAsync(dto);
-                await LocalStorage.SetAsync(IdentityConstants.BearerScheme, result);
-                Navigation.NavigateTo(ReturnUrl);
-            }
-            else
-            {
-                var result = await Service.SignInAsync(dto);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, result);
-                HttpContext.Response.Redirect(ReturnUrl);
-            }
-        }
-        catch (Exception exception)
-        {
-            ToastService.ShowError(exception.GetErrorMessage());
-        }
-    }
-
-    private class LoginModel
-    {
-        [Required]
-        public string Username { get; set; } = string.Empty;
-
-        [Required]
-        public string Password { get; set; } = string.Empty;
-    }
-
 }

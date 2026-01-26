@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using Nerosoft.Euonia.Caching
+@using System.Security.Claims
+
+@inject ICacheService CacheService
+
+<FluentLabel>@Message</FluentLabel>
+
+@code {
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; }
+
+    [Parameter]
+    public string Ticket { get; set; }
+
+    [Parameter]
+    public string ReturnUrl { get; set; }
+
+    private string Message { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(Ticket))
+        {
+            var (result, principal) = await CacheService.TryGetAsync<ClaimsPrincipal>(Ticket);
+            if (result && principal != null)
+            {
+                // Process the ticket, e.g., validate and sign in the user
+                // Then remove the ticket from the cache
+                CacheService.Remove<ClaimsPrincipal>(Ticket);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                HttpContext.Response.Redirect(ReturnUrl);
+            }
+            else
+            {
+                Message = "票据错误";
+            }
+        }
+    }
+}

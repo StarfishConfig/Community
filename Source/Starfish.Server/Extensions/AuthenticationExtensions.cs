@@ -95,6 +95,7 @@ internal static class AuthenticationExtensions
 					        await Task.CompletedTask;
 				        }
 			        };
+					//options.SessionStore
 		        })
 		        .AddJwtBearer(options =>
 		        {
