@@ -12,14 +12,21 @@
     [CascadingParameter]
     private HttpContext HttpContext { get; set; }
 
+    /// <summary>
+    /// The ticket used for login.
+    /// </summary>
     [Parameter]
     public string Ticket { get; set; }
 
+    /// <summary>
+    /// The return URL after successful login.
+    /// </summary>
     [Parameter]
     public string ReturnUrl { get; set; }
 
     private string Message { get; set; }
 
+    /// <inheritdoc />
     protected override async Task OnInitializedAsync()
     {
         if (!string.IsNullOrEmpty(Ticket))

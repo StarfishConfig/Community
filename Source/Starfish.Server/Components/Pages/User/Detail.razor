@@ -3,7 +3,6 @@
 @attribute [Authorize(Roles = RoleName.Admin)]
 
 @inject IUserApplicationService UserService
-@inject IAuthlogApplicationService AuthlogService
 @inject NavigationManager Navigation
 @inject IDialogService DialogService
 
@@ -22,71 +21,71 @@
         <FluentStack Orientation="Orientation.Vertical" VerticalGap="16">
             <FluentAccordion Style="width: 100%">
                 <FluentAccordionItem Heading="@UserResources.IDS_PAGE_DETAIL_PANEL_HEADER_INFO" Expanded="true">
-                    <FluentIcon Value="@(new Icons.Regular.Size20.Info())" Color="@Color.Neutral" Slot="start" />
+                    <FluentIcon Value="@(new Icons.Regular.Size20.Info())" Color="@Color.Neutral" Slot="start"/>
                     <FluentGrid Spacing="2" Justify="JustifyContent.FlexStart" Style="padding: 5px;">
                         <FluentGridItem md="6" sm="12">
                             <FluentTextField Value="@Data?.Username"
                                              Label="@UserResources.IDS_PAGE_DETAIL_LABEL_USERNAME"
                                              Style="width: 100%" Disabled="true"
-                                             Class="input-disabled" />
+                                             Class="input-disabled"/>
                         </FluentGridItem>
 
                         <FluentGridItem md="6" sm="12">
                             <FluentTextField Value="@Data?.Nickname"
                                              Label="@UserResources.IDS_PAGE_DETAIL_LABEL_NICKNAME"
                                              Style="width: 100%" Disabled="true"
-                                             Class="input-disabled" />
+                                             Class="input-disabled"/>
                         </FluentGridItem>
 
                         <FluentGridItem md="6" sm="12">
                             <FluentTextField Value="@Data?.Email" Label="@UserResources.IDS_PAGE_DETAIL_LABEL_EMAIL"
                                              Style="width: 100%" Disabled="true"
-                                             Class="input-disabled" />
+                                             Class="input-disabled"/>
                         </FluentGridItem>
 
                         <FluentGridItem md="6" sm="12">
                             <FluentTextField Value="@Data?.Phone" Label="@UserResources.IDS_PAGE_DETAIL_LABEL_PHONE"
                                              Style="width: 100%" Disabled="true"
-                                             Class="input-disabled" />
+                                             Class="input-disabled"/>
                         </FluentGridItem>
 
                         <FluentGridItem md="6" sm="12">
                             <FluentTextField Value="@Data?.AccessFailedCount.ToString()"
                                              Label="@UserResources.IDS_PAGE_DETAIL_LABEL_FAILED_COUNT"
                                              Style="width: 100%;" Disabled="true"
-                                             Class="input-disabled" />
+                                             Class="input-disabled"/>
                         </FluentGridItem>
                         <FluentGridItem md="6" sm="12">
                             <FluentTextField Value="@Data?.LockoutEnd.ToString()"
                                              Label="@UserResources.IDS_PAGE_DETAIL_LABEL_LOCKOUT_END"
                                              Style="width: 100%;" Disabled="true"
-                                             Class="input-disabled" />
+                                             Class="input-disabled"/>
                         </FluentGridItem>
 
                         <FluentGridItem md="6" sm="12">
                             <FluentTextField Value="@Data?.CreatedAt.ToShortDateString()"
                                              Label="@UserResources.IDS_PAGE_DETAIL_LABEL_CREATE_TIME"
                                              Style="width: 100%;" Disabled="true"
-                                             Class="input-disabled" />
+                                             Class="input-disabled"/>
                         </FluentGridItem>
                         <FluentGridItem md="6" sm="12">
                             <FluentTextField Value="@Data?.UpdatedAt.ToShortDateString()"
                                              Label="@UserResources.IDS_PAGE_DETAIL_LABEL_UPDATE_TIME"
                                              Style="width: 100%;" Disabled="true"
-                                             Class="input-disabled" />
+                                             Class="input-disabled"/>
                         </FluentGridItem>
 
                         <FluentGridItem md="6" sm="12">
                             <FluentTextField Value="@Data?.LastLoginAt.ToString()"
                                              Label="@UserResources.IDS_PAGE_DETAIL_LABEL_LAST_LOGIN_TIME"
                                              Style="width: 100%;" Disabled="true"
-                                             Class="input-disabled" />
+                                             Class="input-disabled"/>
                         </FluentGridItem>
                         <FluentGridItem md="6" sm="12">
                             <FluentTextField Value="@Data?.LastLoginIp"
                                              Label="@UserResources.IDS_PAGE_DETAIL_LABEL_LAST_LOGIN_IP"
                                              Style="width: 100%;" Disabled="true"
-                                             Class="input-disabled" />
+                                             Class="input-disabled"/>
                         </FluentGridItem>
 
                         @if (Data != null)
@@ -118,11 +117,12 @@
                 </FluentAccordionItem>
 
                 <FluentAccordionItem Heading="@UserResources.IDS_PAGE_DETAIL_PANEL_HEADER_AUTHLOG" Expanded="true">
-                    <FluentIcon Value="@(new Icons.Regular.Size20.DocumentBulletList())" Color="@Color.Neutral" Slot="start" />
+                    <FluentIcon Value="@(new Icons.Regular.Size20.DocumentBulletList())" Color="@Color.Neutral"
+                                Slot="start"/>
 
                     @if (Data != null)
                     {
-                        <Authlog Username="@Data.Username" />
+                        <Authlog Username="@Data.Username"/>
                     }
 
                 </FluentAccordionItem>
@@ -134,6 +134,9 @@
 
 @code {
 
+    /// <summary>
+    /// User Id
+    /// </summary>
     [Parameter]
     public string Id { get; set; }
 
@@ -144,19 +147,18 @@
 
     private bool Loading { get; set; }
 
-
-
+    /// <inheritdoc />
     protected override async Task OnInitializedAsync()
     {
+        Loading = true;
         Data = await UserService.GetAsync(Id);
         if (Data == null)
         {
             Navigation.NavigateTo("/not-found");
         }
-        else
-        {
-            await InvokeAsync(StateHasChanged);
-        }
+
+        Loading = false;
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task OnResetPasswordClicked(MouseEventArgs args)
@@ -189,9 +191,7 @@
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
-
         }
     }
-
 
 }

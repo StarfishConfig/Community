@@ -381,4 +381,10 @@
   <data name="IDS_PAGE_AUTHLOG_CELL_TEXT_SOURCE_API" xml:space="preserve">
     <value>Web API</value>
   </data>
+  <data name="IDS_PAGE_LOGIN_PLACEHOLDER_USERNAME" xml:space="preserve">
+      <value>Username</value>
+  </data>
+  <data name="IDS_PAGE_LOGIN_PLACEHOLDER_PASSWORD" xml:space="preserve">
+      <value>Password to login</value>
+  </data>
 </root>
