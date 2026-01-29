@@ -1,4 +1,5 @@
 using Nerosoft.Euonia.Application;
+using Nerosoft.Starfish.Shared;
 using Nerosoft.Starfish.Transit;
 
 namespace Nerosoft.Starfish.Facade.Interfaces;
@@ -9,99 +10,103 @@ namespace Nerosoft.Starfish.Facade.Interfaces;
 /// </summary>
 public interface ITeamApplicationService : IApplicationService
 {
-	/// <summary>
-	/// Searches teams by keyword and optional type with pagination.
-	/// </summary>
-	/// <param name="keyword">Search term to match against team properties (name, description, etc.).</param>
-	/// <param name="owned">Given a value to indicate if only include the teams which the current user owned.</param>
-	/// <param name="skip">Number of items to skip for pagination.</param>
-	/// <param name="size">Maximum number of items to return.</param>
-	/// <param name="cancellationToken">Token to cancel the operation.</param>
-	/// <returns>A list of <see cref="TeamListDto"/> matching the search criteria.</returns>
-	Task<List<TeamListDto>> SearchAsync(string keyword, bool? owned, int skip, int size, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Searches teams by keyword and optional role with pagination.
+    /// </summary>
+    /// <param name="keyword">Search term to match against team properties (name, description, etc.).</param>
+    /// <param name="role">Role filter indicating the current user's relation to the team (for example Owner, Ordinary). Use a value to restrict results to teams matching that role for the current user.</param>
+    /// <param name="skip">Number of items to skip for pagination.</param>
+    /// <param name="size">Maximum number of items to return.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A list of <see cref="TeamListDto"/> matching the search criteria.</returns>
+    Task<List<TeamListDto>> SearchAsync(string keyword, TeamMemberRole role, int skip, int size, CancellationToken cancellationToken = default);
 
-	/// <summary>
-	/// Counts teams that match the given keyword and optional type filter.
-	/// </summary>
-	/// <param name="keyword">Search term to match against team properties.</param>
-	/// <param name="owned">Given a value to indicate if only include the teams which the current user owned.</param>
-	/// <param name="cancellationToken">Token to cancel the operation.</param>
-	/// <returns>The total number of teams matching the criteria.</returns>
-	Task<int> CountAsync(string keyword, bool? owned, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Counts teams that match the given keyword and optional role filter.
+    /// </summary>
+    /// <param name="keyword">Search term to match against team properties.</param>
+    /// <param name="role">Role filter indicating the current user's relation to the team. Use a value to restrict counted teams to those matching that role for the current user.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The total number of teams matching the criteria.</returns>
+    Task<int> CountAsync(string keyword, TeamMemberRole role, CancellationToken cancellationToken = default);
 
-	/// <summary>
-	/// Retrieves detailed information for a specific team by its identifier.
-	/// </summary>
-	/// <param name="id">Unique identifier of the team.</param>
-	/// <param name="cancellationToken">Token to cancel the operation.</param>
-	/// <returns>A <see cref="TeamDetailDto"/> containing the team's details.</returns>
-	Task<TeamDetailDto> GetAsync(long id, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Retrieves detailed information for a specific team by its identifier.
+    /// </summary>
+    /// <param name="id">Unique identifier of the team.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A <see cref="TeamDetailDto"/> containing the team's details.</returns>
+    Task<TeamDetailDto> GetAsync(long id, CancellationToken cancellationToken = default);
 
-	/// <summary>
-	/// Retrieves members of a team, optionally filtered by a keyword, with pagination.
-	/// </summary>
-	/// <param name="teamId">Identifier of the team whose members are requested.</param>
-	/// <param name="keyword">Optional filter applied to member properties (name, email, etc.).</param>
-	/// <param name="skip">Number of items to skip for pagination.</param>
-	/// <param name="size">Maximum number of items to return.</param>
-	/// <param name="cancellationToken">Token to cancel the operation.</param>
-	/// <returns>A list of <see cref="TeamMemberDto"/> for the specified team.</returns>
-	Task<List<TeamMemberDto>> GetMemberListAsync(long teamId, string keyword, int skip, int size, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Retrieves members of a team, optionally filtered by a keyword, with pagination.
+    /// </summary>
+    /// <param name="teamId">Identifier of the team whose members are requested.</param>
+    /// <param name="keyword">Optional filter applied to member properties (name, email, etc.).</param>
+    /// <param name="skip">Number of items to skip for pagination.</param>
+    /// <param name="size">Maximum number of items to return.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A list of <see cref="TeamMemberDto"/> for the specified team.</returns>
+    Task<List<TeamMemberDto>> GetMemberListAsync(long teamId, string keyword, int skip, int size, CancellationToken cancellationToken = default);
 
-	/// <summary>
-	/// Counts the number of members in a team that match the given keyword.
-	/// </summary>
-	/// <param name="teamId">Identifier of the team whose members are requested.</param>
-	/// <param name="keyword">Optional filter applied to member properties (name, email, etc.).</param>
-	/// <param name="cancellationToken"></param>
-	/// <returns>A number of members for the specified team.</returns>
-	Task<int> GetMemberCountAsync(long teamId, string keyword, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Counts the number of members in a team that match the given keyword.
+    /// </summary>
+    /// <param name="teamId">Identifier of the team whose members are counted.</param>
+    /// <param name="keyword">Optional filter applied to member properties (name, email, etc.).</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The number of members for the specified team that match the filter.</returns>
+    Task<int> GetMemberCountAsync(long teamId, string keyword, CancellationToken cancellationToken = default);
 
-	/// <summary>
-	/// Creates a new team using the provided data.
-	/// </summary>
-	/// <param name="data">Team data used to create the new team.</param>
-	/// <param name="cancellationToken">Token to cancel the operation.</param>
-	Task CreateAsync(TeamEditDto data, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Creates a new team using the provided data.
+    /// </summary>
+    /// <param name="data">Team data used to create the new team.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A task representing the asynchronous create operation.</returns>
+    Task CreateAsync(TeamEditDto data, CancellationToken cancellationToken = default);
 
-	/// <summary>
-	/// Updates an existing team identified by <paramref name="id"/> with the provided data.
-	/// </summary>
-	/// <param name="id">Identifier of the team to update.</param>
-	/// <param name="data">Updated team data.</param>
-	/// <param name="cancellationToken">Token to cancel the operation.</param>
-	Task UpdateAsync(long id, TeamEditDto data, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Updates an existing team identified by <paramref name="id"/> with the provided data.
+    /// </summary>
+    /// <param name="id">Identifier of the team to update.</param>
+    /// <param name="data">Updated team data.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A task representing the asynchronous update operation.</returns>
+    Task UpdateAsync(long id, TeamEditDto data, CancellationToken cancellationToken = default);
 
-	/// <summary>
-	/// Deletes the team identified by <paramref name="id"/>.
-	/// </summary>
-	/// <param name="id">Identifier of the team to update.</param>
-	/// <param name="cancellationToken">Token to cancel the operation.</param>
-	/// <returns></returns>
-	Task DeleteAsync(long id, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Deletes the team identified by <paramref name="id"/>.
+    /// </summary>
+    /// <param name="id">Identifier of the team to delete.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A task representing the asynchronous delete operation.</returns>
+    Task DeleteAsync(long id, CancellationToken cancellationToken = default);
 
-	/// <summary>
-	/// Transfers ownership of the specified team to another user.
-	/// </summary>
-	/// <param name="id">Identifier of the team to transfer.</param>
-	/// <param name="data">Parameters contains identifier of the user who will receipt the team.</param>
-	/// <param name="cancellationToken">Token to cancel the operation.</param>
-	/// <returns></returns>
-	Task TransferAsync(long id, TeamTransferDto data, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Transfers ownership of the specified team to another user.
+    /// </summary>
+    /// <param name="id">Identifier of the team to transfer.</param>
+    /// <param name="data">Transfer parameters containing the identifier of the user who will receive ownership of the team.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A task representing the asynchronous transfer operation.</returns>
+    Task TransferAsync(long id, TeamTransferDto data, CancellationToken cancellationToken = default);
 
-	/// <summary>
-	/// Appends one or more users to the specified team.
-	/// </summary>
-	/// <param name="teamId">Identifier of the team to which users will be added.</param>
-	/// <param name="userIds">List of user identifiers to append to the team.</param>
-	/// <param name="cancellationToken">Token to cancel the operation.</param>
-	Task AppendMemberAsync(long teamId, IList<string> userIds, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Appends one or more users to the specified team.
+    /// </summary>
+    /// <param name="teamId">Identifier of the team to which users will be added.</param>
+    /// <param name="userIds">List of user identifiers to append to the team.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A task representing the asynchronous append operation.</returns>
+    Task AppendMemberAsync(long teamId, IList<string> userIds, CancellationToken cancellationToken = default);
 
-	/// <summary>
-	/// Removes one or more users from the specified team.
-	/// </summary>
-	/// <param name="teamId">Identifier of the team from which users will be removed.</param>
-	/// <param name="userIds">List of user identifiers to remove from the team.</param>
-	/// <param name="cancellationToken">Token to cancel the operation.</param>
-	Task RemoveMemberAsync(long teamId, IList<string> userIds, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Removes one or more users from the specified team.
+    /// </summary>
+    /// <param name="teamId">Identifier of the team from which users will be removed.</param>
+    /// <param name="userIds">List of user identifiers to remove from the team.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A task representing the asynchronous remove operation.</returns>
+    Task RemoveMemberAsync(long teamId, IList<string> userIds, CancellationToken cancellationToken = default);
 }

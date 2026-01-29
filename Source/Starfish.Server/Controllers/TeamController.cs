@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nerosoft.Starfish.Facade.Interfaces;
+using Nerosoft.Starfish.Shared;
 using Nerosoft.Starfish.Transit;
 
 namespace Nerosoft.Starfish.Server.Controllers;
 
 /// <summary>
-/// Controller for managing teams.
+/// API controller for managing teams.
+/// All endpoints require an authenticated user.
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
@@ -15,16 +17,18 @@ public class TeamController(ITeamApplicationService service) : ControllerBase
 {
 	/// <summary>
 	/// Application service that contains business logic for team operations.
+	/// Provided via primary constructor injection.
 	/// </summary>
 	private readonly ITeamApplicationService _service = service;
 
 	/// <summary>
 	/// Gets a team by its unique identifier.
 	/// </summary>
-	/// <param name="id">The unique identifier of the team.</param>
+	/// <param name="id">The unique identifier of the team to retrieve.</param>
 	/// <returns>
-	/// Returns an <see cref="IActionResult"/> containing the team DTO if found (HTTP 200),
-	/// or an appropriate error response if not found.
+	/// An <see cref="IActionResult"/>:
+	/// - <c>200 OK</c> with a <see cref="TeamDetailDto"/> when the team is found.
+	/// - Appropriate error status (e.g. 404) if not found or unauthorized.
 	/// </returns>
 	[HttpGet("{id:long}")]
 	public async Task<IActionResult> GetAsync([FromRoute] long id)
@@ -36,20 +40,21 @@ public class TeamController(ITeamApplicationService service) : ControllerBase
 	/// <summary>
 	/// Searches for teams based on the specified criteria.
 	/// </summary>
-	/// <param name="keyword">Optional search keyword to filter teams by name or description.</param>
-	/// <param name="owned">Given a value to indicate if only include the teams which the current user owned.</param>
+	/// <param name="keyword">Optional search keyword to filter teams by name, description, etc.</param>
+	/// <param name="role">
+	/// Role filter to indicate the relation of the current user to the teams:
+	/// e.g. Owner, Ordinary. Use a value to restrict results to teams where the current user has that role.
+	/// </param>
 	/// <param name="skip">Number of items to skip for paging. Defaults to 0.</param>
 	/// <param name="size">Page size for results. Defaults to 20.</param>
 	/// <returns>
-	/// Returns an <see cref="IActionResult"/> with a paged list of matching teams (HTTP 200).
+	/// An <see cref="IActionResult"/>:
+	/// - <c>200 OK</c> with a list of <see cref="TeamListDto"/> matching the search criteria.
 	/// </returns>
 	[HttpGet("search")]
-	public async Task<IActionResult> SearchAsync([FromQuery] string keyword, [FromQuery] bool? owned, [FromQuery] int skip = 0, [FromQuery] int size = 20)
+	public async Task<IActionResult> SearchAsync([FromQuery] string keyword, [FromQuery] TeamMemberRole role, [FromQuery] int skip = 0, [FromQuery] int size = 20)
 	{
-		// owned=true: only teams owned by current user
-		// owned=false: only teams where current user is a member but not owner
-		// owned=null: all teams where current user is owner or member
-		var result = await _service.SearchAsync(keyword, owned, skip, size, HttpContext.RequestAborted);
+		var result = await _service.SearchAsync(keyword, role, skip, size, HttpContext.RequestAborted);
 		return Ok(result);
 	}
 
@@ -57,14 +62,19 @@ public class TeamController(ITeamApplicationService service) : ControllerBase
 	/// Counts the number of teams matching the specified criteria.
 	/// </summary>
 	/// <param name="keyword">Optional search keyword to filter teams.</param>
-	/// <param name="owned">Given a value to indicate if only include the teams which the current user owned.</param>
+	/// <param name="role">
+	/// Role filter to indicate the relation of the current user to the teams:
+	/// e.g. Owner, Ordinary. Use a value to restrict counting to teams where the current user has that role.
+	/// </param>
 	/// <returns>
-	/// Returns an <see cref="IActionResult"/> containing the count of matching teams (HTTP 200).
+	/// An <see cref="IActionResult"/>:
+	/// - <c>200 OK</c> with the integer count of matching teams.
+	/// The response header "X-Total-Count" is also set to the count value.
 	/// </returns>
 	[HttpHead("count")]
-	public async Task<IActionResult> CountAsync([FromQuery] string keyword, [FromQuery] bool? owned)
+	public async Task<IActionResult> CountAsync([FromQuery] string keyword, [FromQuery] TeamMemberRole role)
 	{
-		var result = await _service.CountAsync(keyword, owned, HttpContext.RequestAborted);
+		var result = await _service.CountAsync(keyword, role, HttpContext.RequestAborted);
 		HttpContext.Response.Headers.Append("X-Total-Count", result.ToString());
 		return Ok(result);
 	}
@@ -72,9 +82,10 @@ public class TeamController(ITeamApplicationService service) : ControllerBase
 	/// <summary>
 	/// Creates a new team.
 	/// </summary>
-	/// <param name="data">The team data transfer object containing details for creation.</param>
+	/// <param name="data">The team edit DTO containing details required for creation.</param>
 	/// <returns>
-	/// Returns HTTP 201 Created on success.
+	/// An <see cref="IActionResult"/>:
+	/// - <c>201 Created</c> on successful creation.
 	/// </returns>
 	[HttpPost]
 	public async Task<IActionResult> CreateAsync([FromBody] TeamEditDto data)
@@ -89,7 +100,9 @@ public class TeamController(ITeamApplicationService service) : ControllerBase
 	/// <param name="id">The unique identifier of the team to update.</param>
 	/// <param name="data">The team edit DTO containing updated values.</param>
 	/// <returns>
-	/// Returns HTTP 204 No Content on success.
+	/// An <see cref="IActionResult"/>:
+	/// - <c>204 No Content</c> when the update succeeds.
+	/// - Appropriate error status (e.g. 404) if the team does not exist or unauthorized.
 	/// </returns>
 	[HttpPut("{id:long}")]
 	public async Task<IActionResult> UpdateAsync([FromRoute] long id, [FromBody] TeamEditDto data)
@@ -103,7 +116,9 @@ public class TeamController(ITeamApplicationService service) : ControllerBase
 	/// </summary>
 	/// <param name="id">The unique identifier of the team to delete.</param>
 	/// <returns>
-	/// Returns HTTP 204 No Content on success.
+	/// An <see cref="IActionResult"/>:
+	/// - <c>204 No Content</c> when deletion succeeds.
+	/// - Appropriate error status (e.g. 404) if the team does not exist or unauthorized.
 	/// </returns>
 	[HttpDelete("{id:long}")]
 	public async Task<IActionResult> DeleteAsync([FromRoute] long id)
@@ -116,9 +131,11 @@ public class TeamController(ITeamApplicationService service) : ControllerBase
 	/// Transfers ownership of a team to another user.
 	/// </summary>
 	/// <param name="id">The unique identifier of the team to transfer.</param>
-	/// <param name="data">Transfer parameters including target user id and whether the current user leaves.</param>
+	/// <param name="data">Transfer parameters including the identifier of the target user and options such as whether the current owner leaves.</param>
 	/// <returns>
-	/// Returns HTTP 204 No Content on success.
+	/// An <see cref="IActionResult"/>:
+	/// - <c>204 No Content</c> when transfer succeeds.
+	/// - Appropriate error status for invalid input or unauthorized actions.
 	/// </returns>
 	[HttpPost("{id:long}/transfer")]
 	public async Task<IActionResult> TransferAsync([FromRoute] long id, [FromBody] TeamTransferDto data)
@@ -130,12 +147,13 @@ public class TeamController(ITeamApplicationService service) : ControllerBase
 	/// <summary>
 	/// Gets the list of members in a team.
 	/// </summary>
-	/// <param name="teamId">The unique identifier of the team.</param>
-	/// <param name="keyword">Optional keyword to filter members (e.g., name or email).</param>
+	/// <param name="teamId">The unique identifier of the team whose members are requested.</param>
+	/// <param name="keyword">Optional keyword to filter members by name, email, or other attributes.</param>
 	/// <param name="skip">Number of items to skip for paging. Defaults to 0.</param>
 	/// <param name="size">Page size for results. Defaults to 20.</param>
 	/// <returns>
-	/// Returns an <see cref="IActionResult"/> with a paged list of team members (HTTP 200).
+	/// An <see cref="IActionResult"/>:
+	/// - <c>200 OK</c> with a list of <see cref="TeamMemberDto"/> for the requested page.
 	/// </returns>
 	[HttpGet("{teamId:long}/members/list")]
 	public async Task<IActionResult> GetMemberListAsync([FromRoute] long teamId, [FromQuery] string keyword, [FromQuery] int skip = 0, [FromQuery] int size = 20)
@@ -148,9 +166,10 @@ public class TeamController(ITeamApplicationService service) : ControllerBase
 	/// Gets the count of members in a team matching the optional keyword.
 	/// </summary>
 	/// <param name="teamId">The unique identifier of the team.</param>
-	/// <param name="keyword">Optional keyword to filter members.</param>
+	/// <param name="keyword">Optional keyword to filter members by name, email, etc.</param>
 	/// <returns>
-	/// Returns HTTP 204 No Content and sets the response header "X-Total-Count" to the member count.
+	/// An <see cref="IActionResult"/>:
+	/// - <c>200 OK</c> with the integer count of matching members.
 	/// </returns>
 	[HttpGet("{teamId:long}/members/count")]
 	public async Task<IActionResult> GetMemberCountAsync([FromRoute] long teamId, [FromQuery] string keyword)
@@ -162,10 +181,12 @@ public class TeamController(ITeamApplicationService service) : ControllerBase
 	/// <summary>
 	/// Appends members to the specified team.
 	/// </summary>
-	/// <param name="teamId">The unique identifier of the team.</param>
+	/// <param name="teamId">The unique identifier of the team to which users will be added.</param>
 	/// <param name="userIds">List of user ids to add to the team.</param>
 	/// <returns>
-	/// Returns HTTP 204 No Content on success.
+	/// An <see cref="IActionResult"/>:
+	/// - <c>204 No Content</c> when members are appended successfully.
+	/// - Appropriate error status for invalid users or unauthorized operations.
 	/// </returns>
 	[HttpPost("{teamId:long}/members")]
 	public async Task<IActionResult> AppendMemberAsync([FromRoute] long teamId, [FromBody] IList<string> userIds)
@@ -177,10 +198,12 @@ public class TeamController(ITeamApplicationService service) : ControllerBase
 	/// <summary>
 	/// Removes members from the specified team.
 	/// </summary>
-	/// <param name="teamId">The unique identifier of the team.</param>
+	/// <param name="teamId">The unique identifier of the team from which users will be removed.</param>
 	/// <param name="userIds">List of user ids to remove from the team.</param>
 	/// <returns>
-	/// Returns HTTP 204 No Content on success.
+	/// An <see cref="IActionResult"/>:
+	/// - <c>204 No Content</c> when members are removed successfully.
+	/// - Appropriate error status for invalid users or unauthorized operations.
 	/// </returns>
 	[HttpDelete("{teamId:long}/members")]
 	public async Task<IActionResult> RemoveMemberAsync([FromRoute] long teamId, [FromBody] IList<string> userIds)

@@ -1,10 +1,11 @@
+using System.ComponentModel;
 using Microsoft.EntityFrameworkCore;
 using Nerosoft.Euonia.Bus;
 using Nerosoft.Euonia.Linq;
 using Nerosoft.Euonia.Security;
 using Nerosoft.Starfish.Repository.Entities;
 using Nerosoft.Starfish.Repository.Models;
-using Nerosoft.Starfish.Repository.Specifications;
+using Nerosoft.Starfish.Repository.Requests;
 using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Handlers;
@@ -13,7 +14,9 @@ internal class TeamQueryHandler : IHandler<TeamSearchQuery, IList<TeamListModel>
                                   IHandler<TeamCountQuery, int>,
                                   IHandler<TeamDetailQuery, TeamDetailModel>,
                                   IHandler<TeamMemberListQuery, IList<TeamMemberModel>>,
-                                  IHandler<TeamMemberCountQuery, int>
+                                  IHandler<TeamMemberCountQuery, int>,
+                                  IHandler<TeamOwnerCheckQuery, bool>,
+                                  IHandler<TeamScopeQuery, IList<long>>
 {
 	private readonly IdentityDataContext _context;
 	private readonly UserPrincipal _user;
@@ -56,11 +59,12 @@ internal class TeamQueryHandler : IHandler<TeamSearchQuery, IList<TeamListModel>
 			predicate = predicate.And(t => memberTeamIds.Contains(t.Id));
 		}
 
-		predicate = message.Owned switch
+		predicate = message.Role switch
 		{
-			true => predicate.And(t => t.OwnerId == _user.UserId),
-			false => predicate.And(t => t.OwnerId != _user.UserId),
-			_ => predicate
+			TeamMemberRole.Owner => predicate.And(t => t.OwnerId == _user.UserId),
+			TeamMemberRole.Ordinary => predicate.And(t => t.OwnerId != _user.UserId),
+			TeamMemberRole.None => predicate,
+			_ => throw new InvalidEnumArgumentException("Role", (int)message.Role, typeof(TeamMemberRole))
 		};
 
 		if (!string.IsNullOrWhiteSpace(message.Keyword))
@@ -110,11 +114,12 @@ internal class TeamQueryHandler : IHandler<TeamSearchQuery, IList<TeamListModel>
 			predicate = predicate.And(t => memberTeamIds.Contains(t.Id));
 		}
 
-		predicate = message.Owned switch
+		predicate = message.Role switch
 		{
-			true => predicate.And(t => t.OwnerId == _user.UserId),
-			false => predicate.And(t => t.OwnerId != _user.UserId),
-			_ => predicate
+			TeamMemberRole.Owner => predicate.And(t => t.OwnerId == _user.UserId),
+			TeamMemberRole.Ordinary => predicate.And(t => t.OwnerId != _user.UserId),
+			TeamMemberRole.None => predicate,
+			_ => throw new InvalidEnumArgumentException("Role", (int)message.Role, typeof(TeamMemberRole))
 		};
 
 		if (!string.IsNullOrWhiteSpace(message.Keyword))
@@ -218,5 +223,34 @@ internal class TeamQueryHandler : IHandler<TeamSearchQuery, IList<TeamListModel>
 		{
 		}
 		return query.Where(predicate).CountAsync(cancellationToken);
+	}
+
+	public Task<bool> HandleAsync(TeamOwnerCheckQuery message, MessageContext context, CancellationToken cancellationToken = default)
+	{
+		return _context.Set<Team>()
+		               .AsNoTracking()
+		               .AnyAsync(t => t.Id == message.TeamId && t.OwnerId == message.UserId, cancellationToken);
+	}
+
+	public async Task<IList<long>> HandleAsync(TeamScopeQuery message, MessageContext context, CancellationToken cancellationToken = default)
+	{
+		var members = _context.Set<TeamMember>().AsNoTracking();
+		var teams = _context.Set<Team>().AsNoTracking();
+
+		var query = from member in members
+		            join team in teams on member.TeamId equals team.Id
+		            where member.UserId == message.UserId
+		            select team;
+
+		query = message.Role switch
+		{
+			TeamMemberRole.None => query,
+			TeamMemberRole.Owner => query.Where(t => t.OwnerId == message.UserId),
+			TeamMemberRole.Ordinary => query.Where(t => t.OwnerId != message.UserId),
+			_ => query
+		};
+
+		var result = await query.Select(t => t.Id).ToListAsync(cancellationToken);
+		return result;
 	}
 }

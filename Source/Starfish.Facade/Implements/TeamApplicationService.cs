@@ -2,15 +2,17 @@ using Nerosoft.Euonia.Application;
 using Nerosoft.Euonia.Mapping;
 using Nerosoft.Starfish.Domain.Commands;
 using Nerosoft.Starfish.Facade.Interfaces;
+using Nerosoft.Starfish.Repository.Requests;
+using Nerosoft.Starfish.Shared;
 using Nerosoft.Starfish.Transit;
 
 namespace Nerosoft.Starfish.Facade.Implements;
 
 internal class TeamApplicationService : BaseApplicationService, ITeamApplicationService
 {
-	public Task<List<TeamListDto>> SearchAsync(string keyword, bool? owned, int skip, int size, CancellationToken cancellationToken = default)
+	public Task<List<TeamListDto>> SearchAsync(string keyword, TeamMemberRole role, int skip, int size, CancellationToken cancellationToken = default)
 	{
-		var request = new TeamSearchQuery(keyword, owned, skip, size);
+		var request = new TeamSearchQuery(keyword, role, skip, size);
 		return Bus.CallAsync(request, cancellationToken)
 		          .ContinueWith(task =>
 		          {
@@ -20,9 +22,9 @@ internal class TeamApplicationService : BaseApplicationService, ITeamApplication
 		          }, cancellationToken);
 	}
 
-	public Task<int> CountAsync(string keyword, bool? owned, CancellationToken cancellationToken = default)
+	public Task<int> CountAsync(string keyword, TeamMemberRole role, CancellationToken cancellationToken = default)
 	{
-		var request = new TeamCountQuery(keyword, owned);
+		var request = new TeamCountQuery(keyword, role);
 		return Bus.CallAsync(request, cancellationToken);
 	}
 
