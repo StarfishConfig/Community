@@ -54,6 +54,7 @@ internal abstract class ActuatorBase<TTarget>
 			{
 				await Handler(target);
 			}
+
 			await ContinueHandleAsync(target, cancellationToken);
 			await target.SaveAsync(target.IsChanged, cancellationToken);
 			await uow.CompleteAsync(cancellationToken);
@@ -64,13 +65,14 @@ internal abstract class ActuatorBase<TTarget>
 			{
 				await Handler(target);
 			}
+
 			await ContinueHandleAsync(target, cancellationToken);
 			await target.SaveAsync(target.IsChanged, cancellationToken);
 		}
 
 		if (target is IHasDomainEvents domain)
 		{
-			var events = domain.GetEvents();
+			var events = domain.GetEvents()?.ToList();
 			if (events?.Any() == true)
 			{
 				var bus = target.BusinessContext.GetService<IBus>();
@@ -83,6 +85,9 @@ internal abstract class ActuatorBase<TTarget>
 				{
 					await bus.PublishAsync(@event, null, options, null, cancellationToken);
 				}
+			}
+
+			{
 			}
 		}
 
