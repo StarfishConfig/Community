@@ -3,11 +3,11 @@ using Nerosoft.Starfish.Domain.Commands;
 using Nerosoft.Starfish.Transit;
 using Nerosoft.Starfish.Repository.Models;
 
-namespace Nerosoft.Starfish.Facade.Mappers;
+namespace Nerosoft.Starfish.Facade.Profiles;
 
-internal class UserMapperProfile : Profile
+internal class UserProfile : Profile
 {
-	public UserMapperProfile()
+	public UserProfile()
 	{
 		CreateMap<UserCreateDto, UserCreateCommand>();
 		CreateMap<UserUpdateDto, UserUpdateCommand>();

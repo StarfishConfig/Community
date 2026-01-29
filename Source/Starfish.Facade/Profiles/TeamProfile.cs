@@ -5,9 +5,9 @@ using Nerosoft.Starfish.Repository.Models;
 
 namespace Nerosoft.Starfish.Facade.Mappers;
 
-internal class TeamMapperProfile : Profile
+internal class TeamProfile : Profile
 {
-	public TeamMapperProfile()
+	public TeamProfile()
 	{
 		CreateMap<TeamListModel, TeamListDto>()
 			.AfterMap((src, dest, _) =>

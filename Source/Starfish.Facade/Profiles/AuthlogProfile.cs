@@ -2,11 +2,11 @@
 using Nerosoft.Starfish.Repository.Models;
 using Nerosoft.Starfish.Transit;
 
-namespace Nerosoft.Starfish.Facade.Mappers;
+namespace Nerosoft.Starfish.Facade.Profiles;
 
-internal class AuthlogMapperProfile : Profile
+internal class AuthlogProfile : Profile
 {
-	public AuthlogMapperProfile()
+	public AuthlogProfile()
 	{
 		CreateMap<AuthlogListModel, AuthlogListDto>();
 		CreateMap<AuthlogCriteriaDto, AuthlogCriteriaModel>();

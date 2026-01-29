@@ -3,11 +3,11 @@ using Nerosoft.Starfish.Domain.Commands;
 using Nerosoft.Starfish.Transit;
 using Nerosoft.Starfish.Repository.Models;
 
-namespace Nerosoft.Starfish.Facade.Mappers;
+namespace Nerosoft.Starfish.Facade.Profiles;
 
-internal class TemplateMapperProfile : Profile
+internal class TemplateProfile : Profile
 {
-	public TemplateMapperProfile()
+	public TemplateProfile()
 	{
 		// CreateMap<Source, Destination>();
 		CreateMap<TemplateEditDto, TemplateCreateCommand>();
