@@ -16,21 +16,21 @@
         <FluentStack Orientation="Orientation.Vertical" VerticalGap="16">
             <FluentAccordion Style="width: 100%">
                 <FluentAccordionItem Heading="@CommonResources.IDS_LABEL_TEXT_FILTER" Expanded="true">
-                    <FluentIcon Value="@(new Icons.Regular.Size20.FilterAdd())" Color="@Color.Neutral" Slot="start" />
-                    <FluentGrid Spacing="1" Justify="JustifyContent.FlexStart" Style="padding: 5px;">
+                    <FluentIcon Value="@(new Icons.Regular.Size20.FilterAdd())" Color="@Color.Neutral" Slot="start"/>
+                    <FluentGrid Spacing="1" Justify="JustifyContent.FlexStart" Style="padding: 8px;">
                         <FluentGridItem xs="12" sm="6" md="3">
                             <FluentTextField @bind-Value="Keyword" Label="@CommonResources.IDS_LABEL_TEXT_KEYWORD"
                                              Style="width: 100%"
-                                             Placeholder="@CommonResources.IDS_PLACEHOLDER_KEYWORD" />
+                                             Placeholder="@CommonResources.IDS_PLACEHOLDER_KEYWORD"/>
                         </FluentGridItem>
                         <FluentGridItem xs="12" sm="6" md="3">
-                            <FluentSelect TOption="Option<bool?>"
+                            <FluentSelect TOption="Option<TeamMemberRole>"
                                           Items="@OwnedOptions"
                                           OptionValue="@(i => i.Value.ToString())"
                                           OptionText="@(i => i.Text)"
                                           Label="@TeamResources.IDS_INDEX_FILTER_LABEL_TYPE"
                                           Style="width: 100%"
-                                          @bind-SelectedOption="@SelectedTypeOption" />
+                                          @bind-SelectedOption="@SelectedTypeOption"/>
                         </FluentGridItem>
                     </FluentGrid>
                     <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End">
@@ -67,13 +67,13 @@
                                   Href="@($"/teams/{context.Id}")">@context.Name</FluentAnchor>
                 </TemplateColumn>
                 <PropertyColumn Title="@TeamResources.IDS_INDEX_COLUMN_DESCRIPTION"
-                                Property="@(p => p.Description)" />
+                                Property="@(p => p.Description)"/>
                 <PropertyColumn Title="@TeamResources.IDS_INDEX_COLUMN_OWNER"
-                                Property="@(p => p.OwnerName)" />
+                                Property="@(p => p.OwnerName)"/>
                 <PropertyColumn Title="@TeamResources.IDS_INDEX_COLUMN_MEMBER_COUNT"
-                                Property="@(p => p.MembersCount)" />
+                                Property="@(p => p.MembersCount)"/>
                 <PropertyColumn Title="@CommonResources.IDS_COMMON_COLUMN_UPDATE_TIME"
-                                Property="@(p => p.UpdatedAt)" />
+                                Property="@(p => p.UpdatedAt)"/>
                 <TemplateColumn Title="@CommonResources.IDS_COMMON_COLUMN_ACTIONS" Align="@Align.Center">
                     <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center">
                         <FluentButton OnClick="@(() => OnEditClicked(context.Id))"
@@ -84,7 +84,7 @@
                 </TemplateColumn>
             </FluentDataGrid>
 
-            <FluentDataGridPaginator State="@Pagination" />
+            <FluentDataGridPaginator State="@Pagination"/>
         </FluentStack>
     </FluentCard>
 </FluentStack>
@@ -102,14 +102,14 @@
     private IQueryable<TeamListDto> _dataSource = Enumerable.Empty<TeamListDto>().AsQueryable();
     private PaginationState Pagination { get; } = new() { ItemsPerPage = 10 };
 
-    private List<Option<bool?>> OwnedOptions { get; } =
+    private List<Option<TeamMemberRole>> OwnedOptions { get; } =
     [
-        new() { Value = null, Text = CommonResources.IDS_COMMON_ALL, Selected = true },
-        new() { Value = true, Text = TeamResources.IDS_RELATION_TYPE_OWNED },
-        new() { Value = false, Text = TeamResources.IDS_RELATION_TYPE_JOINED }
+        new() { Value = TeamMemberRole.None, Text = CommonResources.IDS_COMMON_ALL, Selected = true },
+        new() { Value = TeamMemberRole.Owner, Text = TeamResources.IDS_RELATION_TYPE_OWNED },
+        new() { Value = TeamMemberRole.Ordinary, Text = TeamResources.IDS_RELATION_TYPE_JOINED }
     ];
 
-    private Option<bool?> SelectedTypeOption { get; set; }
+    private Option<TeamMemberRole> SelectedTypeOption { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -146,7 +146,7 @@
 
         await InvokeAsync(StateHasChanged);
 
-        var result = await Service.SearchAsync(Keyword, SelectedTypeOption?.Value, Pagination.CurrentPageIndex * Pagination.ItemsPerPage, Pagination.ItemsPerPage);
+        var result = await Service.SearchAsync(Keyword, SelectedTypeOption.Value, Pagination.CurrentPageIndex * Pagination.ItemsPerPage, Pagination.ItemsPerPage);
 
         _dataSource = result.AsQueryable();
 
@@ -154,7 +154,7 @@
 
         if (Pagination.CurrentPageIndex == 0)
         {
-            var count = await Service.CountAsync(Keyword, SelectedTypeOption?.Value);
+            var count = await Service.CountAsync(Keyword, SelectedTypeOption.Value);
             await Pagination.SetTotalItemCountAsync(count);
         }
 

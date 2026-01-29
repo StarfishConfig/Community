@@ -1,0 +1,46 @@
+@inject ITeamApplicationService Service
+
+<FluentAutocomplete TOption="TeamListDto"
+                    AutoComplete="off"
+                    Label="@Label"
+                    Style="@Style"
+                    Placeholder="@Placeholder"
+                    OnOptionsSearch="@OnSearchAsync"
+                    Multiple="false"
+                    OptionValue="@(item => item.Id.ToString())"
+                    OptionText="@(item => item.Name)"
+                    @bind-SelectedOption="SelectedItem"/>
+
+@code {
+
+    [Parameter]
+    public string Label { get; set; }
+
+    [Parameter]
+    public string Placeholder { get; set; }
+
+    [Parameter]
+    public string Style { get; set; }
+    
+    [Parameter]
+    public TeamMemberRole Role { get; set; }
+
+    [Parameter]
+    public int Size
+    {
+        get;
+        set => field = value < 1 ? 20 : value;
+    } = 20;
+
+    [Parameter]
+    public TeamListDto SelectedItem { get; set; }
+
+    [Parameter]
+    public EventCallback<TeamListDto> SelectedItemChanged { get; set; }
+
+    private async Task OnSearchAsync(OptionsSearchEventArgs<TeamListDto> e)
+    {
+        e.Items = await Service.SearchAsync(e.Text, Role, 0, Size);
+    }
+
+}
