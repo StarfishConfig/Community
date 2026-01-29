@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nerosoft.Starfish.Repository.Entities;
 
-namespace Nerosoft.Starfish.Repository.Configurations;
+namespace Nerosoft.Starfish.Repository.Mappers;
 
 [DbContext(typeof(IdentityDataContext))]
-internal sealed class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
+internal sealed class UserRoleMapper : IEntityTypeConfiguration<UserRole>
 {
 	public void Configure(EntityTypeBuilder<UserRole> builder)
 	{

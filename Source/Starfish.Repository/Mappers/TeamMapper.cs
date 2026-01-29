@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nerosoft.Starfish.Repository.Entities;
 using Nerosoft.Starfish.Shared;
 
-namespace Nerosoft.Starfish.Repository.Configurations;
+namespace Nerosoft.Starfish.Repository.Mappers;
 
 [DbContext(typeof(IdentityDataContext))]
-internal class TeamEntityMap : IEntityTypeConfiguration<Team>
+internal class TeamMapper : IEntityTypeConfiguration<Team>
 {
 	public void Configure(EntityTypeBuilder<Team> builder)
 	{

@@ -2,11 +2,11 @@ using AutoMapper;
 using Nerosoft.Starfish.Persistent;
 using Nerosoft.Starfish.Repository.Entities;
 
-namespace Nerosoft.Starfish.Repository.Mappers;
+namespace Nerosoft.Starfish.Repository.Profiles;
 
-internal class TeamMapperProfile : Profile
+internal class TeamProfile : Profile
 {
-	public TeamMapperProfile()
+	public TeamProfile()
 	{
 		CreateMap<Team, TeamData>()
 			.ForMember(t => t.Members, opt => opt.Ignore())

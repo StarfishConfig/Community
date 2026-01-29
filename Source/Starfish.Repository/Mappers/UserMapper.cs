@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nerosoft.Starfish.Repository.Entities;
 
-namespace Nerosoft.Starfish.Repository.Configurations;
+namespace Nerosoft.Starfish.Repository.Mappers;
 
 /// <summary>
 /// Configures the entity of type <see cref="User"/>.
 /// </summary>
 [DbContext(typeof(IdentityDataContext))]
-internal class UserConfiguration : IEntityTypeConfiguration<User>
+internal class UserMapper : IEntityTypeConfiguration<User>
 {
 	/// <summary>
 	/// Configures the entity of type <see cref="User"/>.

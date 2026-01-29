@@ -3,11 +3,11 @@ using Nerosoft.Starfish.Persistent.Data;
 using Nerosoft.Starfish.Repository.Entities;
 using Nerosoft.Starfish.Repository.Models;
 
-namespace Nerosoft.Starfish.Repository.Mappers;
+namespace Nerosoft.Starfish.Repository.Profiles;
 
-internal class TemplateMapperProfile : Profile
+internal class TemplateProfile : Profile
 {
-	public TemplateMapperProfile()
+	public TemplateProfile()
 	{
 		CreateMap<TemplateData, Template>();
 		CreateMap<Template, TemplateData>();

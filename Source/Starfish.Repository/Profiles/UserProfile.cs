@@ -4,11 +4,11 @@ using Nerosoft.Starfish.Repository.Entities;
 using Nerosoft.Starfish.Repository.Models;
 using Nerosoft.Starfish.Toolkit;
 
-namespace Nerosoft.Starfish.Repository.Mappers;
+namespace Nerosoft.Starfish.Repository.Profiles;
 
-internal class UserMapperProfile : Profile
+internal class UserProfile : Profile
 {
-	public UserMapperProfile()
+	public UserProfile()
 	{
 		CreateMap<UserData, User>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore())

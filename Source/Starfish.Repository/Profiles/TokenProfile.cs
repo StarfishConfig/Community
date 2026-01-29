@@ -2,11 +2,11 @@ using AutoMapper;
 using Nerosoft.Starfish.Persistent;
 using Nerosoft.Starfish.Repository.Entities;
 
-namespace Nerosoft.Starfish.Repository.Mappers;
+namespace Nerosoft.Starfish.Repository.Profiles;
 
-internal class TokenMapperProfile : Profile
+internal class TokenProfile : Profile
 {
-	public TokenMapperProfile()
+	public TokenProfile()
 	{
 		CreateMap<TokenData, Token>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore());

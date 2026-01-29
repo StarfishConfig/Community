@@ -2,14 +2,14 @@ using AutoMapper;
 using Nerosoft.Starfish.Persistent;
 using Nerosoft.Starfish.Repository.Entities;
 
-namespace Nerosoft.Starfish.Repository.Mappers;
+namespace Nerosoft.Starfish.Repository.Profiles;
 
 /// <summary>
 /// Mapper profile for Authlog entity.
 /// </summary>
-internal class AuthlogMapperProfile : Profile
+internal class AuthlogProfile : Profile
 {
-	public AuthlogMapperProfile()
+	public AuthlogProfile()
 	{
 		CreateMap<AuthlogData, Authlog>();
 	}

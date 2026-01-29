@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nerosoft.Starfish.Repository.Entities;
 
-namespace Nerosoft.Starfish.Repository.Configurations;
+namespace Nerosoft.Starfish.Repository.Mappers;
 
 [DbContext(typeof(IdentityDataContext))]
-internal class TokenConfiguration : IEntityTypeConfiguration<Token>
+internal class TokenMapper : IEntityTypeConfiguration<Token>
 {
 	public void Configure(EntityTypeBuilder<Token> builder)
 	{

@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nerosoft.Starfish.Repository.Entities;
 
-namespace Nerosoft.Starfish.Repository.Configurations;
+namespace Nerosoft.Starfish.Repository.Mappers;
 
 [DbContext(typeof(IdentityDataContext))]
-internal class UserAuthorityConfiguration : IEntityTypeConfiguration<UserAuthority>
+internal class UserAuthorityMapper : IEntityTypeConfiguration<UserAuthority>
 {
 	public void Configure(EntityTypeBuilder<UserAuthority> builder)
 	{
