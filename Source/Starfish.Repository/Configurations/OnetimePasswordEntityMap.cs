@@ -7,7 +7,7 @@ using Nerosoft.Starfish.Shared;
 namespace Nerosoft.Starfish.Repository.Configurations;
 
 [DbContext(typeof(IdentityDataContext))]
-internal class OnetimePasswordConfiguration : IEntityTypeConfiguration<OnetimePassword>
+internal class OnetimePasswordEntityMap : IEntityTypeConfiguration<OnetimePassword>
 {
 	public void Configure(EntityTypeBuilder<OnetimePassword> builder)
 	{

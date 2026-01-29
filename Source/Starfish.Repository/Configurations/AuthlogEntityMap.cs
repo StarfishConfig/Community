@@ -6,7 +6,7 @@ using Nerosoft.Starfish.Repository.Entities;
 namespace Nerosoft.Starfish.Repository.Configurations;
 
 [DbContext(typeof(IdentityDataContext))]
-internal sealed class AuthlogConfiguration : IEntityTypeConfiguration<Authlog>
+internal sealed class AuthlogEntityMap : IEntityTypeConfiguration<Authlog>
 {
 	public void Configure(EntityTypeBuilder<Authlog> builder)
 	{

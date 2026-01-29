@@ -7,7 +7,7 @@ using Nerosoft.Starfish.Shared;
 namespace Nerosoft.Starfish.Repository.Configurations;
 
 [DbContext(typeof(IdentityDataContext))]
-internal class TeamConfiguration : IEntityTypeConfiguration<Team>
+internal class TeamEntityMap : IEntityTypeConfiguration<Team>
 {
 	public void Configure(EntityTypeBuilder<Team> builder)
 	{
