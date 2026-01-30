@@ -1,7 +1,7 @@
 ﻿using Nerosoft.Euonia.Business;
 using Nerosoft.Starfish.Domain.Commands;
 using Nerosoft.Starfish.Persistent.Repositories;
-using Nerosoft.Starfish.Shared;
+using Nerosoft.Starfish.Infrastructure;
 
 namespace Nerosoft.Starfish.Domain.Aggregates;
 

@@ -1,6 +1,6 @@
 using FluentValidation;
 using Nerosoft.Starfish.Domain.Commands;
-using Nerosoft.Starfish.Shared;
+using Nerosoft.Starfish.Infrastructure;
 
 namespace Nerosoft.Starfish.Domain.Validators;
 
