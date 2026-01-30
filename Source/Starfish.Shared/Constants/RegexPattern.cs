@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Starfish.Infrastructure;
+﻿namespace Nerosoft.Starfish.Shared;
 
 /// <summary>
 /// Provides regex patterns for various validations.

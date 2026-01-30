@@ -1,5 +1,5 @@
 ﻿using Nerosoft.Starfish.Persistent.Data;
-using Nerosoft.Starfish.Infrastructure;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Persistent.Repositories;
 

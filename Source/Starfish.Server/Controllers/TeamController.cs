@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nerosoft.Starfish.Facade.Interfaces;
-using Nerosoft.Starfish.Infrastructure;
+using Nerosoft.Starfish.Shared;
 using Nerosoft.Starfish.Transit;
 
 namespace Nerosoft.Starfish.Server.Controllers;

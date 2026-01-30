@@ -1,6 +1,6 @@
 using Nerosoft.Euonia.Bus;
 using Nerosoft.Starfish.Repository.Models;
-using Nerosoft.Starfish.Infrastructure;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Requests;
 

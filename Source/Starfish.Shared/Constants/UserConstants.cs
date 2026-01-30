@@ -1,4 +1,4 @@
-namespace Nerosoft.Starfish.Infrastructure;
+namespace Nerosoft.Starfish.Shared;
 
 /// <summary>
 /// Contains constants related to user properties and constraints.

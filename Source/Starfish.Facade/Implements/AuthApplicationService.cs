@@ -11,7 +11,7 @@ using Nerosoft.Starfish.Facade.Interfaces;
 using Nerosoft.Starfish.Transit;
 using Nerosoft.Starfish.Repository.Models;
 using Nerosoft.Starfish.Repository.Requests;
-using Nerosoft.Starfish.Infrastructure;
+using Nerosoft.Starfish.Shared;
 using Nerosoft.Starfish.Toolkit;
 
 namespace Nerosoft.Starfish.Facade.Implements;

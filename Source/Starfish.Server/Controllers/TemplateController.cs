@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Nerosoft.Starfish.Facade.Interfaces;
 using Nerosoft.Starfish.Transit;
-using Nerosoft.Starfish.Infrastructure;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Server.Controllers;
 

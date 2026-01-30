@@ -6,7 +6,7 @@ using Nerosoft.Starfish.Repository.Entities;
 using Nerosoft.Starfish.Repository.Models;
 using Nerosoft.Starfish.Repository.Requests;
 using Nerosoft.Starfish.Repository.Specifications;
-using Nerosoft.Starfish.Infrastructure;
+using Nerosoft.Starfish.Shared;
 using Nerosoft.Starfish.Toolkit;
 
 namespace Nerosoft.Starfish.Repository.Handlers;

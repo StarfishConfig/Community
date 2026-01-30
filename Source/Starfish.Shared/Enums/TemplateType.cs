@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Starfish.Infrastructure;
+﻿namespace Nerosoft.Starfish.Shared;
 
 /// <summary>
 /// Specifies the type of message template used for sending notifications.

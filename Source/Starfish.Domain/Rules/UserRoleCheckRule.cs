@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 using Nerosoft.Euonia.Business;
-using Nerosoft.Starfish.Infrastructure;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Domain.Rules;
 

@@ -6,7 +6,7 @@ using Nerosoft.Euonia.Security;
 using Nerosoft.Starfish.Repository.Entities;
 using Nerosoft.Starfish.Repository.Models;
 using Nerosoft.Starfish.Repository.Requests;
-using Nerosoft.Starfish.Infrastructure;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Handlers;
 

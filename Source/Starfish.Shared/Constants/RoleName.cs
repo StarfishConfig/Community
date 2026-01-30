@@ -1,4 +1,4 @@
-namespace Nerosoft.Starfish.Infrastructure;
+namespace Nerosoft.Starfish.Shared;
 
 /// <summary>
 /// Contains constants for role names used in the system.

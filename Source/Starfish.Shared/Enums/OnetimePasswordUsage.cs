@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Starfish.Infrastructure;
+﻿namespace Nerosoft.Starfish.Shared;
 
 /// <summary>
 /// Specifies the contexts in which a one-time password (OTP) can be used within authentication workflows.

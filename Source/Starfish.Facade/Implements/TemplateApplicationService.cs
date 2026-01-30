@@ -5,7 +5,7 @@ using Nerosoft.Starfish.Domain.Commands;
 using Nerosoft.Starfish.Facade.Interfaces;
 using Nerosoft.Starfish.Transit;
 using Nerosoft.Starfish.Repository.Requests;
-using Nerosoft.Starfish.Infrastructure;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Facade.Implements;
 

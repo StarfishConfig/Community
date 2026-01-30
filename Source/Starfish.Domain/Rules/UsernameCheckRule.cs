@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Nerosoft.Euonia.Business;
 using Nerosoft.Starfish.Domain.Repositories;
-using Nerosoft.Starfish.Infrastructure;
+using Nerosoft.Starfish.Shared;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Nerosoft.Starfish.Domain.Rules;

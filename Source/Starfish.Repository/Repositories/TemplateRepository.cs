@@ -4,7 +4,7 @@ using Nerosoft.Starfish.Persistent.Data;
 using Nerosoft.Starfish.Persistent.Repositories;
 using Nerosoft.Starfish.Repository.Entities;
 using Nerosoft.Starfish.Repository.Specifications;
-using Nerosoft.Starfish.Infrastructure;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Repositories;
 

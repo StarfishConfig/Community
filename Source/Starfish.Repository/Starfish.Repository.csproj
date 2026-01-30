@@ -24,13 +24,13 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Starfish.Persistent\Starfish.Persistent.csproj" />
-        <ProjectReference Include="..\Starfish.Infrastructure\Starfish.Infrastructure.csproj" />
+        <ProjectReference Include="..\Starfish.Shared\Starfish.Shared.csproj" />
         <ProjectReference Include="..\Starfish.Toolkit\Starfish.Toolkit.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <Using Include="$(RootNamespace).Properties" />
-        <Using Include="Nerosoft.Starfish.Infrastructure.Properties" />
+        <Using Include="Nerosoft.Starfish.Shared.Properties" />
     </ItemGroup>
 
     <ItemGroup>
