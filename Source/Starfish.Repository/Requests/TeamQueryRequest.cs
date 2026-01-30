@@ -11,6 +11,13 @@ namespace Nerosoft.Starfish.Repository.Requests;
 public record TeamDetailQuery(long Id) : IRequest<TeamDetailModel>;
 
 /// <summary>
+/// Query for retrieving base information about a team, with an option to include its members.
+/// </summary>
+/// <param name="Id">The unique identifier of the team to retrieve.</param>
+/// <param name="IncludeMembers">Indicates whether to include the team's members in the response.</param>
+public record TeamBaseInfoQuery(long Id, bool IncludeMembers) : IRequest<TeamBaseInfoModel>;
+
+/// <summary>
 /// Query for searching teams with an optional role filter and pagination.
 /// </summary>
 /// <param name="Keyword">Search term to match against team properties (name, description, etc.).</param>

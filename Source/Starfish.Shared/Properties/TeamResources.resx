@@ -219,4 +219,7 @@
   <data name="IDS_DETAIL_LABEL_OWNER_NAME" xml:space="preserve">
     <value>Owner</value>
   </data>
+  <data name="IDS_ERROR_NOT_FOUND" xml:space="preserve">
+      <value>Team not found.</value>
+  </data>
 </root>

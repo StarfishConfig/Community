@@ -16,7 +16,8 @@ internal class TeamQueryHandler : IHandler<TeamSearchQuery, IList<TeamListModel>
                                   IHandler<TeamMemberListQuery, IList<TeamMemberModel>>,
                                   IHandler<TeamMemberCountQuery, int>,
                                   IHandler<TeamOwnerCheckQuery, bool>,
-                                  IHandler<TeamScopeQuery, IList<long>>
+                                  IHandler<TeamScopeQuery, IList<long>>,
+                                  IHandler<TeamBaseInfoQuery, TeamBaseInfoModel>
 {
 	private readonly IdentityDataContext _context;
 	private readonly UserPrincipal _user;
@@ -252,5 +253,28 @@ internal class TeamQueryHandler : IHandler<TeamSearchQuery, IList<TeamListModel>
 
 		var result = await query.Select(t => t.Id).ToListAsync(cancellationToken);
 		return result;
+	}
+
+	public async Task<TeamBaseInfoModel> HandleAsync(TeamBaseInfoQuery message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	{
+		var query = _context.Set<Team>().AsNoTracking();
+
+		if (message.IncludeMembers)
+		{
+			query = query.Include(t => t.Members);
+		}
+
+		var entity = await query.FirstOrDefaultAsync(t => t.Id == message.Id, cancellationToken);
+
+		if (entity == null)
+		{
+			return null;
+		}
+
+		return new TeamBaseInfoModel
+		{
+			Id = entity.Id, Name = entity.Name, OwnerId = entity.OwnerId,
+			Members = message.IncludeMembers ? entity.Members.Select(m => m.UserId).ToHashSet() : []
+		};
 	}
 }
