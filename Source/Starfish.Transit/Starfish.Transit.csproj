@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Starfish.Shared\Starfish.Shared.csproj" />
+        <ProjectReference Include="..\Starfish.Infrastructure\Starfish.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <Using Include="Nerosoft.Starfish.Shared.Properties" />
+        <Using Include="Nerosoft.Starfish.Infrastructure.Properties" />
     </ItemGroup>
 
 </Project>

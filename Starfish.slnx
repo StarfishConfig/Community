@@ -12,8 +12,8 @@
         <Project Path="Source/Starfish.Persistent/Starfish.Persistent.csproj" />
         <Project Path="Source/Starfish.Repository/Starfish.Repository.csproj" />
         <Project Path="Source/Starfish.Server/Starfish.Server.csproj" />
-        <Project Path="Source/Starfish.Shared/Starfish.Shared.csproj" />
         <Project Path="Source/Starfish.Toolkit/Starfish.Toolkit.csproj" />
         <Project Path="Source/Starfish.Transit/Starfish.Transit.csproj" />
+        <Project Path="Source/Starfish.Infrastructure/Starfish.Infrastructure.csproj" />
     </Folder>
 </Solution>
