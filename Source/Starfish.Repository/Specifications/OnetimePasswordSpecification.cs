@@ -1,6 +1,6 @@
 ﻿using Nerosoft.Euonia.Linq;
 using Nerosoft.Starfish.Repository.Entities;
-using Nerosoft.Starfish.Shared;
+using Nerosoft.Starfish.Infrastructure;
 
 namespace Nerosoft.Starfish.Repository.Specifications;
 

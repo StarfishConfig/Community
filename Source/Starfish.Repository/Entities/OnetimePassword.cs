@@ -1,5 +1,5 @@
 ﻿using Nerosoft.Euonia.Repository;
-using Nerosoft.Starfish.Shared;
+using Nerosoft.Starfish.Infrastructure;
 
 namespace Nerosoft.Starfish.Repository.Entities;
 

@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nerosoft.Starfish.Repository.Entities;
-using Nerosoft.Starfish.Shared;
+using Nerosoft.Starfish.Infrastructure;
 
 namespace Nerosoft.Starfish.Repository.Mappers;
 
