@@ -20,43 +20,43 @@ internal sealed class ConfigurationChangelog : EditableObjectBase<ConfigurationC
 	public long ConfigurationId
 	{
 		get => GetProperty(ConfigurationIdProperty);
-		private set => SetProperty(ConfigurationIdProperty, value);
+		set => SetProperty(ConfigurationIdProperty, value);
 	}
 
 	public long ItemId
 	{
 		get => GetProperty(ItemIdProperty);
-		private set => SetProperty(ItemIdProperty, value);
+		set => SetProperty(ItemIdProperty, value);
 	}
 
 	public string Key
 	{
 		get => GetProperty(KeyProperty);
-		private set => SetProperty(KeyProperty, value);
+		set => SetProperty(KeyProperty, value);
 	}
 
 	public string Value
 	{
 		get => GetProperty(ValueProperty);
-		private set => SetProperty(ValueProperty, value);
+		set => SetProperty(ValueProperty, value);
 	}
 
 	public string ChangeType
 	{
 		get => GetProperty(ChangeTypeProperty);
-		private set => SetProperty(ChangeTypeProperty, value);
+		set => SetProperty(ChangeTypeProperty, value);
 	}
 
 	public string ChangedBy
 	{
 		get => GetProperty(ChangedByProperty);
-		private set => SetProperty(ChangedByProperty, value);
+		set => SetProperty(ChangedByProperty, value);
 	}
 
 	public DateTime ChangedAt
 	{
 		get => GetProperty(ChangedAtProperty);
-		private set => SetProperty(ChangedAtProperty, value);
+		set => SetProperty(ChangedAtProperty, value);
 	}
 
 	#endregion
@@ -75,16 +75,9 @@ internal sealed class ConfigurationChangelog : EditableObjectBase<ConfigurationC
 	#region Factory Methods
 
 	[FactoryCreate]
-	private async Task CreateAsync(ConfigurationChangelogCreateCommand command, CancellationToken cancellationToken = default)
+	protected override Task CreateAsync(CancellationToken cancellationToken = new CancellationToken())
 	{
-		ConfigurationId = command.ConfigurationId;
-		ItemId = command.ItemId;
-		Key = command.Key;
-		Value = command.Value;
-		ChangeType = command.ChangeType;
-		ChangedBy = command.ChangedBy;
-		ChangedAt = command.ChangedAt;
-		await base.CreateAsync(cancellationToken);
+		return base.CreateAsync(cancellationToken);
 	}
 
 	[FactoryInsert]

@@ -255,7 +255,7 @@ internal class TeamQueryHandler : IHandler<TeamSearchQuery, IList<TeamListModel>
 		return result;
 	}
 
-	public async Task<TeamBaseInfoModel> HandleAsync(TeamBaseInfoQuery message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	public async Task<TeamBaseInfoModel> HandleAsync(TeamBaseInfoQuery message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		var query = _context.Set<Team>().AsNoTracking();
 
