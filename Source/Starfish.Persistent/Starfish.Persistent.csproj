@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Starfish.Shared\Starfish.Shared.csproj" />
+        <ProjectReference Include="..\Starfish.Infrastructure\Starfish.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

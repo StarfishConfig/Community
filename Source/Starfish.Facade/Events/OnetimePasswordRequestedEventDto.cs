@@ -1,5 +1,5 @@
 ﻿using Nerosoft.Euonia.Domain;
-using Nerosoft.Starfish.Shared;
+using Nerosoft.Starfish.Infrastructure;
 
 namespace Nerosoft.Starfish.Facade.Events;
 

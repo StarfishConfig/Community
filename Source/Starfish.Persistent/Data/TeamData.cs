@@ -4,7 +4,7 @@ namespace Nerosoft.Starfish.Persistent;
 /// Represents a persisted team entity.
 /// Inherits from <c>Persistent&lt;long&gt;</c> which provides the numeric identifier.
 /// </summary>
-public class TeamData : Persistent<long>
+internal class TeamData : Persistent<long>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TeamData"/> class.

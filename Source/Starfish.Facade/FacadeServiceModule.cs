@@ -10,7 +10,7 @@ using Nerosoft.Euonia.Uow;
 using Nerosoft.Starfish.Domain;
 using Nerosoft.Starfish.Facade.ExternalAuth;
 using Nerosoft.Starfish.Repository;
-using Nerosoft.Starfish.Shared;
+using Nerosoft.Starfish.Infrastructure;
 
 namespace Nerosoft.Starfish.Facade;
 

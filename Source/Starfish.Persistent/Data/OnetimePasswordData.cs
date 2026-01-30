@@ -1,11 +1,11 @@
-﻿using Nerosoft.Starfish.Shared;
+﻿using Nerosoft.Starfish.Infrastructure;
 
 namespace Nerosoft.Starfish.Persistent.Data;
 
 /// <summary>
 /// Represents the data structure for a one-time password.
 /// </summary>
-public class OnetimePasswordData : Persistent<long>
+internal class OnetimePasswordData : Persistent<long>
 {
 	/// <summary>
 	/// Gets or sets the unique identifier for the one-time password request.
