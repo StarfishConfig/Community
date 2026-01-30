@@ -1,4 +1,4 @@
-namespace Nerosoft.Starfish.Shared;
+namespace Nerosoft.Starfish.Infrastructure;
 
 /// <summary>
 /// Represents the types of user password updates.

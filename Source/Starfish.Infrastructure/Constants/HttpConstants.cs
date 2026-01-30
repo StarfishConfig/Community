@@ -1,4 +1,4 @@
-namespace Nerosoft.Starfish.Shared;
+namespace Nerosoft.Starfish.Infrastructure;
 
 /// <summary>
 /// Common HTTP-related constants used across the application (header names and default query paging values).

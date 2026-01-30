@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Starfish.Shared;
+﻿namespace Nerosoft.Starfish.Infrastructure;
 
 /// <summary>
 /// Contains constants related to one-time passwords.

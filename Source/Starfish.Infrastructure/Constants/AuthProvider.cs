@@ -1,4 +1,4 @@
-namespace Nerosoft.Starfish.Shared;
+namespace Nerosoft.Starfish.Infrastructure;
 
 /// <summary>
 /// Provides a collection of constant strings representing various authentication providers and related identifiers.

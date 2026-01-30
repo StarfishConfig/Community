@@ -1,4 +1,4 @@
-namespace Nerosoft.Starfish.Shared;
+namespace Nerosoft.Starfish.Infrastructure;
 
 /// <summary>
 /// Specifies the type of team member.
