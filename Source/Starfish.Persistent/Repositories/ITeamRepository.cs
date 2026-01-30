@@ -6,7 +6,7 @@ namespace Nerosoft.Starfish.Domain.Repositories;
 /// Defines repository operations for persisting and retrieving <see cref="TeamData"/> entities.
 /// Implementations handle storage concerns (e.g., database, in-memory cache).
 /// </summary>
-public interface ITeamRepository
+internal interface ITeamRepository : IRepository
 {
 	/// <summary>
 	/// Persists the specified <see cref="TeamData"/> instance.

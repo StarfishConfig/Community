@@ -3,7 +3,7 @@ using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Persistent.Repositories;
 
-internal interface ITemplateRepository
+internal interface ITemplateRepository : IRepository
 {
 	Task<long> SaveAsync(TemplateData data, CancellationToken cancellationToken = default);
 

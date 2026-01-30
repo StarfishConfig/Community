@@ -8,7 +8,7 @@ using Nerosoft.Starfish.Repository.Specifications;
 
 namespace Nerosoft.Starfish.Repository.Repositories;
 
-internal class TokenRepository(IdentityDataContext context) : ITokenRepository, ITransientDependency
+internal class TokenRepository(IdentityDataContext context) : ITokenRepository
 {
 	public async Task SaveAsync(TokenData data, CancellationToken cancellationToken = default)
 	{

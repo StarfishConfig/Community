@@ -5,7 +5,7 @@ namespace Nerosoft.Starfish.Persistent.Repositories;
 /// <summary>
 /// Repository interface for managing one-time passwords.
 /// </summary>
-public interface IOnetimePasswordRepository
+internal interface IOnetimePasswordRepository : IRepository
 {
 	/// <summary>
 	/// Asynchronously saves the specified one-time password data to the underlying data store.

@@ -7,8 +7,7 @@ using Nerosoft.Starfish.Repository.Specifications;
 
 namespace Nerosoft.Starfish.Repository.Repositories;
 
-internal class TeamRepository(IdentityDataContext context)
-	: ITeamRepository, ITransientDependency
+internal class TeamRepository(IdentityDataContext context) : ITeamRepository
 {
 	public async Task SaveAsync(TeamData data, CancellationToken cancellationToken = default)
 	{

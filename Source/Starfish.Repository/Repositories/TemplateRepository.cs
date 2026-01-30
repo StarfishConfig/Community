@@ -8,7 +8,7 @@ using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Repositories;
 
-internal class TemplateRepository(SystemDataContext context) : ITemplateRepository, ITransientDependency
+internal class TemplateRepository(SystemDataContext context) : ITemplateRepository
 {
 	public Task DeleteAsync(long id, CancellationToken cancellationToken = default)
 	{

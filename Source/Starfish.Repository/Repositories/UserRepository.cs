@@ -7,7 +7,7 @@ using Nerosoft.Starfish.Repository.Specifications;
 
 namespace Nerosoft.Starfish.Repository.Repositories;
 
-internal class UserRepository(IdentityDataContext context) : IUserRepository, ITransientDependency
+internal class UserRepository(IdentityDataContext context) : IUserRepository
 {
 	public async Task SaveAsync(UserData data, CancellationToken cancellationToken = default)
 	{

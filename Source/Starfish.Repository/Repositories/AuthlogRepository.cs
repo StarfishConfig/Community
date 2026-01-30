@@ -5,7 +5,7 @@ using Nerosoft.Starfish.Repository.Entities;
 
 namespace Nerosoft.Starfish.Repository.Repositories;
 
-internal class AuthlogRepository(IdentityDataContext context) : IAuthlogRepository, ITransientDependency
+internal class AuthlogRepository(IdentityDataContext context) : IAuthlogRepository
 {
 	public async Task SaveAsync(AuthlogData data, CancellationToken cancellationToken = default)
 	{

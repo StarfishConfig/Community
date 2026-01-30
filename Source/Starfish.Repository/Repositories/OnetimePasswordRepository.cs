@@ -6,7 +6,7 @@ using Nerosoft.Starfish.Repository.Entities;
 
 namespace Nerosoft.Starfish.Repository.Repositories;
 
-internal class OnetimePasswordRepository(IdentityDataContext context) : IOnetimePasswordRepository, ITransientDependency
+internal class OnetimePasswordRepository(IdentityDataContext context) : IOnetimePasswordRepository
 {
 	public async Task<OnetimePasswordData> GetAsync(string requestId, CancellationToken cancellationToken = default)
 	{
