@@ -38,12 +38,17 @@ internal class ConfigurationMapper : IEntityTypeConfiguration<Configuration>
 
 		builder.ConfigureAuditableProperties();
 
-		builder.HasMany(t => t.Environments)
-		       .WithOne(t => t.Configuration)
-		       .HasForeignKey(t => t.ConfigurationId)
+		builder.HasMany(e => e.Environments)
+		       .WithOne(e => e.Configuration)
+		       .HasForeignKey(e => e.ConfigurationId)
 		       .OnDelete(DeleteBehavior.Cascade);
 
-		builder.HasMany(t => t.Permissions)
+		builder.HasMany(e => e.Permissions)
+		       .WithOne(e => e.Configuration)
+		       .HasForeignKey(e => e.ConfigurationId)
+		       .OnDelete(DeleteBehavior.Cascade);
+
+		builder.HasMany(e => e.Items)
 		       .WithOne(t => t.Configuration)
 		       .HasForeignKey(t => t.ConfigurationId)
 		       .OnDelete(DeleteBehavior.Cascade);
