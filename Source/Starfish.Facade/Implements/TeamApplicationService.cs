@@ -1,6 +1,7 @@
 using Nerosoft.Euonia.Application;
 using Nerosoft.Euonia.Mapping;
 using Nerosoft.Starfish.Domain.Commands;
+using Nerosoft.Starfish.Facade.Events;
 using Nerosoft.Starfish.Facade.Interfaces;
 using Nerosoft.Starfish.Repository.Requests;
 using Nerosoft.Starfish.Shared;
@@ -93,9 +94,12 @@ internal class TeamApplicationService : BaseApplicationService, ITeamApplication
 		return Bus.SendAsync(command, cancellationToken);
 	}
 
-	public Task RemoveMemberAsync(long teamId, IList<string> userIds, CancellationToken cancellationToken = default)
+	public async Task RemoveMemberAsync(long teamId, IList<string> userIds, CancellationToken cancellationToken = default)
 	{
 		var command = new TeamMemberRemoveCommand(teamId, userIds);
-		return Bus.SendAsync(command, cancellationToken);
+		await Bus.SendAsync(command, cancellationToken);
+
+		var @event = new TeamMemberRemovedEvent(teamId, [..userIds]);
+		await Bus.PublishAsync(@event, cancellationToken);
 	}
 }
