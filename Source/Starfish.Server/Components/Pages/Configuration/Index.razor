@@ -1,0 +1,151 @@
+@page "/configs"
+
+@inject IConfigurationApplicationService Service
+@inject IDialogService DialogService
+
+<PageTitle>@ConfigurationResources.IDS_PAGE_INDEX_TITLE</PageTitle>
+
+<FluentStack VerticalGap="16" Orientation="Orientation.Vertical" Style="width: 100%">
+    <FluentBreadcrumb Style="margin-bottom: 16px;">
+        <FluentBreadcrumbItem Href="/">@LayoutResources.IDS_MENU_TEXT_HOME</FluentBreadcrumbItem>
+        <FluentBreadcrumbItem
+            Href="/configs">@LayoutResources.IDS_MENU_TEXT_CONFIGURATION_MANAGEMENT</FluentBreadcrumbItem>
+    </FluentBreadcrumb>
+
+    <FluentLabel Typo="Typography.Header">@ConfigurationResources.IDS_PAGE_INDEX_TITLE</FluentLabel>
+
+    <FluentCard>
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="16">
+            <FluentAccordion Style="width: 100%">
+                <FluentAccordionItem Heading="@CommonResources.IDS_LABEL_TEXT_FILTER" Expanded="true">
+                    <FluentIcon Value="@(new Icons.Regular.Size20.FilterAdd())" Color="@Color.Neutral" Slot="start"/>
+
+                    <FluentGrid Spacing="1" Justify="JustifyContent.FlexStart" Style="padding: 8px;">
+                        <FluentGridItem xs="12" sm="6" md="3">
+                            <FluentTextField @bind-Value="Keyword" Label="@CommonResources.IDS_LABEL_TEXT_KEYWORD"
+                                             Style="width: 100%"
+                                             Placeholder="@CommonResources.IDS_PLACEHOLDER_KEYWORD"/>
+                        </FluentGridItem>
+                        <FluentGridItem xs="12" sm="6" md="3">
+                            <TeamSelector Label="@ConfigurationResources.IDS_PAGE_INDEX_FILTER_LABEL_TEAM"
+                                          Style="width: 100%;"
+                                          @bind-SelectedItem="SelectedTeam"
+                                          Placeholder="@ConfigurationResources.IDS_PAGE_INDEX_FILTER_PLACEHOLDER_TEAM"/>
+                        </FluentGridItem>
+                    </FluentGrid>
+                    <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End">
+                        <FluentButton IconStart="@(new Icons.Regular.Size16.Add())"
+                                      Appearance="Appearance.Lightweight"
+                                      OnClick="@(() => OnEditClicked())">
+                            @ConfigurationResources.IDS_PAGE_INDEX_BUTTON_TEXT_NEW
+                        </FluentButton>
+                        <FluentButton IconStart="@(new Icons.Regular.Size16.Broom())"
+                                      Disabled="@Loading"
+                                      OnClick="@OnClearClicked">
+                            @CommonResources.IDS_BUTTON_TEXT_CLEAR_FILTER
+                        </FluentButton>
+                        <FluentButton IconStart="@(new Icons.Regular.Size16.Search())"
+                                      Appearance="Appearance.Accent"
+                                      Loading="@Loading"
+                                      OnClick="@OnSearchClicked">
+                            @CommonResources.IDS_BUTTON_TEXT_SEARCH
+                        </FluentButton>
+                    </FluentStack>
+                </FluentAccordionItem>
+            </FluentAccordion>
+
+            <FluentDataGrid @ref="_dataGrid" Style="width: 100%"
+                            TGridItem="ConfigurationListDto"
+                            Items="_dataSource"
+                            RowSize="DataGridRowSize.Large"
+                            GenerateHeader="GenerateHeaderOption.Sticky"
+                            Loading="Loading"
+                            Pagination="Pagination"
+                            RefreshItems="@RefreshItemsAsync">
+                <TemplateColumn Title="@ConfigurationResources.IDS_PAGE_INDEX_COLUMN_CODE">
+                    <FluentAnchor Appearance="Appearance.Hypertext"
+                                  Href="@($"/configs/{context.Id}")">@context.Code</FluentAnchor>
+                </TemplateColumn>
+                <PropertyColumn Title="@ConfigurationResources.IDS_PAGE_INDEX_COLUMN_NAME"
+                                Property="@(p => p.Name)"/>
+                <PropertyColumn Title="@ConfigurationResources.IDS_PAGE_INDEX_COLUMN_DESCRIPTION"
+                                Property="@(p => p.Description)"/>
+                <PropertyColumn Title="@ConfigurationResources.IDS_PAGE_INDEX_COLUMN_TEAM_NAME"
+                                Property="@(p => p.TeamName)"/>
+                <TemplateColumn Title="@CommonResources.IDS_COMMON_COLUMN_ACTIONS" Align="@Align.Center">
+                    @* <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center"> *@
+                    @*     <FluentButton OnClick="@(() => OnEditClicked(context.Id))" *@
+                    @*                   IconStart="@(new Icons.Regular.Size16.Edit())" *@
+                    @*                   Disabled="@(!string.Equals(Identity.UserId, context.OwnerId))" *@
+                    @*                   Appearance="Appearance.Accent">@CommonResources.IDS_BUTTON_TEXT_EDIT</FluentButton> *@
+                    @* </FluentStack> *@
+                </TemplateColumn>
+            </FluentDataGrid>
+
+            <FluentDataGridPaginator State="@Pagination"/>
+        </FluentStack>
+    </FluentCard>
+</FluentStack>
+
+@code {
+    private string Keyword { get; set; } = string.Empty;
+
+    private TeamListDto SelectedTeam { get; set; }
+
+    private bool Loading { get; set; }
+
+    private FluentDataGrid<ConfigurationListDto> _dataGrid;
+    private IQueryable<ConfigurationListDto> _dataSource = Enumerable.Empty<ConfigurationListDto>().AsQueryable();
+    private PaginationState Pagination { get; } = new() { ItemsPerPage = 10 };
+
+    private async Task RefreshItemsAsync(GridItemsProviderRequest<ConfigurationListDto> request)
+    {
+        try
+        {
+            Loading = true;
+
+            await InvokeAsync(StateHasChanged);
+
+            var result = await Service.SearchAsync(Keyword, SelectedTeam?.Id ?? 0, Pagination.CurrentPageIndex * Pagination.ItemsPerPage, Pagination.ItemsPerPage);
+
+            _dataSource = result.AsQueryable();
+
+            Loading = false;
+
+            if (Pagination.CurrentPageIndex == 0)
+            {
+                var count = await Service.CountAsync(Keyword, SelectedTeam?.Id ?? 0);
+                await Pagination.SetTotalItemCountAsync(count);
+            }
+        }
+        finally
+        {
+            Loading = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task OnSearchClicked(MouseEventArgs args)
+    {
+        await _dataGrid.RefreshDataAsync(true);
+    }
+
+    private async Task OnClearClicked(MouseEventArgs args)
+    {
+        Keyword = string.Empty;
+        SelectedTeam = null;
+        await _dataGrid.RefreshDataAsync(true);
+    }
+
+    private async Task OnEditClicked(long? id = null)
+    {
+        var title = id > 0 ? ConfigurationResources.IDS_EDIT_TITLE_UPDATE : ConfigurationResources.IDS_EDIT_TITLE_CREATE;
+        var dialog = await DialogService.ShowDialogAsync<Edit>(id ?? 0, new DialogParameters { Title = title, PreventDismissOnOverlayClick = true });
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            await Pagination.SetCurrentPageIndexAsync(0);
+        }
+    }
+
+}

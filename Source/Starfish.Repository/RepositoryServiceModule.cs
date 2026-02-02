@@ -64,7 +64,8 @@ public class RepositoryServiceModule : ModuleContextBase
 
 		context.Services
 		       .AddDataContextFactory<IdentityDataContext>()
-		       .AddDataContextFactory<SystemDataContext>();
+		       .AddDataContextFactory<SystemDataContext>()
+		       .AddDataContextFactory<ConfigsDataContext>();
 
 		context.Services.AddKeyedSingleton<ICacheService, RedisCacheService>("Redis");
 		context.Services.AddKeyedSingleton<ICacheService, MemoryCacheService>("Memory");

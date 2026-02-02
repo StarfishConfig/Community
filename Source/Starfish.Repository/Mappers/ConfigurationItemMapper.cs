@@ -50,5 +50,7 @@ internal class ConfigurationItemMapper : IEntityTypeConfiguration<ConfigurationI
 		builder.Property(e => e.Status)
 		       .HasColumnName("status")
 		       .IsRequired();
+
+		builder.ConfigureAuditableProperties();
 	}
 }
