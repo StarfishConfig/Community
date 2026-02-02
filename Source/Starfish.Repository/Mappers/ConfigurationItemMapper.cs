@@ -21,7 +21,15 @@ internal class ConfigurationItemMapper : IEntityTypeConfiguration<ConfigurationI
 		       .HasDatabaseName("configuration_item_idx_env_id");
 
 		builder.Property(e => e.ConfigurationId)
+		       .HasColumnName("configuration_id")
 		       .IsRequired();
+
+		builder.Property(e => e.EnvironmentId)
+		       .HasColumnName("environment_id")
+		       .IsRequired();
+
+		builder.Property(e => e.ForkId)
+		       .HasColumnName("fork_id");
 
 		builder.Property(e => e.Key)
 		       .HasColumnName("key")
@@ -35,10 +43,9 @@ internal class ConfigurationItemMapper : IEntityTypeConfiguration<ConfigurationI
 		       .HasMaxLength(4000)
 		       .IsUnicode();
 
-		builder.Property(e => e.EnvironmentId)
-		       .HasColumnName("environment_id")
-		       .HasMaxLength(1000)
-		       .IsUnicode();
+		builder.Property(e => e.Tags)
+		       .HasColumnName("tags")
+		       .HasMaxLength(1000);
 
 		builder.Property(e => e.Status)
 		       .HasColumnName("status")
