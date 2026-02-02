@@ -9,7 +9,7 @@ internal class TeamCreateCommandValidator : AbstractValidator<TeamCreateCommand>
 	public TeamCreateCommandValidator()
 	{
 		RuleFor(x => x.Name)
-			.NotEmpty().WithMessage("Team name is required.")
+			.NotEmpty().WithMessage(TeamResources.IDS_ERROR_NAME_REQUIRED)
 			.MaximumLength(TeamConstants.NameMaximumLength).WithMessage("Team name cannot exceed 100 characters.");
 
 		RuleFor(x => x.Description)
@@ -22,7 +22,7 @@ internal class TeamUpdateCommandValidator : AbstractValidator<TeamUpdateCommand>
 	public TeamUpdateCommandValidator()
 	{
 		RuleFor(x => x.Name)
-			.NotEmpty().WithMessage("Team name is required.")
+			.NotEmpty().WithMessage(TeamResources.IDS_ERROR_NAME_REQUIRED)
 			.MaximumLength(TeamConstants.NameMaximumLength).WithMessage("Team name cannot exceed 100 characters.");
 
 		RuleFor(x => x.Description)
