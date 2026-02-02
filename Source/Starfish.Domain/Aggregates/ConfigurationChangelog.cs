@@ -75,7 +75,7 @@ internal sealed class ConfigurationChangelog : EditableObjectBase<ConfigurationC
 	#region Factory Methods
 
 	[FactoryCreate]
-	protected override Task CreateAsync(CancellationToken cancellationToken = new CancellationToken())
+	protected override Task CreateAsync(CancellationToken cancellationToken = default)
 	{
 		return base.CreateAsync(cancellationToken);
 	}
