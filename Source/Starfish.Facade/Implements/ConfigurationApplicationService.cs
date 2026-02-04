@@ -12,18 +12,22 @@ internal class ConfigurationApplicationService : BaseApplicationService, IConfig
 {
 	public async Task<List<ConfigurationListDto>> SearchAsync(string keyword, long teamId, int skip, int size, CancellationToken cancellationToken = default)
 	{
-		IList<long> teamScopes;
+		IDictionary<long, TeamMemberRole> teamScopes;
 
 		if (User.IsInRoles(RoleName.Admin))
 		{
-			teamScopes = [];
+			teamScopes = new Dictionary<long, TeamMemberRole>();
 		}
 		else
 		{
 			teamScopes = await GetUserTeamScopeAsync(TeamMemberRole.None, cancellationToken);
+			if (teamScopes == null || teamScopes.Count == 0)
+			{
+				return [];
+			}
 		}
 
-		var request = new ConfigurationSearchQuery(teamScopes, keyword, teamId, skip, size);
+		var request = new ConfigurationSearchQuery([.. teamScopes.Keys], keyword, teamId, skip, size);
 
 		var results = await Bus.CallAsync(request, cancellationToken);
 		var items = TypeAdapter.ProjectedAs<List<ConfigurationListDto>>(results);
@@ -41,34 +45,42 @@ internal class ConfigurationApplicationService : BaseApplicationService, IConfig
 
 	public async Task<int> CountAsync(string keyword, long teamId, CancellationToken cancellationToken = default)
 	{
-		IList<long> teamScopes;
+		IDictionary<long, TeamMemberRole> teamScopes;
 
 		if (User.IsInRoles(RoleName.Admin))
 		{
-			teamScopes = [];
+			teamScopes = new Dictionary<long, TeamMemberRole>();
 		}
 		else
 		{
 			teamScopes = await GetUserTeamScopeAsync(TeamMemberRole.None, cancellationToken);
+			if (teamScopes == null || teamScopes.Count == 0)
+			{
+				return 0;
+			}
 		}
 
-		return await Bus.CallAsync(new ConfigurationCountQuery(teamScopes, keyword, teamId), cancellationToken);
+		return await Bus.CallAsync(new ConfigurationCountQuery([.. teamScopes.Keys], keyword, teamId), cancellationToken);
 	}
 
 	public async Task<ConfigurationDetailDto> GetAsync(long id, CancellationToken cancellationToken = default)
 	{
-		IList<long> teamScopes;
+		IDictionary<long, TeamMemberRole> teamScopes;
 
 		if (User.IsInRoles(RoleName.Admin))
 		{
-			teamScopes = [];
+			teamScopes = new Dictionary<long, TeamMemberRole>();
 		}
 		else
 		{
 			teamScopes = await GetUserTeamScopeAsync(TeamMemberRole.None, cancellationToken);
+			if (teamScopes == null || teamScopes.Count == 0)
+			{
+				throw new NotFoundException();
+			}
 		}
 
-		var request = new ConfigurationDetailQuery(teamScopes, id);
+		var request = new ConfigurationDetailQuery([.. teamScopes.Keys], id);
 		var result = await Bus.CallAsync(request, cancellationToken);
 		return TypeAdapter.ProjectedAs<ConfigurationDetailDto>(result);
 	}
@@ -108,14 +120,14 @@ internal class ConfigurationApplicationService : BaseApplicationService, IConfig
 	{
 		var teamScope = await GetUserTeamScopeAsync(TeamMemberRole.None, cancellationToken);
 
-		var baseInfo = await Bus.CallAsync(new ConfigurationBaseInfoQuery(teamScope, id), cancellationToken);
+		var baseInfo = await Bus.CallAsync(new ConfigurationBaseInfoQuery([.. teamScope.Keys], id), cancellationToken);
 
 		if (baseInfo == null)
 		{
 			throw new InvalidOperationException("Configuration not found.");
 		}
 
-		var isTeamOwner = await Bus.CallAsync(new TeamOwnerCheckQuery(baseInfo.TeamId, User.UserId), cancellationToken);
+		var isTeamOwner = teamScope.TryGetValue(baseInfo.TeamId, out var role) && role == TeamMemberRole.Owner;
 
 		if (!isTeamOwner)
 		{
@@ -127,7 +139,7 @@ internal class ConfigurationApplicationService : BaseApplicationService, IConfig
 		await Bus.SendAsync(command, cancellationToken);
 	}
 
-	private Task<IList<long>> GetUserTeamScopeAsync(TeamMemberRole role, CancellationToken cancellationToken)
+	private Task<IDictionary<long, TeamMemberRole>> GetUserTeamScopeAsync(TeamMemberRole role, CancellationToken cancellationToken)
 	{
 		return Bus.CallAsync(new TeamScopeQuery(User.UserId, role), cancellationToken);
 	}

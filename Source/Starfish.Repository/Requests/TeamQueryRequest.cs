@@ -61,7 +61,7 @@ public record TeamOwnerCheckQuery(long TeamId, string UserId) : IRequest<bool>;
 /// </summary>
 /// <param name="UserId">Identifier of the user whose team scope is requested.</param>
 /// <param name="Role">The role to filter teams by for the given user.</param>
-public record TeamScopeQuery(string UserId, TeamMemberRole Role) : IRequest<IList<long>>;
+public record TeamScopeQuery(string UserId, TeamMemberRole Role) : IRequest<IDictionary<long, TeamMemberRole>>;
 
 /// <summary>
 /// Query to retrieve base information for multiple teams by their IDs.
