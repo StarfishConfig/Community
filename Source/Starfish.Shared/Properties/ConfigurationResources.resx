@@ -148,4 +148,16 @@
     <data name="IDS_PAGE_INDEX_BUTTON_TEXT_NEW" xml:space="preserve">
         <value>New Configuration</value>
     </data>
+    <data name="IDS_PAGE_EDIT_LABEL_CODE" xml:space="preserve">
+        <value>Code</value>
+    </data>
+    <data name="IDS_PAGE_EDIT_LABEL_NAME" xml:space="preserve">
+        <value>Name</value>
+    </data>
+    <data name="IDS_PAGE_EDIT_LABEL_DESCRIPTION" xml:space="preserve">
+        <value>Description</value>
+    </data>
+    <data name="IDS_PAGE_EDIT_LABEL_TEAM" xml:space="preserve">
+        <value>Belong Team</value>
+    </data>
 </root>
