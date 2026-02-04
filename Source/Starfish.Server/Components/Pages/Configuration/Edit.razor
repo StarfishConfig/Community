@@ -1,10 +1,12 @@
+@using System.ComponentModel.DataAnnotations
 @implements IDialogContentComponent<long>
 
 @inject IConfigurationApplicationService Service
+@inject IToastService ToastService
 
 <FluentDialogHeader ShowDismiss="true">
     <FluentStack VerticalAlignment="VerticalAlignment.Center">
-        <FluentIcon Value="@(new Icons.Regular.Size24.PeopleTeam())"/>
+        <FluentIcon Value="@(new Icons.Regular.Size24.Apps())"/>
         <FluentLabel Typo="Typography.PaneHeader">
             @Dialog.Instance.Parameters.Title
         </FluentLabel>
@@ -18,7 +20,20 @@
             <DataAnnotationsValidator/>
 
             <FluentStack Orientation="Orientation.Vertical">
-                <TeamSelector @bind-SelectedItem="SelectedTeam" Label="" Role="@TeamMemberRole.Owner"/>
+                <TeamSelector Label="@ConfigurationResources.IDS_PAGE_EDIT_LABEL_TEAM"
+                              Role="@TeamMemberRole.Owner"
+                              @bind-SelectedOption="@SelectedTeam"/>
+
+                <FluentTextField @bind-Value="@Model.Code"
+                                 Style="width: 100%"
+                                 Label="@ConfigurationResources.IDS_PAGE_EDIT_LABEL_CODE"/>
+                <FluentTextField @bind-Value="@Model.Name"
+                                 Style="width: 100%"
+                                 Label="@ConfigurationResources.IDS_PAGE_INDEX_COLUMN_NAME"/>
+                <FluentTextArea @bind-Value="@Model.Description"
+                                Style="width: 100%"
+                                Label="@ConfigurationResources.IDS_PAGE_INDEX_COLUMN_DESCRIPTION"
+                                Maxlength="1000"/>
             </FluentStack>
 
             <FluentValidationSummary/>
@@ -48,7 +63,16 @@
 
     private ViewModel Model { get; } = new();
 
-    private TeamListDto SelectedTeam { get; set; }
+    private TeamListDto SelectedTeam
+    {
+        get;
+        set
+        {
+            field = value;
+            Model.TeamId = value?.Id ?? 0;
+            _editContext.NotifyValidationStateChanged();
+        }
+    }
 
     /// <inheritdoc/>
     protected override async Task OnInitializedAsync()
@@ -64,30 +88,47 @@
 
     private async Task OnSubmitAsync(EditContext context)
     {
-        if (!context.Validate())
+        try
         {
-            return;
+            if (!context.Validate())
+            {
+                return;
+            }
+
+            Loading = true;
+            var data = new ConfigurationCreateDto
+            {
+                Code = Model.Code,
+                Description = Model.Description,
+                Name = Model.Name,
+                TeamId = Model.TeamId
+            };
+            await Service.CreateAsync(data);
+
+            await Dialog.CloseAsync();
         }
-
-        Loading = true;
-        var data = new ConfigurationCreateDto()
+        catch (Exception exception)
         {
-        };
-        await Service.CreateAsync(data);
-        Loading = false;
-
-        await Dialog.CloseAsync();
+            ToastService.ShowError(exception.GetBaseException().Message);
+        }
+        finally
+        {
+            Loading = false;
+        }
     }
 
     private class ViewModel
     {
+        [Range(0, long.MaxValue, MinimumIsExclusive = true)]
+        public long TeamId { get; set; }
+
+        [Required]
         public string Code { get; set; }
 
+        [Required]
         public string Name { get; set; }
 
         public string Description { get; set; }
-
-        public string Symbol { get; set; }
     }
 
 }

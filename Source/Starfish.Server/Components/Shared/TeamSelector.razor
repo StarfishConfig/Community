@@ -9,7 +9,8 @@
                     Multiple="false"
                     OptionValue="@(item => item.Id.ToString())"
                     OptionText="@(item => item.Name)"
-                    @bind-SelectedOption="SelectedItem"/>
+                    SelectedOption="SelectedOption"
+                    SelectedOptionChanged="@SelectedOptionChanged"/>
 
 @code {
 
@@ -21,7 +22,7 @@
 
     [Parameter]
     public string Style { get; set; }
-    
+
     [Parameter]
     public TeamMemberRole Role { get; set; }
 
@@ -33,10 +34,10 @@
     } = 20;
 
     [Parameter]
-    public TeamListDto SelectedItem { get; set; }
+    public TeamListDto SelectedOption { get; set; }
 
     [Parameter]
-    public EventCallback<TeamListDto> SelectedItemChanged { get; set; }
+    public EventCallback<TeamListDto> SelectedOptionChanged { get; set; }
 
     private async Task OnSearchAsync(OptionsSearchEventArgs<TeamListDto> e)
     {
