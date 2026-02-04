@@ -1,5 +1,5 @@
 using Nerosoft.Euonia.Bus;
-using Nerosoft.Euonia.Business;
+using Nerosoft.Euonia.Osba;
 using Nerosoft.Euonia.Uow;
 using Nerosoft.Starfish.Domain.Aggregates;
 using Nerosoft.Starfish.Domain.Commands;

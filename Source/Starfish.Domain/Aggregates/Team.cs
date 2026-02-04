@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using Nerosoft.Euonia.Business;
+using Nerosoft.Euonia.Osba;
 using Nerosoft.Starfish.Domain.Repositories;
 using Nerosoft.Starfish.Persistent;
 

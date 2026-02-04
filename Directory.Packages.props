@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <EnablePackageVersionOverride>true</EnablePackageVersionOverride>
-    <EuoniaPackageVersion>10.3.0</EuoniaPackageVersion>
+    <EuoniaPackageVersion>10.4.0</EuoniaPackageVersion>
     <FluentBlazorPackageVersion>4.13.2</FluentBlazorPackageVersion>
     <RefitPackageVersion>9.0.2</RefitPackageVersion>
   </PropertyGroup>
@@ -52,7 +52,7 @@
     <PackageVersion Include="Euonia.Bus.Abstract" Version="$(EuoniaPackageVersion)" />
     <PackageVersion Include="Euonia.Bus.InMemory" Version="$(EuoniaPackageVersion)" />
     <PackageVersion Include="Euonia.Bus.RabbitMq" Version="$(EuoniaPackageVersion)" />
-    <PackageVersion Include="Euonia.Business" Version="$(EuoniaPackageVersion)" />
+    <PackageVersion Include="Euonia.Osba" Version="$(EuoniaPackageVersion)" />
     <PackageVersion Include="Euonia.Caching" Version="$(EuoniaPackageVersion)" />
     <PackageVersion Include="Euonia.Caching.Memory" Version="$(EuoniaPackageVersion)" />
     <PackageVersion Include="Euonia.Caching.Redis" Version="$(EuoniaPackageVersion)" />

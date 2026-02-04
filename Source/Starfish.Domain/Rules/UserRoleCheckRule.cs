@@ -1,5 +1,5 @@
 using System.Collections.ObjectModel;
-using Nerosoft.Euonia.Business;
+using Nerosoft.Euonia.Osba;
 using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Domain.Rules;

@@ -1,4 +1,4 @@
-﻿using Nerosoft.Euonia.Business;
+﻿using Nerosoft.Euonia.Osba;
 using Nerosoft.Euonia.Domain;
 
 namespace Nerosoft.Starfish.Domain;

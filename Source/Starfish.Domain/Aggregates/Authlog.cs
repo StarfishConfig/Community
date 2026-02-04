@@ -1,4 +1,4 @@
-using Nerosoft.Euonia.Business;
+using Nerosoft.Euonia.Osba;
 using Nerosoft.Starfish.Domain.Commands;
 using Nerosoft.Starfish.Domain.Repositories;
 using Nerosoft.Starfish.Persistent;
