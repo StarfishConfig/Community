@@ -38,7 +38,7 @@ internal class ConfigurationPermission : Entity<long>
 	public bool Write { get; set; }
 
 	/// <summary>
-	/// Gets or sets a value indicating whether the user has published access.
+	/// Gets or sets a value indicating whether the user can publish changes.
 	/// </summary>
 	public bool Publish { get; set; }
 

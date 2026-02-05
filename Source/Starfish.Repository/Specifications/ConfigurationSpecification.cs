@@ -25,6 +25,8 @@ internal static class ConfigurationSpecification
 
 	public static Specification<Configuration> TeamIdEquals(long teamId) => new DirectSpecification<Configuration>(x => x.TeamId == teamId);
 
+	public static Specification<Configuration> TeamIdIn(IList<long> teamScope) => new DirectSpecification<Configuration>(x => teamScope.Contains(x.TeamId));
+	
 	public static Specification<Configuration> ContainsKeyword(string keyword)
 	{
 		keyword = keyword.Normalize(TextCaseType.Lower);

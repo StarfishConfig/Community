@@ -6,13 +6,15 @@ using Nerosoft.Starfish.Repository.Entities;
 using Nerosoft.Starfish.Repository.Models;
 using Nerosoft.Starfish.Repository.Requests;
 using Nerosoft.Starfish.Repository.Specifications;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Handlers;
 
 internal class ConfigurationQueryHandler : IHandler<ConfigurationBaseInfoQuery, ConfigurationBaseInfoModel>,
                                            IHandler<ConfigurationDetailQuery, ConfigurationDetailModel>,
                                            IHandler<ConfigurationSearchQuery, IList<ConfigurationListModel>>,
-                                           IHandler<ConfigurationCountQuery, int>
+                                           IHandler<ConfigurationCountQuery, int>,
+                                           IHandler<ConfigurationPermissionGrantQuery, IReadOnlyDictionary<long, ConfigurationPermissionGrantState>>
 {
 	private readonly ConfigsDataContext _context;
 
@@ -23,24 +25,32 @@ internal class ConfigurationQueryHandler : IHandler<ConfigurationBaseInfoQuery, 
 
 	public async Task<ConfigurationBaseInfoModel> HandleAsync(ConfigurationBaseInfoQuery message, MessageContext context, CancellationToken cancellationToken = default)
 	{
-		if (message.TeamScope?.Count > 0 && message.Id > 0 && message.TeamScope.Contains(message.Id))
+		var specification = ConfigurationSpecification.IdEquals(message.Id);
+
+		if (message.TeamScope?.Count > 0)
 		{
-			return null;
+			specification &= ConfigurationSpecification.TeamIdIn(message.TeamScope);
 		}
 
-		var entity = await _context.Set<Configuration>().FindAsync([message.Id], cancellationToken);
+		var predicate = specification.Satisfy();
+
+		var entity = await _context.Set<Configuration>().FirstOrDefaultAsync(predicate, cancellationToken);
 
 		return TypeAdapter.ProjectedAs<ConfigurationBaseInfoModel>(entity);
 	}
 
 	public async Task<ConfigurationDetailModel> HandleAsync(ConfigurationDetailQuery message, MessageContext context, CancellationToken cancellationToken = default)
 	{
-		if (message.TeamScope?.Count > 0 && message.Id > 0 && message.TeamScope.Contains(message.Id))
+		var specification = ConfigurationSpecification.IdEquals(message.Id);
+
+		if (message.TeamScope?.Count > 0)
 		{
-			return null;
+			specification &= ConfigurationSpecification.TeamIdIn(message.TeamScope);
 		}
 
-		var entity = await _context.Set<Configuration>().FindAsync([message.Id], cancellationToken);
+		var predicate = specification.Satisfy();
+
+		var entity = await _context.Set<Configuration>().FirstOrDefaultAsync(predicate, cancellationToken);
 
 		return TypeAdapter.ProjectedAs<ConfigurationDetailModel>(entity);
 	}
@@ -54,6 +64,7 @@ internal class ConfigurationQueryHandler : IHandler<ConfigurationBaseInfoQuery, 
 
 		var predicate = ConfigurationSpecification.All
 		                                          .AndIf(message.TeamId > 0, () => ConfigurationSpecification.TeamIdEquals(message.TeamId))
+		                                          .AndIf(message.TeamScope?.Count > 0, () => ConfigurationSpecification.TeamIdIn(message.TeamScope))
 		                                          .AndIf(!string.IsNullOrWhiteSpace(message.Keyword), () => ConfigurationSpecification.NameContains(message.Keyword))
 		                                          .Satisfy();
 
@@ -75,10 +86,44 @@ internal class ConfigurationQueryHandler : IHandler<ConfigurationBaseInfoQuery, 
 
 		var predicate = ConfigurationSpecification.All
 		                                          .AndIf(message.TeamId > 0, () => ConfigurationSpecification.TeamIdEquals(message.TeamId))
+		                                          .AndIf(message.TeamScope?.Count > 0, () => ConfigurationSpecification.TeamIdIn(message.TeamScope))
 		                                          .AndIf(!string.IsNullOrWhiteSpace(message.Keyword), () => ConfigurationSpecification.NameContains(message.Keyword))
 		                                          .Satisfy();
 
 		var query = _context.Set<Configuration>().AsNoTracking().Where(predicate);
 		return query.CountAsync(cancellationToken);
+	}
+
+	public async Task<IReadOnlyDictionary<long, ConfigurationPermissionGrantState>> HandleAsync(ConfigurationPermissionGrantQuery message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
+	{
+		var entities = await _context.Set<ConfigurationPermission>().AsNoTracking()
+		                             .Where(t => t.ConfigurationId == message.ConfigurationId && t.UserId == message.UserId)
+		                             .ToListAsync(cancellationToken);
+
+		var result = new Dictionary<long, ConfigurationPermissionGrantState>();
+
+		foreach (var entity in entities)
+		{
+			var grantState = ConfigurationPermissionGrantState.None;
+
+			if (entity.Read)
+			{
+				grantState |= ConfigurationPermissionGrantState.Read;
+			}
+
+			if (entity.Write)
+			{
+				grantState |= ConfigurationPermissionGrantState.Write;
+			}
+
+			if (entity.Publish)
+			{
+				grantState |= ConfigurationPermissionGrantState.Publish;
+			}
+
+			result[entity.EnvironmentId] = grantState;
+		}
+
+		return result;
 	}
 }
