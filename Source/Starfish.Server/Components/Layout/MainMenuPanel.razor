@@ -26,7 +26,7 @@
     protected override async Task OnInitializedAsync()
     {
         Items.Add(new MenuLink("/", new Icons.Regular.Size20.Home(), LayoutResources.IDS_MENU_TEXT_HOME, NavLinkMatch.All));
-        Items.Add(new MenuLink("/configs", new Icons.Regular.Size20.Apps(), LayoutResources.IDS_MENU_TEXT_CONFIGURATION_MANAGEMENT, NavLinkMatch.All));
+        Items.Add(new MenuLink("/configs", new Icons.Regular.Size20.Apps(), LayoutResources.IDS_MENU_TEXT_CONFIGURATION_MANAGEMENT, NavLinkMatch.Prefix));
         Items.Add(new MenuLink("/clients", new Icons.Regular.Size20.Desktop(), LayoutResources.IDS_MENU_TEXT_CLIENT_MANAGEMENT));
         Items.Add(new MenuLink("/nodes", new Icons.Regular.Size20.ServerMultiple(), LayoutResources.IDS_MENU_TEXT_NODES_MANAGEMENT));
         Items.Add(new MenuLink("/teams", new Icons.Regular.Size20.PeopleTeam(), LayoutResources.IDS_MENU_TEXT_TEAM_MANAGEMENT));

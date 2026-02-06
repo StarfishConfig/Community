@@ -37,10 +37,18 @@ public class ConfigurationDetailDto
 	public string Description { get; set; }
 
 	/// <summary>
-	/// Gets or sets the collection of environment names associated with this configuration.
+	/// Gets or sets the date and time when the entity was last updated.
 	/// </summary>
-	/// <value>
-	/// A list of environment identifiers or names. Initialized to an empty list.
-	/// </value>
-	public List<string> Environments { get; set; }
+	/// <remarks>This property is typically updated automatically when changes are made to the entity. It is
+	/// important for tracking the modification history.</remarks>
+	public DateTime UpdatedAt { get; set; }
+
+	/// <summary>
+	/// Gets or sets the identifier of the user who last updated the record.
+	/// </summary>
+	/// <remarks>
+	/// This property is typically used for tracking changes and auditing purposes. Ensure that the value
+	/// is set appropriately to reflect the user responsible for the last modification.
+	/// </remarks>
+	public string UpdatedBy { get; set; }
 }

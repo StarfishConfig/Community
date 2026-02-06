@@ -1,5 +1,7 @@
 @page "/teams/{Id:long}"
 
+@attribute [Authorize]
+
 @inject ITeamApplicationService Service
 @inject NavigationManager Navigation
 @inject IDialogService DialogService

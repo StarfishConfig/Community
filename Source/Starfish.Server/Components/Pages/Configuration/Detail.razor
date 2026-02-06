@@ -1,5 +1,65 @@
 @page "/configs/{Id:long}"
-<h3>Detail</h3>
+
+@attribute [Authorize]
+
+@inject IConfigurationApplicationService ApplicationService
+@inject IToastService ToastService
+@inject IDialogService DialogService
+@inject NavigationManager NavigationService
+
+<PageTitle>@ConfigurationResources.IDS_PAGE_DETAIL_TITLE</PageTitle>
+
+<FluentStack VerticalGap="16" Orientation="Orientation.Vertical" Style="width: 100%">
+    <FluentBreadcrumb Style="margin-bottom: 16px;">
+        <FluentBreadcrumbItem Href="/">@LayoutResources.IDS_MENU_TEXT_HOME</FluentBreadcrumbItem>
+        <FluentBreadcrumbItem Href="/configs">@LayoutResources.IDS_MENU_TEXT_CONFIGURATION_MANAGEMENT</FluentBreadcrumbItem>
+        <FluentBreadcrumbItem Href="@($"/configs/{Id}")">@ConfigurationResources.IDS_PAGE_DETAIL_TITLE</FluentBreadcrumbItem>
+    </FluentBreadcrumb>
+
+    <FluentLabel Typo="Typography.Header">@ConfigurationResources.IDS_PAGE_DETAIL_TITLE</FluentLabel>
+
+    <FluentCard>
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="16">
+            <FluentAccordion Style="width: 100%">
+                <FluentAccordionItem Heading="@ConfigurationResources.IDS_PAGE_DETAIL_PANEL_HEADER_INFO" Expanded="true">
+                    <FluentIcon Value="@(new Icons.Regular.Size20.Info())" Color="@Color.Neutral" Slot="start" />
+                    <FluentGrid Spacing="2" Justify="JustifyContent.FlexStart" Style="padding: 5px;">
+                        <FluentGridItem md="6" sm="12">
+                            <FluentTextField Value="@Data?.Code"
+                                             Label="@ConfigurationResources.IDS_PAGE_DETAIL_LABEL_CODE"
+                                             Style="width: 100%" Disabled="true"
+                                             Class="input-disabled" />
+                        </FluentGridItem>
+                        <FluentGridItem md="6" sm="12">
+                            <FluentTextField Value="@Data?.Name"
+                                             Label="@ConfigurationResources.IDS_PAGE_DETAIL_LABEL_NAME"
+                                             Style="width: 100%" Disabled="true"
+                                             Class="input-disabled" />
+                        </FluentGridItem>
+                        <FluentGridItem md="6" sm="12">
+                            <FluentTextField Value="@Data?.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss")"
+                                             Label="@ConfigurationResources.IDS_PAGE_DETAIL_LABEL_UPDATED_AT"
+                                             Style="width: 100%" Disabled="true"
+                                             Class="input-disabled" />
+                        </FluentGridItem>
+                        <FluentGridItem md="6" sm="12">
+                            <FluentTextField Value="@Data?.UpdatedBy"
+                                             Label="@ConfigurationResources.IDS_PAGE_DETAIL_LABEL_UPDATED_BY"
+                                             Style="width: 100%" Disabled="true"
+                                             Class="input-disabled" />
+                        </FluentGridItem>
+                        <FluentGridItem md="12">
+                            <FluentTextArea Value="@Data?.Description"
+                                            Label="@ConfigurationResources.IDS_PAGE_DETAIL_LABEL_DESCRIPTION"
+                                            Style="width: 100%;" Disabled="true"
+                                            Class="input-disabled" />
+                        </FluentGridItem>
+                    </FluentGrid>
+                </FluentAccordionItem>
+            </FluentAccordion>
+        </FluentStack>
+    </FluentCard>
+</FluentStack>
 
 @code {
 
@@ -9,4 +69,21 @@
     [Parameter]
     public long Id { get; set; }
 
+    private ConfigurationDetailDto Data { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Data = await ApplicationService.GetAsync(Id);
+        }
+        catch (NotFoundException)
+        {
+            NavigationService.NotFound();
+        }
+        catch (Exception exception)
+        {
+            ToastService.ShowError(exception.GetErrorMessage(), callback: EventCallback.Factory.Create<ToastResult>(this, _ => NavigationService.NavigateTo("/")));
+        }
+    }
 }
