@@ -180,4 +180,10 @@
   <data name="IDS_PAGE_DETAIL_LABEL_UPDATED_BY" xml:space="preserve">
     <value>Last Updated By</value>
   </data>
+  <data name="IDS_PAGE_DETAIL_TAB_LABEL_ENVIRONMENT" xml:space="preserve">
+    <value>Environments</value>
+  </data>
+  <data name="IDS_PAGE_DETAIL_TAB_LABEL_ITEMS" xml:space="preserve">
+    <value>Configuration Items</value>
+  </data>
 </root>
