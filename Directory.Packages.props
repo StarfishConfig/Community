@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <EnablePackageVersionOverride>true</EnablePackageVersionOverride>
-    <EuoniaPackageVersion>10.4.0</EuoniaPackageVersion>
+    <EuoniaPackageVersion>10.4.1</EuoniaPackageVersion>
     <FluentBlazorPackageVersion>4.13.2</FluentBlazorPackageVersion>
     <RefitPackageVersion>9.0.2</RefitPackageVersion>
   </PropertyGroup>
