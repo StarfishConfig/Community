@@ -47,4 +47,8 @@ public class ConfigurationDetailModel
 	/// </remarks>
 	public string UpdatedBy { get; set; }
 
+	/// <summary>
+	/// Gets or sets the collection of configuration environments available for the application.
+	/// </summary>
+	public List<ConfigurationEnvironmentModel> Environments { get; set; }
 }

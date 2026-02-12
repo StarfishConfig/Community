@@ -49,5 +49,7 @@ internal class ConfigurationProfile : Profile
 
 		CreateMap<ConfigurationEnvironmentData, ConfigurationEnvironment>()
 			.ReverseMap();
+
+		CreateMap<ConfigurationEnvironment, ConfigurationEnvironmentModel>();
 	}
 }

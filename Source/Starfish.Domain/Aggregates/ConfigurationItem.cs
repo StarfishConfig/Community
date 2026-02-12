@@ -1,28 +1,29 @@
 using Nerosoft.Euonia.Domain;
+using Nerosoft.Euonia.Osba;
 
 namespace Nerosoft.Starfish.Domain.Aggregates;
 
 /// <summary>
 /// Represents a configuration item.
 /// </summary>
-internal class ConfigurationItem : Entity<long>
+internal class ConfigurationItem : ObservableObject<ConfigurationItem>
 {
-	/// <summary>
-	/// Gets the key of the configuration item.
-	/// </summary>
-	public string Key { get; private set; }
+	#region Properties
+	public static readonly PropertyInfo<string> KeyProperty = RegisterProperty<string>(p => p.Key);
 
-	/// <summary>
-	/// Gets the environment name that the configuration value applies to.
-	/// </summary>
-	/// <remarks>
-	///	The environment can be a specific environment name or a wildcard character '*'
-	///	to indicate that the configuration value applies to all environments.
-	/// </remarks>
-	public string Environment { get; private set; }
-	
-	/// <summary>
-	/// Gets the value of the configuration item.
-	/// </summary>
-	public string Value { get; private set; }
+	public string Key
+	{
+		get => GetProperty(KeyProperty);
+		private set => SetProperty(KeyProperty, value);
+	}
+
+	public static readonly PropertyInfo<string> ValueProperty = RegisterProperty<string>(p => p.Value);
+
+	public string Value
+	{
+		get => GetProperty(ValueProperty);
+		private set => SetProperty(ValueProperty, value);
+	}
+
+	#endregion
 }

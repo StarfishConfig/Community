@@ -19,8 +19,6 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	public static readonly PropertyInfo<string> CodeProperty = RegisterProperty<string>(p => p.Code);
 	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
 	public static readonly PropertyInfo<string> DescriptionProperty = RegisterProperty<string>(p => p.Description);
-	public static readonly PropertyInfo<ObservableList<ConfigurationEnvironment>> EnvironmentsProperty = RegisterProperty<ObservableList<ConfigurationEnvironment>>(p => p.Environments);
-	public static readonly PropertyInfo<ObservableList<ConfigurationPermission>> PermissionsProperty = RegisterProperty<ObservableList<ConfigurationPermission>>(p => p.Permissions);
 
 	/// <summary>
 	/// Gets or sets the team identifier associated with the configuration.
@@ -63,21 +61,6 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	{
 		get => GetProperty(DescriptionProperty);
 		private set => SetProperty(DescriptionProperty, value);
-	}
-
-	/// <summary>
-	/// Gets the collection of environments associated with the configuration.
-	/// </summary>
-	public ObservableList<ConfigurationEnvironment> Environments
-	{
-		get => GetProperty(EnvironmentsProperty);
-		private set => SetProperty(EnvironmentsProperty, value);
-	}
-
-	public ObservableList<ConfigurationPermission> Permissions
-	{
-		get => GetProperty(PermissionsProperty);
-		private set => SetProperty(PermissionsProperty, value);
 	}
 
 	#endregion
@@ -178,7 +161,6 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 
 		Description = description;
 	}
-
 	#endregion
 
 	#region Factory Methods
@@ -213,15 +195,6 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 							 LoadProperty(CodeProperty, result.Code);
 							 LoadProperty(NameProperty, result.Name);
 							 LoadProperty(DescriptionProperty, result.Description);
-							 LoadProperty(EnvironmentsProperty, []);
-							 using (Environments.SuppressListChangedEvents)
-							 {
-								 foreach (var data in result.Environments)
-								 {
-									 var item = await factory.FetchAsync<ConfigurationEnvironment>(data, cancellationToken);
-									 Environments.Add(item);
-								 }
-							 }
 						 }, cancellationToken);
 	}
 
@@ -243,7 +216,21 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	[FactoryUpdate]
 	protected override Task UpdateAsync(CancellationToken cancellationToken = default)
 	{
-		throw new NotImplementedException();
+		var data = new ConfigurationData(Id)
+		{
+			TeamId = TeamId,
+			Code = Code,
+			Name = Name,
+			Description = Description
+		};
+
+		var repository = BusinessContext.GetRequiredService<IConfigurationRepository>();
+		return repository.SaveAsync(data, cancellationToken)
+						 .ContinueWith(task =>
+						 {
+							 task.WaitAndUnwrapException(cancellationToken);
+							 //RaiseEvent(new ConfigurationUpdatedEvent { Id = Id, TeamId = TeamId, Code = Code, Name = Name });
+						 }, cancellationToken);
 	}
 
 	[FactoryDelete]

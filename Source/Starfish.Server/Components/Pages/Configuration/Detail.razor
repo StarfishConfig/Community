@@ -58,14 +58,25 @@
                 </FluentAccordionItem>
             </FluentAccordion>
 
-            <FluentTabs Size="TabSize.Medium" Style="width: 100%">
-                <FluentTab Label="@ConfigurationResources.IDS_PAGE_DETAIL_TAB_LABEL_ENVIRONMENT">
+            @if (Data != null)
+            {
+                if (Data.Environments?.Count > 0)
+                {
+                    <FluentTabs Size="TabSize.Medium" Style="width: 100%">
+                        @foreach (var env in Data.Environments)
+                        {
+                            <FluentTab Label="@env.Name">
+                                
+                            </FluentTab>
+                        }
+                    </FluentTabs>
+                }
+                else
+                {
                     
-                </FluentTab>
-                <FluentTab Label="@ConfigurationResources.IDS_PAGE_DETAIL_TAB_LABEL_ITEMS">
-
-                </FluentTab>
-            </FluentTabs>
+                }
+            }
+            
         </FluentStack>
     </FluentCard>
 </FluentStack>

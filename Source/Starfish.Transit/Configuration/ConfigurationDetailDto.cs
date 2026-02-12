@@ -51,4 +51,9 @@ public class ConfigurationDetailDto
 	/// is set appropriately to reflect the user responsible for the last modification.
 	/// </remarks>
 	public string UpdatedBy { get; set; }
+
+	/// <summary>
+	/// Gets or sets the collection of configuration environments associated with this instance.
+	/// </summary>
+	public List<ConfigurationEnvironmentDto> Environments { get; set; }
 }

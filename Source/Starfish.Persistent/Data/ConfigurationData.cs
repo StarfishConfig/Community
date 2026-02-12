@@ -6,6 +6,22 @@ namespace Nerosoft.Starfish.Persistent.Data;
 public class ConfigurationData : Persistent<long>
 {
 	/// <summary>
+	/// Initializes a new instance of the ConfigurationData class.
+	/// </summary>
+	public ConfigurationData()
+	{
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the ConfigurationData class with the specified identifier.
+	/// </summary>
+	/// <param name="id">The unique identifier for the configuration data. Must be a valid long value.</param>
+	public ConfigurationData(long id)
+		: base(id)
+	{
+	}
+
+	/// <summary>
 	/// Gets or sets the team identifier associated with the configuration.
 	/// </summary>
 	/// <value>
@@ -36,9 +52,4 @@ public class ConfigurationData : Persistent<long>
 	/// A <see cref="string"/> providing additional details about the configuration.
 	/// </value>
 	public string Description { get; set; }
-
-	/// <summary>
-	/// Gets or sets the collection of environment-specific configuration data.
-	/// </summary>
-	public List<ConfigurationEnvironmentData> Environments { get; set; } = new();
 }

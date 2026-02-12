@@ -11,10 +11,10 @@ using Nerosoft.Starfish.Shared;
 namespace Nerosoft.Starfish.Repository.Handlers;
 
 internal class ConfigurationQueryHandler : IHandler<ConfigurationBaseInfoQuery, ConfigurationBaseInfoModel>,
-                                           IHandler<ConfigurationDetailQuery, ConfigurationDetailModel>,
-                                           IHandler<ConfigurationSearchQuery, IList<ConfigurationListModel>>,
-                                           IHandler<ConfigurationCountQuery, int>,
-                                           IHandler<ConfigurationPermissionGrantQuery, IReadOnlyDictionary<long, ConfigurationPermissionGrantState>>
+										   IHandler<ConfigurationDetailQuery, ConfigurationDetailModel>,
+										   IHandler<ConfigurationSearchQuery, IList<ConfigurationListModel>>,
+										   IHandler<ConfigurationCountQuery, int>,
+										   IHandler<ConfigurationPermissionGrantQuery, IReadOnlyDictionary<long, ConfigurationPermissionGrantState>>
 {
 	private readonly ConfigsDataContext _context;
 
@@ -50,7 +50,9 @@ internal class ConfigurationQueryHandler : IHandler<ConfigurationBaseInfoQuery, 
 
 		var predicate = specification.Satisfy();
 
-		var entity = await _context.Set<Configuration>().FirstOrDefaultAsync(predicate, cancellationToken);
+		var entity = await _context.Set<Configuration>()
+							 .Include(t => t.Environments)
+							 .FirstOrDefaultAsync(predicate, cancellationToken);
 
 		return TypeAdapter.ProjectedAs<ConfigurationDetailModel>(entity);
 	}
@@ -63,15 +65,15 @@ internal class ConfigurationQueryHandler : IHandler<ConfigurationBaseInfoQuery, 
 		}
 
 		var predicate = ConfigurationSpecification.All
-		                                          .AndIf(message.TeamId > 0, () => ConfigurationSpecification.TeamIdEquals(message.TeamId))
-		                                          .AndIf(message.TeamScope?.Count > 0, () => ConfigurationSpecification.TeamIdIn(message.TeamScope))
-		                                          .AndIf(!string.IsNullOrWhiteSpace(message.Keyword), () => ConfigurationSpecification.NameContains(message.Keyword))
-		                                          .Satisfy();
+												  .AndIf(message.TeamId > 0, () => ConfigurationSpecification.TeamIdEquals(message.TeamId))
+												  .AndIf(message.TeamScope?.Count > 0, () => ConfigurationSpecification.TeamIdIn(message.TeamScope))
+												  .AndIf(!string.IsNullOrWhiteSpace(message.Keyword), () => ConfigurationSpecification.NameContains(message.Keyword))
+												  .Satisfy();
 
 		var query = _context.Set<Configuration>().AsNoTracking().Where(predicate)
-		                    .OrderByDescending(t => t.Id)
-		                    .Skip(message.Skip)
-		                    .Take(message.Size);
+							.OrderByDescending(t => t.Id)
+							.Skip(message.Skip)
+							.Take(message.Size);
 
 		var entities = await query.ToListAsync(cancellationToken);
 		return TypeAdapter.ProjectedAs<IList<ConfigurationListModel>>(entities);
@@ -85,10 +87,10 @@ internal class ConfigurationQueryHandler : IHandler<ConfigurationBaseInfoQuery, 
 		}
 
 		var predicate = ConfigurationSpecification.All
-		                                          .AndIf(message.TeamId > 0, () => ConfigurationSpecification.TeamIdEquals(message.TeamId))
-		                                          .AndIf(message.TeamScope?.Count > 0, () => ConfigurationSpecification.TeamIdIn(message.TeamScope))
-		                                          .AndIf(!string.IsNullOrWhiteSpace(message.Keyword), () => ConfigurationSpecification.NameContains(message.Keyword))
-		                                          .Satisfy();
+												  .AndIf(message.TeamId > 0, () => ConfigurationSpecification.TeamIdEquals(message.TeamId))
+												  .AndIf(message.TeamScope?.Count > 0, () => ConfigurationSpecification.TeamIdIn(message.TeamScope))
+												  .AndIf(!string.IsNullOrWhiteSpace(message.Keyword), () => ConfigurationSpecification.NameContains(message.Keyword))
+												  .Satisfy();
 
 		var query = _context.Set<Configuration>().AsNoTracking().Where(predicate);
 		return query.CountAsync(cancellationToken);
@@ -97,8 +99,8 @@ internal class ConfigurationQueryHandler : IHandler<ConfigurationBaseInfoQuery, 
 	public async Task<IReadOnlyDictionary<long, ConfigurationPermissionGrantState>> HandleAsync(ConfigurationPermissionGrantQuery message, MessageContext context, CancellationToken cancellationToken = new CancellationToken())
 	{
 		var entities = await _context.Set<ConfigurationPermission>().AsNoTracking()
-		                             .Where(t => t.ConfigurationId == message.ConfigurationId && t.UserId == message.UserId)
-		                             .ToListAsync(cancellationToken);
+									 .Where(t => t.ConfigurationId == message.ConfigurationId && t.UserId == message.UserId)
+									 .ToListAsync(cancellationToken);
 
 		var result = new Dictionary<long, ConfigurationPermissionGrantState>();
 

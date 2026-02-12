@@ -14,5 +14,7 @@ internal class ConfigurationProfile : Profile
 
 		CreateMap<ConfigurationListModel, ConfigurationListDto>();
 		CreateMap<ConfigurationDetailModel, ConfigurationDetailDto>();
+
+		CreateMap<ConfigurationEnvironmentModel, ConfigurationEnvironmentDto>();
 	}
 }

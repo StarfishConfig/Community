@@ -1,0 +1,121 @@
+﻿@using System.ComponentModel.DataAnnotations
+@implements IDialogContentComponent<DialogArgs<long>>
+
+@inject IConfigurationApplicationService ApplicationService
+@inject IToastService ToastService
+
+<FluentDialogHeader ShowDismiss="true">
+    <FluentStack VerticalAlignment="VerticalAlignment.Center">
+        <FluentIcon Value="@(new Icons.Regular.Size24.Apps())" />
+        <FluentLabel Typo="Typography.PaneHeader">
+            @Dialog.Instance.Parameters.Title
+        </FluentLabel>
+    </FluentStack>
+</FluentDialogHeader>
+
+<FluentDialogBody>
+    <FluentStack Orientation="Orientation.Vertical">
+        <FluentEditForm @ref="_editForm" EditContext="_editContext" OnSubmit="@OnSubmitAsync" FormName="form"
+                        Style="width: 100%">
+            <DataAnnotationsValidator />
+
+            <FluentStack Orientation="Orientation.Vertical">
+
+                <FluentTextField @bind-Value="@Model.Name"
+                                 Style="width: 100%"
+                                 TextFieldType="TextFieldType.Text" />
+
+                <FluentTextField @bind-Value="@Model.Secret"
+                                 Style="width: 100%"
+                                 TextFieldType="TextFieldType.Password" />
+
+                <FluentTextArea Style="width: 100%"
+                                Label="@TeamResources.IDS_EDIT_LABEL_DESCRIPTION"
+                                Placeholder="@TeamResources.IDS_EDIT_PLACEHOLDER_DESCRIPTION"
+                                @bind-Value="@Model.Description" />
+            </FluentStack>
+
+            <FluentValidationSummary />
+        </FluentEditForm>
+    </FluentStack>
+</FluentDialogBody>
+
+<FluentDialogFooter>
+    <FluentButton Appearance="Appearance.Accent" OnClick="@SaveAsync"
+                  Loading="Loading">@(CommonResources.IDS_COMMON_SAVE)</FluentButton>
+    <FluentButton Appearance="Appearance.Neutral"
+                  OnClick="@(() => Dialog.CancelAsync())">@(CommonResources.IDS_COMMON_CANCEL)</FluentButton>
+</FluentDialogFooter>
+
+@code {
+
+    [Parameter]
+    public DialogArgs<long> Content { get; set; }
+
+    [CascadingParameter]
+    public FluentDialog Dialog { get; set; }
+
+    private bool Loading { get; set; }
+
+    private EditContext _editContext;
+    private FluentEditForm _editForm;
+
+    private ViewModel Model { get; } = new();
+
+    private TeamListDto SelectedTeam
+    {
+        get;
+        set
+        {
+            field = value;
+            _editContext.NotifyValidationStateChanged();
+        }
+    }
+
+    /// <inheritdoc/>
+    protected override async Task OnInitializedAsync()
+    {
+        _editContext = new EditContext(Model);
+        await base.OnInitializedAsync();
+    }
+
+    private async Task SaveAsync(MouseEventArgs args)
+    {
+        await _editForm.OnSubmit.InvokeAsync(_editContext);
+    }
+
+    private async Task OnSubmitAsync(EditContext context)
+    {
+        try
+        {
+            if (!context.Validate())
+            {
+                return;
+            }
+
+            Loading = true;
+
+            await Dialog.CloseAsync();
+        }
+        catch (Exception exception)
+        {
+            ToastService.ShowError(exception.GetBaseException().Message);
+        }
+        finally
+        {
+            Loading = false;
+        }
+    }
+
+    private class ViewModel
+    {
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Secret { get; set; }
+
+        public string Description { get; set; }
+    }
+
+}
