@@ -18,6 +18,11 @@ internal class ConfigurationChangelog : Entity<long>
 	public long ConfigurationId { get; set; }
 
 	/// <summary>
+	/// Gets or sets the identifier of the environment this change is associated with.
+	/// </summary>
+	public long EnvironmentId { get; set; }
+
+	/// <summary>
 	/// Gets or sets the numeric identifier of the specific configuration item that changed.
 	/// </summary>
 	public long ItemId { get; set; }

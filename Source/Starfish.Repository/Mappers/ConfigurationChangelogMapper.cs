@@ -5,7 +5,7 @@ using Nerosoft.Starfish.Repository.Entities;
 
 namespace Nerosoft.Starfish.Repository.Mappers;
 
-[DbContext(typeof(ConfigsDataContext))]
+[DbContext(typeof(ProjectDataContext))]
 internal class ConfigurationChangelogMapper : IEntityTypeConfiguration<ConfigurationChangelog>
 {
 	public void Configure(EntityTypeBuilder<ConfigurationChangelog> builder)

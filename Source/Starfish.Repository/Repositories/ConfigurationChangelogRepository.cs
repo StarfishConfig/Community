@@ -5,7 +5,7 @@ using Nerosoft.Starfish.Repository.Entities;
 
 namespace Nerosoft.Starfish.Repository.Repositories;
 
-internal class ConfigurationChangelogRepository(ConfigsDataContext context) : IConfigurationChangelogRepository
+internal class ConfigurationChangelogRepository(ProjectDataContext context) : IConfigurationChangelogRepository
 {
 	public async Task SaveAsync(ConfigurationChangelogData data, CancellationToken cancellationToken = default)
 	{

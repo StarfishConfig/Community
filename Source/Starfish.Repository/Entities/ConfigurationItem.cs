@@ -18,12 +18,6 @@ internal class ConfigurationItem : Entity<long>, IAuditable
 	public long EnvironmentId { get; set; }
 
 	/// <summary>
-	/// Gets or sets the fork identifier if this item is part of a forked configuration.
-	/// A null value indicates that the item is not part of any fork.
-	/// </summary>
-	public long? ForkId { get; set; }
-
-	/// <summary>
 	/// Gets or sets the configuration key.
 	/// </summary>
 	public string Key { get; set; }
@@ -32,19 +26,6 @@ internal class ConfigurationItem : Entity<long>, IAuditable
 	/// Gets or sets the configuration value.
 	/// </summary>
 	public string Value { get; set; }
-
-	/// <summary>
-	/// Gets or sets the fork tags.
-	/// </summary>
-	/// <remarks>
-	/// <![CDATA[The tags are stored as a url-encoded string in the format: "cluster=cluster1&ip=192.168.1.10&machine=machine1&subnet=192.168.1.1/24". And they are sorted by key in ascending order.]]>
-	/// </remarks>
-	public string Tags { get; set; }
-
-	/// <summary>
-	/// Gets or sets the status of the configuration item.
-	/// </summary>
-	public ConfigurationStatus Status { get; set; }
 
 	/// <summary>
 	/// Gets or sets the UTC date and time when the configuration item was created.

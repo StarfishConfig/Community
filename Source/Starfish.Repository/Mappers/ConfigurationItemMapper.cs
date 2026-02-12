@@ -5,7 +5,7 @@ using Nerosoft.Starfish.Repository.Entities;
 
 namespace Nerosoft.Starfish.Repository.Mappers;
 
-[DbContext(typeof(ConfigsDataContext))]
+[DbContext(typeof(ProjectDataContext))]
 internal class ConfigurationItemMapper : IEntityTypeConfiguration<ConfigurationItem>
 {
 	public void Configure(EntityTypeBuilder<ConfigurationItem> builder)

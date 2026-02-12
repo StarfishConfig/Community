@@ -76,14 +76,4 @@ internal sealed class Configuration : Entity<long>, IAuditable
     /// Gets or sets the collection of environment entries related to this configuration.
     /// </summary>
     public HashSet<ConfigurationEnvironment> Environments { get; set; } = [];
-
-    /// <summary>
-    /// Gets or sets the collection of permissions associated with this configuration.
-    /// </summary>
-    public HashSet<ConfigurationPermission> Permissions { get; set; } = [];
-
-    /// <summary>
-    /// Gets or sets the collection of configuration items contained by this configuration.
-    /// </summary>
-    public HashSet<ConfigurationItem> Items { get; set; } = [];
 }

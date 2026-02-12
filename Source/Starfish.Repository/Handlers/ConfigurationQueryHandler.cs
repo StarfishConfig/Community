@@ -16,9 +16,9 @@ internal class ConfigurationQueryHandler : IHandler<ConfigurationBaseInfoQuery, 
 										   IHandler<ConfigurationCountQuery, int>,
 										   IHandler<ConfigurationPermissionGrantQuery, IReadOnlyDictionary<long, ConfigurationPermissionGrantState>>
 {
-	private readonly ConfigsDataContext _context;
+	private readonly ProjectDataContext _context;
 
-	public ConfigurationQueryHandler(ConfigsDataContext context)
+	public ConfigurationQueryHandler(ProjectDataContext context)
 	{
 		_context = context;
 	}

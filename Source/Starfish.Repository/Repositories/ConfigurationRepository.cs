@@ -5,7 +5,7 @@ using Nerosoft.Starfish.Repository.Entities;
 
 namespace Nerosoft.Starfish.Repository.Repositories;
 
-internal class ConfigurationRepository(ConfigsDataContext context) : IConfigurationRepository
+internal class ConfigurationRepository(ProjectDataContext context) : IConfigurationRepository
 {
 	public async Task<long> SaveAsync(ConfigurationData data, CancellationToken cancellationToken = default)
 	{

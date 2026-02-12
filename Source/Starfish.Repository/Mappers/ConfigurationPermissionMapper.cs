@@ -5,7 +5,7 @@ using Nerosoft.Starfish.Repository.Entities;
 
 namespace Nerosoft.Starfish.Repository.Mappers;
 
-[DbContext(typeof(ConfigsDataContext))]
+[DbContext(typeof(ProjectDataContext))]
 internal class ConfigurationPermissionMapper : IEntityTypeConfiguration<ConfigurationPermission>
 {
 	public void Configure(EntityTypeBuilder<ConfigurationPermission> builder)
