@@ -51,7 +51,6 @@ internal class ConfigurationQueryHandler : IHandler<ConfigurationBaseInfoQuery, 
 		var predicate = specification.Satisfy();
 
 		var entity = await _context.Set<Configuration>()
-							 .Include(t => t.Environments)
 							 .FirstOrDefaultAsync(predicate, cancellationToken);
 
 		return TypeAdapter.ProjectedAs<ConfigurationDetailModel>(entity);
@@ -123,7 +122,7 @@ internal class ConfigurationQueryHandler : IHandler<ConfigurationBaseInfoQuery, 
 				grantState |= ConfigurationPermissionGrantState.Publish;
 			}
 
-			result[entity.EnvironmentId] = grantState;
+			result[entity.ConfigurationId] = grantState;
 		}
 
 		return result;

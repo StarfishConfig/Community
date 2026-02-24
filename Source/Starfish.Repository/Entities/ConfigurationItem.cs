@@ -12,12 +12,6 @@ internal class ConfigurationItem : Entity<long>, IAuditable
 	public long ConfigurationId { get; set; }
 
 	/// <summary>
-	/// Gets or sets the identifier of the environment this configuration item is associated with.
-	/// Typically, an Int64 identifier for an environment such as Development, Staging, or Production.
-	/// </summary>
-	public long EnvironmentId { get; set; }
-
-	/// <summary>
 	/// Gets or sets the configuration key.
 	/// </summary>
 	public string Key { get; set; }

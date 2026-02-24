@@ -38,11 +38,6 @@ internal class ConfigurationMapper : IEntityTypeConfiguration<Configuration>
 
 		builder.ConfigureAuditableProperties();
 
-		builder.HasMany(e => e.Environments)
-		       .WithOne(e => e.Configuration)
-		       .HasForeignKey(e => e.ConfigurationId)
-		       .OnDelete(DeleteBehavior.Cascade);
-
 		builder.HasMany(e => e.Permissions)
 		       .WithOne(e => e.Configuration)
 		       .HasForeignKey(e => e.ConfigurationId)

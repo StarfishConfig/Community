@@ -18,11 +18,6 @@ internal class ConfigurationPermission : Entity<long>
 	public long ConfigurationId { get; set; }
 
 	/// <summary>
-	/// Gets or sets the identifier of the associated environment.
-	/// </summary>
-	public long EnvironmentId { get; set; }
-
-	/// <summary>
 	/// Gets or sets the identifier of the user to whom the permissions are granted.
 	/// </summary>
 	public string UserId { get; set; }
