@@ -176,7 +176,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	}
 
 	[FactoryFetch]
-	private Task FetchAsync(long id, CancellationToken cancellationToken = default)
+	protected override Task FetchAsync(long id, CancellationToken cancellationToken = default)
 	{
 		var repository = BusinessContext.GetRequiredService<IConfigurationRepository>();
 		var factory = BusinessContext.GetRequiredService<IObjectFactory>();
