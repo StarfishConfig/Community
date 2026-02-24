@@ -157,7 +157,7 @@ internal sealed class Team : EditableObjectBase<Team, long>
 	}
 
 	[FactoryFetch]
-	private async Task FetchAsync(long id, CancellationToken cancellationToken = default)
+	protected override async Task FetchAsync(long id, CancellationToken cancellationToken = default)
 	{
 		var repository = BusinessContext.GetRequiredService<ITeamRepository>();
 		var data = await repository.GetAsync(id, cancellationToken);

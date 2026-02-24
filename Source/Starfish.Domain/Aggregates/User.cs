@@ -240,7 +240,7 @@ internal sealed class User : EditableObjectBase<User, string>
 	}
 
 	[FactoryFetch]
-	private async Task FetchAsync(string id, CancellationToken cancellationToken = default)
+	protected override async Task FetchAsync(string id, CancellationToken cancellationToken = default)
 	{
 		var repository = BusinessContext.GetRequiredService<IUserRepository>();
 		var data = await repository.GetAsync(id, cancellationToken);

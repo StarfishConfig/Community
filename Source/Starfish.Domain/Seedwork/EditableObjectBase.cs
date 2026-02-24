@@ -98,4 +98,9 @@ internal abstract class EditableObjectBase<TTarget, TKey> : EditableObject<TTarg
 	/// </summary>
 	/// <returns></returns>
 	public virtual object[] GetKeys() => [Id!];
+
+	protected virtual Task FetchAsync(TKey id, CancellationToken cancellationToken = default)
+	{
+		throw new NotImplementedException("The method must be override.");
+	}
 }
