@@ -16,7 +16,7 @@ public class ConfigurationCreateCommand : Command
 	/// Gets or sets the identifier of the team that will own the configuration.
 	/// </summary>
 	/// <value>The team identifier.</value>
-	public long TeamId { get; set; }
+	public long ProjectId { get; set; }
 
 	/// <summary>
 	/// Gets or sets the unique code used to reference the configuration.
