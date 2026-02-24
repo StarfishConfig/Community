@@ -15,7 +15,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 {
 	#region Properties
 
-	public static readonly PropertyInfo<long> TeamIdProperty = RegisterProperty<long>(p => p.TeamId);
+	public static readonly PropertyInfo<long> ProjectIdProperty = RegisterProperty<long>(p => p.ProjectId);
 	public static readonly PropertyInfo<string> CodeProperty = RegisterProperty<string>(p => p.Code);
 	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
 	public static readonly PropertyInfo<string> DescriptionProperty = RegisterProperty<string>(p => p.Description);
@@ -27,10 +27,10 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	///	- Must be greater than zero.
 	/// - Must correspond to an existing team in the system.
 	/// </remarks>
-	public long TeamId
+	public long ProjectId
 	{
-		get => GetProperty(TeamIdProperty);
-		private set => SetProperty(TeamIdProperty, value);
+		get => GetProperty(ProjectIdProperty);
+		private set => SetProperty(ProjectIdProperty, value);
 	}
 
 	/// <summary>
@@ -69,7 +69,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 
 	protected override void AddRules()
 	{
-		Rules.AddRule<Configuration>(TeamIdProperty, _ => Task.FromResult(TeamId > 0), "TeamId must be greater than zero.");
+		Rules.AddRule<Configuration>(ProjectIdProperty, _ => Task.FromResult(ProjectId > 0), "TeamId must be greater than zero.");
 		Rules.AddRule(new CodeCheckRule(CodeProperty));
 		Rules.AddRule<Configuration>(DescriptionProperty, _ => Task.FromResult(string.IsNullOrWhiteSpace(Description) || Description.Length <= 1000), "Description cannot exceed 1000 characters.");
 	}
@@ -102,7 +102,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 			else
 			{
 				var repository = target.BusinessContext.GetRequiredService<IConfigurationRepository>();
-				var teamId = target.ReadProperty(TeamIdProperty);
+				var teamId = target.ReadProperty(ProjectIdProperty);
 
 				var excludeId = target.IsNew ? 0 : target.ReadProperty(IdProperty);
 
@@ -168,7 +168,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	[FactoryCreate]
 	private async Task CreateAsync(ConfigurationCreateCommand command, CancellationToken cancellationToken = default)
 	{
-		TeamId = command.TeamId;
+		ProjectId = command.ProjectId;
 		Code = command.Code;
 		Name = command.Name;
 		Description = command.Description;
@@ -191,7 +191,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 							 }
 
 							 LoadProperty(IdProperty, result.Id);
-							 LoadProperty(TeamIdProperty, result.TeamId);
+							 LoadProperty(ProjectIdProperty, result.TeamId);
 							 LoadProperty(CodeProperty, result.Code);
 							 LoadProperty(NameProperty, result.Name);
 							 LoadProperty(DescriptionProperty, result.Description);
@@ -203,14 +203,14 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	{
 		var data = new ConfigurationData
 		{
-			TeamId = TeamId,
+			TeamId = ProjectId,
 			Code = Code,
 			Name = Name,
 			Description = Description
 		};
 		var repository = BusinessContext.GetRequiredService<IConfigurationRepository>();
 		var id = await repository.SaveAsync(data, cancellationToken);
-		RaiseEvent(new ConfigurationCreatedEvent { Id = id, TeamId = TeamId, Code = Code, Name = Name });
+		RaiseEvent(new ConfigurationCreatedEvent { Id = id, TeamId = ProjectId, Code = Code, Name = Name });
 	}
 
 	[FactoryUpdate]
@@ -218,7 +218,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	{
 		var data = new ConfigurationData(Id)
 		{
-			TeamId = TeamId,
+			TeamId = ProjectId,
 			Code = Code,
 			Name = Name,
 			Description = Description
