@@ -5,6 +5,7 @@ using Nerosoft.Starfish.Domain.Events;
 using Nerosoft.Starfish.Persistent.Data;
 using Nerosoft.Starfish.Persistent.Repositories;
 using Nerosoft.Starfish.Shared;
+using Nerosoft.Starfish.Toolkit;
 
 namespace Nerosoft.Starfish.Domain.Aggregates;
 
@@ -15,10 +16,14 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 {
 	#region Properties
 
-	public static readonly PropertyInfo<long> ProjectIdProperty = RegisterProperty<long>(p => p.ProjectId);
+	public static readonly PropertyInfo<long> TeamIdProperty = RegisterProperty<long>(p => p.TeamId);
 	public static readonly PropertyInfo<string> CodeProperty = RegisterProperty<string>(p => p.Code);
 	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
+	public static readonly PropertyInfo<string> SecretProperty = RegisterProperty<string>(p => p.Secret);
 	public static readonly PropertyInfo<string> DescriptionProperty = RegisterProperty<string>(p => p.Description);
+	public static readonly PropertyInfo<ConfigurationStatus> StatusProperty = RegisterProperty<ConfigurationStatus>(p => p.Status);
+	public static readonly PropertyInfo<ObservableList<ConfigurationPermission>> PermissionsProperty = RegisterProperty<ObservableList<ConfigurationPermission>>(p => p.Permissions);
+	public static readonly PropertyInfo<ObservableList<ConfigurationItem>> ItemsProperty = RegisterProperty<ObservableList<ConfigurationItem>>(p => p.Items);
 
 	/// <summary>
 	/// Gets or sets the team identifier associated with the configuration.
@@ -27,10 +32,10 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	///	- Must be greater than zero.
 	/// - Must correspond to an existing team in the system.
 	/// </remarks>
-	public long ProjectId
+	public long TeamId
 	{
-		get => GetProperty(ProjectIdProperty);
-		private set => SetProperty(ProjectIdProperty, value);
+		get => GetProperty(TeamIdProperty);
+		private set => SetProperty(TeamIdProperty, value);
 	}
 
 	/// <summary>
@@ -55,6 +60,15 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	}
 
 	/// <summary>
+	/// Gets the secret associated with the configuration.
+	/// </summary>
+	public string Secret
+	{
+		get => GetProperty(SecretProperty);
+		private set => SetProperty(SecretProperty, value);
+	}
+
+	/// <summary>
 	/// Gets or sets the description of the configuration.
 	/// </summary>
 	public string Description
@@ -63,13 +77,42 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 		private set => SetProperty(DescriptionProperty, value);
 	}
 
+	/// <summary>
+	/// Gets the status of the configuration.
+	/// </summary>
+	public ConfigurationStatus Status
+	{
+		get => GetProperty(StatusProperty);
+		private set => SetProperty(StatusProperty, value);
+	}
+
+	/// <summary>
+	/// Gets the collection of configuration permissions associated with the current instance.
+	/// </summary>
+	public ObservableList<ConfigurationPermission> Permissions
+	{
+		get => GetProperty(PermissionsProperty);
+		private set => SetProperty(PermissionsProperty, value);
+	}
+
+	/// <summary>
+	/// Gets the collection of configuration items associated with this instance.
+	/// </summary>
+	/// <remarks>The returned collection is observable and will notify listeners of changes. The property is
+	/// read-only; items can be added or removed from the collection, but the collection reference itself cannot be
+	/// replaced externally.</remarks>
+	public ObservableList<ConfigurationItem> Items
+	{
+		get => GetProperty(ItemsProperty);
+		private set => SetProperty(ItemsProperty, value);
+	}
 	#endregion
 
 	#region Rules
 
 	protected override void AddRules()
 	{
-		Rules.AddRule<Configuration>(ProjectIdProperty, _ => Task.FromResult(ProjectId > 0), "TeamId must be greater than zero.");
+		Rules.AddRule<Configuration>(TeamIdProperty, _ => Task.FromResult(TeamId > 0), "TeamId must be greater than zero.");
 		Rules.AddRule(new CodeCheckRule(CodeProperty));
 		Rules.AddRule<Configuration>(DescriptionProperty, _ => Task.FromResult(string.IsNullOrWhiteSpace(Description) || Description.Length <= 1000), "Description cannot exceed 1000 characters.");
 	}
@@ -102,7 +145,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 			else
 			{
 				var repository = target.BusinessContext.GetRequiredService<IConfigurationRepository>();
-				var teamId = target.ReadProperty(ProjectIdProperty);
+				var teamId = target.ReadProperty(TeamIdProperty);
 
 				var excludeId = target.IsNew ? 0 : target.ReadProperty(IdProperty);
 
@@ -110,7 +153,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 
 				if (exists)
 				{
-					context.AddErrorResult($"A configuration with the code '{value}' already exists in the team.");
+					context.AddErrorResult($"The configuration code '{value}' already exists within the team.");
 				}
 			}
 		}
@@ -149,6 +192,15 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	}
 
 	/// <summary>
+	/// Encrypts and stores the specified secret value.
+	/// </summary>
+	/// <param name="secret">The plain text secret to encrypt and store. Cannot be null.</param>
+	public void SetSecret(string secret)
+	{
+		Secret = Cryptography.AES.Encrypt(secret);
+	}
+
+	/// <summary>
 	/// Sets the description of the configuration.
 	/// </summary>
 	/// <param name="description"></param>
@@ -161,18 +213,75 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 
 		Description = description;
 	}
+
+	/// <summary>
+	/// Sets the permission grant states for multiple users based on the specified mapping.
+	/// </summary>
+	/// <remarks>If a user's grant state is set to None, their permissions are removed. Granting higher-level
+	/// permissions (such as Publish) will also grant all lower-level permissions (Write and Read) for that user.</remarks>
+	/// <param name="permissions">A dictionary mapping user identifiers to their desired permission grant states. Each entry specifies the
+	/// permissions to assign or remove for the corresponding user.</param>
+	public void SetPermissions(Dictionary<string, ConfigurationPermissionGrantState> permissions)
+	{
+		var factory = BusinessContext.GetRequiredService<IObjectFactory>();
+
+		foreach (var (userId, state) in permissions)
+		{
+			var permission = Permissions.FirstOrDefault(p => p.UserId == userId);
+			if (permission == null && state != ConfigurationPermissionGrantState.None)
+			{
+				permission = factory.Create<ConfigurationPermission>(userId);
+			}
+
+			if (state == ConfigurationPermissionGrantState.None)
+			{
+				Permissions.Remove(permission);
+			}
+			else
+			{
+				if (state.HasFlag(ConfigurationPermissionGrantState.Publish))
+				{
+					permission.AllowPublish = true;
+					permission.AllowWrite = true;
+					permission.AllowRead = true;
+				}
+				if (state.HasFlag(ConfigurationPermissionGrantState.Write))
+				{
+					permission.AllowWrite = true;
+					permission.AllowRead = true;
+				}
+				if (state.HasFlag(ConfigurationPermissionGrantState.Read))
+				{
+					permission.AllowRead = true;
+				}
+			}
+		}
+	}
+
+	/// <summary>
+	/// Removes the permission entry associated with the specified user identifier, if it exists.
+	/// </summary>
+	/// <remarks>If no permission entry exists for the specified user identifier, the method performs no
+	/// action.</remarks>
+	/// <param name="userId">The unique identifier of the user whose permission should be removed. Cannot be null.</param>
+	public void RemovePermission(string userId)
+	{
+		var permission = Permissions.FirstOrDefault(p => p.UserId == userId);
+		if (permission != null)
+		{
+			Permissions.Remove(permission);
+		}
+	}
+
 	#endregion
 
 	#region Factory Methods
-
 	[FactoryCreate]
-	private async Task CreateAsync(ConfigurationCreateCommand command, CancellationToken cancellationToken = default)
+	protected override Task CreateAsync(CancellationToken cancellationToken = default)
 	{
-		ProjectId = command.ProjectId;
-		Code = command.Code;
-		Name = command.Name;
-		Description = command.Description;
-		await Task.CompletedTask;
+		Status = ConfigurationStatus.Pending;
+		LoadProperty(PermissionsProperty, []);
+		return base.CreateAsync(cancellationToken);
 	}
 
 	[FactoryFetch]
@@ -191,7 +300,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 							 }
 
 							 LoadProperty(IdProperty, result.Id);
-							 LoadProperty(ProjectIdProperty, result.TeamId);
+							 LoadProperty(TeamIdProperty, result.TeamId);
 							 LoadProperty(CodeProperty, result.Code);
 							 LoadProperty(NameProperty, result.Name);
 							 LoadProperty(DescriptionProperty, result.Description);
@@ -203,14 +312,14 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	{
 		var data = new ConfigurationData
 		{
-			TeamId = ProjectId,
+			TeamId = TeamId,
 			Code = Code,
 			Name = Name,
 			Description = Description
 		};
 		var repository = BusinessContext.GetRequiredService<IConfigurationRepository>();
 		var id = await repository.SaveAsync(data, cancellationToken);
-		RaiseEvent(new ConfigurationCreatedEvent { Id = id, TeamId = ProjectId, Code = Code, Name = Name });
+		RaiseEvent(new ConfigurationCreatedEvent { Id = id, TeamId = TeamId, Code = Code, Name = Name });
 	}
 
 	[FactoryUpdate]
@@ -218,7 +327,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	{
 		var data = new ConfigurationData(Id)
 		{
-			TeamId = ProjectId,
+			TeamId = TeamId,
 			Code = Code,
 			Name = Name,
 			Description = Description
