@@ -45,4 +45,4 @@ public record ConfigurationCountQuery(IList<long> TeamScope, string Keyword, lon
 
 public record ConfigurationDetailQuery(IList<long> TeamScope, long Id) : IRequest<ConfigurationDetailModel>;
 
-public record ConfigurationPermissionGrantQuery(IList<long> TeamScope, long ConfigurationId, string UserId) : IRequest<IReadOnlyDictionary<long, ConfigurationPermissionGrantState>>;
+public record ConfigurationPermissionGrantQuery(IList<long> TeamScope, string UserId) : IRequest<IReadOnlyDictionary<long, ConfigurationPermissionGrantState>>;
