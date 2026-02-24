@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <EmbeddedResource Update="Properties\ProjectResources.resx">
-            <Generator>PublicResXFileCodeGenerator</Generator>
-            <LastGenOutput>ProjectResources.Designer.cs</LastGenOutput>
-        </EmbeddedResource>
         <EmbeddedResource Update="Properties\UserResources.resx">
             <Generator>PublicResXFileCodeGenerator</Generator>
             <LastGenOutput>UserResources.Designer.cs</LastGenOutput>
@@ -50,11 +46,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Update="Properties\ProjectResources.Designer.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ProjectResources.resx</DependentUpon>
-        </Compile>
         <Compile Update="Properties\UserResources.Designer.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
