@@ -24,6 +24,11 @@ public static class ConfigurationConstants
 		/// Configuration permission table name in the database.
 		/// </summary>
 		public const string ConfigurationPermission = "configuration_permission";
+
+		/// <summary>
+		/// Configuration reference table name in the database.
+		/// </summary>
+		public const string ConfigurationReference = "configuration_reference";
 	}
 
 	/// <summary>
@@ -95,6 +100,11 @@ public static class ConfigurationConstants
 		/// Column name for publish permission property in the database.
 		/// </summary>
 		public const string Publish = "publish";
+
+		/// <summary>
+		/// Column name for reference ID property in the configuration reference table in the database.
+		/// </summary>
+		public const string ReferenceId = "reference_id";
 	}
 
 	/// <summary>
@@ -102,6 +112,11 @@ public static class ConfigurationConstants
 	/// </summary>
 	public class IndexName
 	{
+		/// <summary>
+		/// Index name for unique constraint.
+		/// </summary>
+		public const string Unique = "idx_unique";
+
 		/// <summary>
 		/// Team ID index name in the database.
 		/// </summary>
@@ -116,6 +131,16 @@ public static class ConfigurationConstants
 		/// Index name for user ID.
 		/// </summary>
 		public const string UserId = "idx_user_id";
+
+		/// <summary>
+		/// Index name for reference ID in the configuration reference table.
+		/// </summary>
+		public const string ReferenceId = "idx_reference_id";
+
+		/// <summary>
+		/// Index name for code property in the configuration table.
+		/// </summary>
+		public const string Code = "idx_code";
 	}
 
 	/// <summary>
