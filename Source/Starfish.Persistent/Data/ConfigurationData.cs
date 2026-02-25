@@ -1,3 +1,5 @@
+using Nerosoft.Starfish.Shared;
+
 namespace Nerosoft.Starfish.Persistent.Data;
 
 /// <summary>
@@ -46,14 +48,38 @@ public class ConfigurationData : Persistent<long>
 	public string Name { get; set; }
 
 	/// <summary>
+	/// Gets or sets the secret associated with this configuration.
+	/// </summary>
+	/// <remarks>
+	/// This is sensitive data. Store and transmit securely and avoid logging in plaintext.
+	/// </remarks>
+	public string Secret { get; set; }
+
+	/// <summary>
 	/// Gets or sets the description of the configuration.
 	/// </summary>
 	/// <value>
 	/// A <see cref="string"/> providing additional details about the configuration.
 	/// </value>
 	public string Description { get; set; }
-	
+
+	/// <summary>
+	/// Gets or sets the status of the configuration item.
+	/// </summary>
+	public ConfigurationStatus Status { get; set; }
+
+	/// <summary>
+	/// Gets or sets a value indicating whether the configuration can be referenced by other configurations within the same team.
+	/// </summary>
+	public bool Shared { get; set; }
+
+	/// <summary>
+	/// Gets or sets the collection of configuration items associated with this configuration.
+	/// </summary>
 	public ICollection<ConfigurationItemData> Items { get; set; }
-	
+
+	/// <summary>
+	/// Gets or sets the collection of permissions associated with this configuration.
+	/// </summary>
 	public ICollection<ConfigurationPermissionData> Permissions { get; set; }
 }
