@@ -18,6 +18,9 @@ internal class ConfigurationMapper : IEntityTypeConfiguration<Configuration>
 		builder.HasIndex(e => e.TeamId)
 		       .HasDatabaseName($"{ConfigurationConstants.TableName.Configuration}_{ConfigurationConstants.IndexName.TeamId}");
 
+		builder.HasIndex(e => e.Code)
+		       .HasDatabaseName($"{ConfigurationConstants.TableName.Configuration}_{ConfigurationConstants.IndexName.Code}");
+
 		builder.Property(e => e.TeamId)
 		       .HasColumnName(ConfigurationConstants.ColumnName.TeamId)
 		       .IsRequired();
@@ -59,5 +62,9 @@ internal class ConfigurationMapper : IEntityTypeConfiguration<Configuration>
 		       .WithOne(t => t.Configuration)
 		       .HasForeignKey(t => t.ConfigurationId)
 		       .OnDelete(DeleteBehavior.Cascade);
+
+		builder.HasMany(e => e.References)
+		       .WithOne(t => t.Configuration)
+		       .HasForeignKey(t => t.ConfigurationId);
 	}
 }

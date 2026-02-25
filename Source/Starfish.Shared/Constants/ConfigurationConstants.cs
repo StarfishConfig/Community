@@ -133,11 +133,6 @@ public static class ConfigurationConstants
 		public const string UserId = "idx_user_id";
 
 		/// <summary>
-		/// Index name for reference ID in the configuration reference table.
-		/// </summary>
-		public const string ReferenceId = "idx_reference_id";
-
-		/// <summary>
 		/// Index name for code property in the configuration table.
 		/// </summary>
 		public const string Code = "idx_code";

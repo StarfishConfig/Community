@@ -100,4 +100,9 @@ internal sealed class Configuration : Entity<long>, IAuditable
 	/// Gets or sets the collection of configuration items contained by this configuration.
 	/// </summary>
 	public HashSet<ConfigurationItem> Items { get; set; } = [];
+
+	/// <summary>
+	/// Gets or sets the collection of references to other configurations that this configuration depends on.
+	/// </summary>
+	public HashSet<ConfigurationReference> References { get; set; } = [];
 }
