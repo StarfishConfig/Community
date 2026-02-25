@@ -45,4 +45,9 @@ public record ConfigurationCountQuery(IList<long> TeamScope, string Keyword, lon
 
 public record ConfigurationDetailQuery(IList<long> TeamScope, long Id) : IRequest<ConfigurationDetailModel>;
 
+/// <summary>
+/// Represents a query request to retrieve the permission grant states for a specific user across multiple teams.
+/// </summary>
+/// <param name="TeamScope"></param>
+/// <param name="UserId"></param>
 public record ConfigurationPermissionGrantQuery(IList<long> TeamScope, string UserId) : IRequest<IReadOnlyDictionary<long, ConfigurationPermissionGrantState>>;

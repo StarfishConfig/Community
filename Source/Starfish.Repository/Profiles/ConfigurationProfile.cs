@@ -15,25 +15,26 @@ internal class ConfigurationProfile : Profile
 
 		CreateMap<ConfigurationChangelogData, ConfigurationChangelog>();
 
+		CreateMap<ConfigurationPermissionData, ConfigurationPermission>();
+
 		CreateMap<ConfigurationData, Configuration>()
-			.ForMember(dest => dest.Environments, opts => opts.Ignore())
 			.AfterMap((src, dest, context) =>
 			{
-				dest.Environments ??= [];
+				dest.Permissions ??= [];
 
-				var ids = src.Environments?.Select(e => e.Id) ?? [];
+				var ids = src.Permissions?.Select(e => e.Id) ?? [];
 
-				dest.Environments.RemoveAll(t => !ids.Contains(t.Id));
+				dest.Permissions.RemoveAll(t => !ids.Contains(t.Id));
 
-				if (src.Environments != null)
+				if (src.Permissions != null)
 				{
-					foreach (var data in src.Environments)
+					foreach (var data in src.Permissions)
 					{
-						var entity = dest.Environments.FirstOrDefault(e => e.Id == data.Id);
+						var entity = dest.Permissions.FirstOrDefault(e => e.Id == data.Id);
 						if (entity == null)
 						{
-							entity = context.Mapper.Map<ConfigurationEnvironment>(data);
-							dest.Environments.Add(entity);
+							entity = context.Mapper.Map<ConfigurationPermission>(data);
+							dest.Permissions.Add(entity);
 						}
 						else
 						{
@@ -46,10 +47,5 @@ internal class ConfigurationProfile : Profile
 				}
 			});
 		CreateMap<Configuration, ConfigurationData>();
-
-		CreateMap<ConfigurationEnvironmentData, ConfigurationEnvironment>()
-			.ReverseMap();
-
-		CreateMap<ConfigurationEnvironment, ConfigurationEnvironmentModel>();
 	}
 }

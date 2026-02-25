@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nerosoft.Starfish.Repository.Entities;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Mappers;
 
@@ -10,29 +11,34 @@ internal class ConfigurationItemMapper : IEntityTypeConfiguration<ConfigurationI
 {
 	public void Configure(EntityTypeBuilder<ConfigurationItem> builder)
 	{
-		builder.ToTable("configuration_item");
+		builder.ToTable(ConfigurationConstants.TableName.ConfigurationItem);
 
 		builder.SnowflakeId();
 
 		builder.HasIndex(e => e.ConfigurationId)
-			   .HasDatabaseName("configuration_item_idx_cfg_id");
+		       .HasDatabaseName($"{ConfigurationConstants.TableName.ConfigurationItem}_{ConfigurationConstants.IndexName.ConfigurationId}");
 
 		builder.Property(e => e.ConfigurationId)
-			   .HasColumnName("configuration_id")
-			   .IsRequired();
+		       .HasColumnName(ConfigurationConstants.ColumnName.ConfigurationId)
+		       .IsRequired();
 
 		builder.Property(e => e.Key)
-			   .HasColumnName("key")
-			   .IsRequired()
-			   .HasMaxLength(200)
-			   .IsUnicode();
+		       .HasColumnName(ConfigurationConstants.ColumnName.Key)
+		       .IsRequired()
+		       .HasMaxLength(ConfigurationConstants.StringLength.KeyMaximumLength)
+		       .IsUnicode();
 
 		builder.Property(e => e.Value)
-			   .HasColumnName("value")
-			   .IsRequired()
-			   .HasMaxLength(4000)
-			   .IsUnicode();
+		       .HasColumnName(ConfigurationConstants.ColumnName.Value)
+		       .IsRequired()
+		       .HasMaxLength(ConfigurationConstants.StringLength.ValueMaximumLength)
+		       .IsUnicode();
 
 		builder.ConfigureAuditableProperties();
+
+		builder.HasOne(t => t.Configuration)
+		       .WithMany(t => t.Items)
+		       .HasForeignKey(t => t.ConfigurationId)
+		       .OnDelete(DeleteBehavior.Cascade);
 	}
 }

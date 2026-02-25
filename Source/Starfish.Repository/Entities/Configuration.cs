@@ -46,6 +46,11 @@ internal sealed class Configuration : Entity<long>, IAuditable
 	public ConfigurationStatus Status { get; set; }
 
 	/// <summary>
+	/// Gets or sets a value indicating whether the configuration can be referenced by other configurations.
+	/// </summary>
+	public bool Shared { get; set; }
+
+	/// <summary>
 	/// Gets or sets the creation timestamp (UTC) for the configuration.
 	/// </summary>
 	/// <remarks>

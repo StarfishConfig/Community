@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nerosoft.Starfish.Repository.Entities;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Mappers;
 
@@ -10,38 +11,38 @@ internal class ConfigurationPermissionMapper : IEntityTypeConfiguration<Configur
 {
 	public void Configure(EntityTypeBuilder<ConfigurationPermission> builder)
 	{
-		builder.ToTable("configuration_permission");
+		builder.ToTable(ConfigurationConstants.TableName.ConfigurationPermission);
 
 		builder.HasIndex(t => t.ConfigurationId)
-			   .HasDatabaseName("configuration_permission_idx_cfg_id");
+		       .HasDatabaseName($"{ConfigurationConstants.TableName.ConfigurationPermission}_{ConfigurationConstants.IndexName.ConfigurationId}");
 
 		builder.HasIndex(t => t.UserId)
-			   .HasDatabaseName("configuration_permission_idx_user_id");
+		       .HasDatabaseName($"{ConfigurationConstants.TableName.ConfigurationPermission}_{ConfigurationConstants.IndexName.UserId}");
 
 		builder.SnowflakeId();
 
 		builder.Property(t => t.ConfigurationId)
-			.HasColumnName("configuration_id");
+		       .HasColumnName(ConfigurationConstants.ColumnName.ConfigurationId);
 
 		builder.Property(t => t.UserId)
-			.HasColumnName("user_id")
-			.HasMaxLength(64);
+		       .HasColumnName(ConfigurationConstants.ColumnName.UserId)
+		       .HasMaxLength(64);
 
 		builder.Property(t => t.Read)
-			.HasColumnName("read")
-			.HasDefaultValue(true);
+		       .HasColumnName(ConfigurationConstants.ColumnName.Read)
+		       .HasDefaultValue(true);
 
 		builder.Property(t => t.Write)
-			.HasColumnName("write")
-			.HasDefaultValue(false);
+		       .HasColumnName(ConfigurationConstants.ColumnName.Write)
+		       .HasDefaultValue(false);
 
 		builder.Property(t => t.Publish)
-			.HasColumnName("publish")
-			.HasDefaultValue(false);
+		       .HasColumnName(ConfigurationConstants.ColumnName.Publish)
+		       .HasDefaultValue(false);
 
 		builder.HasOne(t => t.Configuration)
-			   .WithMany()
-			   .HasForeignKey(t => t.ConfigurationId)
-			   .OnDelete(DeleteBehavior.Cascade);
+		       .WithMany(t => t.Permissions)
+		       .HasForeignKey(t => t.ConfigurationId)
+		       .OnDelete(DeleteBehavior.Cascade);
 	}
 }

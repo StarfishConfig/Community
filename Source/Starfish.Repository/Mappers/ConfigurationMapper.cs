@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nerosoft.Starfish.Repository.Entities;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Mappers;
 
@@ -10,31 +11,42 @@ internal class ConfigurationMapper : IEntityTypeConfiguration<Configuration>
 {
 	public void Configure(EntityTypeBuilder<Configuration> builder)
 	{
-		builder.ToTable("configuration");
+		builder.ToTable(ConfigurationConstants.TableName.Configuration);
 
 		builder.SnowflakeId();
 
 		builder.HasIndex(e => e.TeamId)
-		       .HasDatabaseName("configuration_idx_team_id");
+		       .HasDatabaseName($"{ConfigurationConstants.TableName.Configuration}_{ConfigurationConstants.IndexName.TeamId}");
 
 		builder.Property(e => e.TeamId)
+		       .HasColumnName(ConfigurationConstants.ColumnName.TeamId)
 		       .IsRequired();
 
 		builder.Property(e => e.Code)
-		       .HasColumnName("code")
+		       .HasColumnName(ConfigurationConstants.ColumnName.Code)
 		       .IsRequired()
-		       .HasMaxLength(100);
+		       .HasMaxLength(ConfigurationConstants.StringLength.CodeMaximumLength);
 
 		builder.Property(e => e.Name)
-		       .HasColumnName("name")
+		       .HasColumnName(ConfigurationConstants.ColumnName.Name)
 		       .IsRequired()
-		       .HasMaxLength(200)
+		       .HasMaxLength(ConfigurationConstants.StringLength.NameMaximumLength)
 		       .IsUnicode();
 
 		builder.Property(e => e.Description)
-		       .HasColumnName("description")
-		       .HasMaxLength(1000)
+		       .HasColumnName(ConfigurationConstants.ColumnName.Description)
+		       .HasMaxLength(ConfigurationConstants.StringLength.DescriptionMaximumLength)
 		       .IsUnicode();
+
+		builder.Property(e => e.Status)
+		       .HasColumnName(ConfigurationConstants.ColumnName.Status)
+		       .IsRequired()
+		       .HasDefaultValue(ConfigurationStatus.None);
+
+		builder.Property(e => e.Shared)
+		       .HasColumnName(ConfigurationConstants.ColumnName.Shared)
+		       .IsRequired()
+		       .HasDefaultValue(false);
 
 		builder.ConfigureAuditableProperties();
 
