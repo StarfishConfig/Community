@@ -46,7 +46,7 @@ internal sealed class Configuration : Entity<long>, IAuditable
 	public ConfigurationStatus Status { get; set; }
 
 	/// <summary>
-	/// Gets or sets a value indicating whether the configuration can be referenced by other configurations.
+	/// Gets or sets a value indicating whether the configuration can be referenced by other configurations within the same team.
 	/// </summary>
 	public bool Shared { get; set; }
 
