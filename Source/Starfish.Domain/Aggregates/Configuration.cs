@@ -1,6 +1,5 @@
 using System.Text.RegularExpressions;
 using Nerosoft.Euonia.Osba;
-using Nerosoft.Starfish.Domain.Commands;
 using Nerosoft.Starfish.Domain.Events;
 using Nerosoft.Starfish.Persistent.Data;
 using Nerosoft.Starfish.Persistent.Repositories;
@@ -22,6 +21,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	public static readonly PropertyInfo<string> SecretProperty = RegisterProperty<string>(p => p.Secret);
 	public static readonly PropertyInfo<string> DescriptionProperty = RegisterProperty<string>(p => p.Description);
 	public static readonly PropertyInfo<ConfigurationStatus> StatusProperty = RegisterProperty<ConfigurationStatus>(p => p.Status);
+	public static readonly PropertyInfo<bool> SharedProperty = RegisterProperty<bool>(p => p.Shared);
 	public static readonly PropertyInfo<ObservableList<ConfigurationPermission>> PermissionsProperty = RegisterProperty<ObservableList<ConfigurationPermission>>(p => p.Permissions);
 	public static readonly PropertyInfo<ObservableList<ConfigurationItem>> ItemsProperty = RegisterProperty<ObservableList<ConfigurationItem>>(p => p.Items);
 
@@ -35,7 +35,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	public long TeamId
 	{
 		get => GetProperty(TeamIdProperty);
-		private set => SetProperty(TeamIdProperty, value);
+		set => SetProperty(TeamIdProperty, value);
 	}
 
 	/// <summary>
@@ -65,7 +65,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	public string Secret
 	{
 		get => GetProperty(SecretProperty);
-		private set => SetProperty(SecretProperty, value);
+		set => SetProperty(SecretProperty, value);
 	}
 
 	/// <summary>
@@ -74,7 +74,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	public string Description
 	{
 		get => GetProperty(DescriptionProperty);
-		private set => SetProperty(DescriptionProperty, value);
+		set => SetProperty(DescriptionProperty, value);
 	}
 
 	/// <summary>
@@ -83,7 +83,16 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	public ConfigurationStatus Status
 	{
 		get => GetProperty(StatusProperty);
-		private set => SetProperty(StatusProperty, value);
+		set => SetProperty(StatusProperty, value);
+	}
+	
+	/// <summary>
+	/// Gets or sets a value indicating whether the configuration can be referred to other configurations.
+	/// </summary>
+	public bool Shared
+	{
+		get => GetProperty(SharedProperty);
+		set => SetProperty(SharedProperty, value);
 	}
 
 	/// <summary>
@@ -92,7 +101,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	public ObservableList<ConfigurationPermission> Permissions
 	{
 		get => GetProperty(PermissionsProperty);
-		private set => SetProperty(PermissionsProperty, value);
+		set => SetProperty(PermissionsProperty, value);
 	}
 
 	/// <summary>
@@ -104,8 +113,9 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	public ObservableList<ConfigurationItem> Items
 	{
 		get => GetProperty(ItemsProperty);
-		private set => SetProperty(ItemsProperty, value);
+		set => SetProperty(ItemsProperty, value);
 	}
+
 	#endregion
 
 	#region Rules
@@ -245,11 +255,13 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 					permission.AllowWrite = true;
 					permission.AllowRead = true;
 				}
+
 				if (state.HasFlag(ConfigurationPermissionGrantState.Write))
 				{
 					permission.AllowWrite = true;
 					permission.AllowRead = true;
 				}
+
 				if (state.HasFlag(ConfigurationPermissionGrantState.Read))
 				{
 					permission.AllowRead = true;
@@ -276,6 +288,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	#endregion
 
 	#region Factory Methods
+
 	[FactoryCreate]
 	protected override Task CreateAsync(CancellationToken cancellationToken = default)
 	{
@@ -290,21 +303,21 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 		var repository = BusinessContext.GetRequiredService<IConfigurationRepository>();
 		var factory = BusinessContext.GetRequiredService<IObjectFactory>();
 		return repository.GetAsync(id, cancellationToken)
-						 .ContinueWith(async task =>
-						 {
-							 task.WaitAndUnwrapException(cancellationToken);
-							 var result = task.Result;
-							 if (result == null)
-							 {
-								 throw new NotFoundException();
-							 }
+		                 .ContinueWith(async task =>
+		                 {
+			                 task.WaitAndUnwrapException(cancellationToken);
+			                 var result = task.Result;
+			                 if (result == null)
+			                 {
+				                 throw new NotFoundException();
+			                 }
 
-							 LoadProperty(IdProperty, result.Id);
-							 LoadProperty(TeamIdProperty, result.TeamId);
-							 LoadProperty(CodeProperty, result.Code);
-							 LoadProperty(NameProperty, result.Name);
-							 LoadProperty(DescriptionProperty, result.Description);
-						 }, cancellationToken);
+			                 LoadProperty(IdProperty, result.Id);
+			                 LoadProperty(TeamIdProperty, result.TeamId);
+			                 LoadProperty(CodeProperty, result.Code);
+			                 LoadProperty(NameProperty, result.Name);
+			                 LoadProperty(DescriptionProperty, result.Description);
+		                 }, cancellationToken);
 	}
 
 	[FactoryInsert]
@@ -335,11 +348,11 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 
 		var repository = BusinessContext.GetRequiredService<IConfigurationRepository>();
 		return repository.SaveAsync(data, cancellationToken)
-						 .ContinueWith(task =>
-						 {
-							 task.WaitAndUnwrapException(cancellationToken);
-							 //RaiseEvent(new ConfigurationUpdatedEvent { Id = Id, TeamId = TeamId, Code = Code, Name = Name });
-						 }, cancellationToken);
+		                 .ContinueWith(task =>
+		                 {
+			                 task.WaitAndUnwrapException(cancellationToken);
+			                 //RaiseEvent(new ConfigurationUpdatedEvent { Id = Id, TeamId = TeamId, Code = Code, Name = Name });
+		                 }, cancellationToken);
 	}
 
 	[FactoryDelete]

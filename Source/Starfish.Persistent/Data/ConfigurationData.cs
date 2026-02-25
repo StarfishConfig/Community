@@ -52,4 +52,8 @@ public class ConfigurationData : Persistent<long>
 	/// A <see cref="string"/> providing additional details about the configuration.
 	/// </value>
 	public string Description { get; set; }
+	
+	public ICollection<ConfigurationItemData> Items { get; set; }
+	
+	public ICollection<ConfigurationPermissionData> Permissions { get; set; }
 }
