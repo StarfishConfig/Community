@@ -8,78 +8,94 @@ namespace Nerosoft.Starfish.Repository.Mappers;
 [DbContext(typeof(IdentityDataContext))]
 internal sealed class AuthlogMapper : IEntityTypeConfiguration<Authlog>
 {
+	private const string TABLE_NAME = "authlog";
+	private const string COLUMN_USER_ID = "user_id";
+	private const string COLUMN_USERNAME = "username";
+	private const string COLUMN_GRANT_TYPE = "grant_type";
+	private const string COLUMN_REQUEST_ID = "request_id";
+	private const string COLUMN_IP_ADDRESS = "ip_address";
+	private const string COLUMN_USER_AGENT = "user_agent";
+	private const string COLUMN_REFERER = "referer";
+	private const string COLUMN_APP_NAME = "app_name";
+	private const string COLUMN_APP_VERSION = "app_version";
+	private const string COLUMN_OS_PLATFORM = "os_platform";
+	private const string COLUMN_SOURCE = "source";
+	private const string COLUMN_SUCCESS = "success";
+	private const string COLUMN_TIMESTAMP = "timestamp";
+	private const string COLUMN_REMARK = "remark";
+
 	public void Configure(EntityTypeBuilder<Authlog> builder)
 	{
-		builder.ToTable("authlog");
+		builder.ToTable(TABLE_NAME);
 		builder.HasKey(x => x.Id);
 
 		builder.HasIndex(x => x.Username)
-		       .HasDatabaseName("authlog_idx_username");
+		       .HasDatabaseName($"{TABLE_NAME}_idx_{COLUMN_USERNAME}");
 
 		builder.HasIndex(x => x.Timestamp)
-		       .HasDatabaseName("authlog_idx_timestamp");
+		       .HasDatabaseName($"{TABLE_NAME}_idx_{COLUMN_TIMESTAMP}");
 
 		builder.HasIndex(t => t.Success)
-		       .HasDatabaseName("authlog_idx_success");
+		       .HasDatabaseName($"{TABLE_NAME}_idx_{COLUMN_SUCCESS}");
 
 		builder.SnowflakeId();
 
 		builder.Property(x => x.UserId)
-		       .HasColumnName("user_id")
+		       .HasColumnName(COLUMN_USER_ID)
 		       .HasMaxLength(255)
 		       .IsRequired();
 
 		builder.Property(x => x.Username)
-		       .HasColumnName("username")
+		       .HasColumnName(COLUMN_USERNAME)
 		       .HasMaxLength(255);
 
 		builder.Property(x => x.GrantType)
-		       .HasColumnName("grant_type")
+		       .HasColumnName(COLUMN_GRANT_TYPE)
 		       .HasMaxLength(32)
 		       .IsRequired();
 
 		builder.Property(t => t.RequestId)
-		       .HasColumnName("request_id")
+		       .HasColumnName(COLUMN_REQUEST_ID)
 		       .HasMaxLength(32);
 
 		builder.Property(x => x.IpAddress)
-		       .HasColumnName("ip_address")
+		       .HasColumnName(COLUMN_IP_ADDRESS)
 		       .HasMaxLength(15);
 
 		builder.Property(x => x.UserAgent)
-		       .HasColumnName("user_agent")
+		       .HasColumnName(COLUMN_USER_AGENT)
 		       .HasMaxLength(512);
 
 		builder.Property(x => x.Referer)
-		       .HasColumnName("referer")
+		       .HasColumnName(COLUMN_REFERER)
 		       .HasMaxLength(255);
 
 		builder.Property(x => x.AppName)
-		       .HasColumnName("app_name")
+		       .HasColumnName(COLUMN_APP_NAME)
 		       .HasMaxLength(32);
 
 		builder.Property(x => x.AppVersion)
-		       .HasColumnName("app_version")
+		       .HasColumnName(COLUMN_APP_VERSION)
 		       .HasMaxLength(20);
 
 		builder.Property(x => x.OsPlatform)
-		       .HasColumnName("os_platform")
+		       .HasColumnName(COLUMN_OS_PLATFORM)
 		       .HasMaxLength(16);
 
 		builder.Property(x => x.Source)
-		       .HasColumnName("source")
+		       .HasColumnName(COLUMN_SOURCE)
 		       .HasMaxLength(32);
 
 		builder.Property(x => x.Success)
-		       .HasColumnName("success")
+		       .HasColumnName(COLUMN_SUCCESS)
 		       .IsRequired();
 
 		builder.Property(x => x.Timestamp)
-		       .HasColumnName("timestamp")
+		       .HasColumnName(COLUMN_TIMESTAMP)
 		       .IsRequired();
 
 		builder.Property(x => x.Remark)
-		       .HasColumnName("remark")
+		       .HasColumnName(COLUMN_REMARK)
 		       .HasMaxLength(1024);
 	}
 }
