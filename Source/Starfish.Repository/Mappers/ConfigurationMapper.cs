@@ -9,45 +9,66 @@ namespace Nerosoft.Starfish.Repository.Mappers;
 [DbContext(typeof(ProjectDataContext))]
 internal class ConfigurationMapper : IEntityTypeConfiguration<Configuration>
 {
+	private const string TABLE_NAME = "configuration";
+	private const string COLUMN_TEAM_ID = "team_id";
+	private const string COLUMN_FORK_ID = "fork_id";
+	private const string COLUMN_CODE = "code";
+	private const string COLUMN_NAME = "name";
+	private const string COLUMN_TAGS = "tags";
+	private const string COLUMN_DESCRIPTION = "description";
+	private const string COLUMN_STATUS = "status";
+	private const string COLUMN_SHARED = "shared";
+
 	public void Configure(EntityTypeBuilder<Configuration> builder)
 	{
-		builder.ToTable(ConfigurationConstants.TableName.Configuration);
+		builder.ToTable(TABLE_NAME);
 
 		builder.SnowflakeId();
 
 		builder.HasIndex(e => e.TeamId)
-		       .HasDatabaseName($"{ConfigurationConstants.TableName.Configuration}_{ConfigurationConstants.IndexName.TeamId}");
+		       .HasDatabaseName($"{TABLE_NAME}_idx_{COLUMN_TEAM_ID}");
 
 		builder.HasIndex(e => e.Code)
-		       .HasDatabaseName($"{ConfigurationConstants.TableName.Configuration}_{ConfigurationConstants.IndexName.Code}");
+		       .HasDatabaseName($"{TABLE_NAME}_idx_{COLUMN_CODE}");
+
+		builder.HasIndex(e => e.ForkId)
+		       .HasDatabaseName($"{TABLE_NAME}_idx_{COLUMN_FORK_ID}");
 
 		builder.Property(e => e.TeamId)
-		       .HasColumnName(ConfigurationConstants.ColumnName.TeamId)
+		       .HasColumnName(COLUMN_TEAM_ID)
 		       .IsRequired();
 
+		builder.Property(e => e.ForkId)
+		       .HasColumnName(COLUMN_FORK_ID);
+
+		builder.Property(t => t.Tags)
+		       .HasColumnName(COLUMN_TAGS)
+		       .HasMaxLength(LengthConstraints.ConfigurationTagsMaximumLength)
+		       .IsUnicode();
+
 		builder.Property(e => e.Code)
-		       .HasColumnName(ConfigurationConstants.ColumnName.Code)
+		       .HasColumnName(COLUMN_CODE)
 		       .IsRequired()
-		       .HasMaxLength(ConfigurationConstants.StringLength.CodeMaximumLength);
+		       .HasMaxLength(LengthConstraints.ConfigurationCodeMaximumLength);
 
 		builder.Property(e => e.Name)
-		       .HasColumnName(ConfigurationConstants.ColumnName.Name)
+		       .HasColumnName(COLUMN_NAME)
 		       .IsRequired()
-		       .HasMaxLength(ConfigurationConstants.StringLength.NameMaximumLength)
+		       .HasMaxLength(LengthConstraints.ConfigurationNameMaximumLength)
 		       .IsUnicode();
 
 		builder.Property(e => e.Description)
-		       .HasColumnName(ConfigurationConstants.ColumnName.Description)
-		       .HasMaxLength(ConfigurationConstants.StringLength.DescriptionMaximumLength)
+		       .HasColumnName(COLUMN_DESCRIPTION)
+		       .HasMaxLength(LengthConstraints.DescriptionMaximumLength)
 		       .IsUnicode();
 
 		builder.Property(e => e.Status)
-		       .HasColumnName(ConfigurationConstants.ColumnName.Status)
+		       .HasColumnName(COLUMN_STATUS)
 		       .IsRequired()
 		       .HasDefaultValue(ConfigurationStatus.None);
 
 		builder.Property(e => e.Shared)
-		       .HasColumnName(ConfigurationConstants.ColumnName.Shared)
+		       .HasColumnName(COLUMN_SHARED)
 		       .IsRequired()
 		       .HasDefaultValue(false);
 

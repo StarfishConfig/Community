@@ -9,29 +9,37 @@ namespace Nerosoft.Starfish.Repository.Mappers;
 [DbContext(typeof(ProjectDataContext))]
 internal class ConfigurationItemMapper : IEntityTypeConfiguration<ConfigurationItem>
 {
+	private const string TABLE_NAME = "configuration_item";
+	private const string COLUMN_CONFIGURATION_ID = "configuration_id";
+	private const string COLUMN_KEY = "key";
+	private const string COLUMN_VALUE = "value";
+
 	public void Configure(EntityTypeBuilder<ConfigurationItem> builder)
 	{
-		builder.ToTable(ConfigurationConstants.TableName.ConfigurationItem);
+		builder.ToTable(TABLE_NAME);
 
 		builder.SnowflakeId();
 
 		builder.HasIndex(e => e.ConfigurationId)
-		       .HasDatabaseName($"{ConfigurationConstants.TableName.ConfigurationItem}_{ConfigurationConstants.IndexName.ConfigurationId}");
+		       .HasDatabaseName($"{TABLE_NAME}_idx_cfg_id");
+
+		builder.HasIndex(e => e.Key)
+		       .HasDatabaseName($"{TABLE_NAME}_idx_{COLUMN_KEY}");
 
 		builder.Property(e => e.ConfigurationId)
-		       .HasColumnName(ConfigurationConstants.ColumnName.ConfigurationId)
+		       .HasColumnName(COLUMN_CONFIGURATION_ID)
 		       .IsRequired();
 
 		builder.Property(e => e.Key)
-		       .HasColumnName(ConfigurationConstants.ColumnName.Key)
+		       .HasColumnName(COLUMN_KEY)
 		       .IsRequired()
-		       .HasMaxLength(ConfigurationConstants.StringLength.KeyMaximumLength)
+		       .HasMaxLength(LengthConstraints.ConfigurationKeyMaximumLength)
 		       .IsUnicode();
 
 		builder.Property(e => e.Value)
-		       .HasColumnName(ConfigurationConstants.ColumnName.Value)
+		       .HasColumnName(COLUMN_VALUE)
 		       .IsRequired()
-		       .HasMaxLength(ConfigurationConstants.StringLength.ValueMaximumLength)
+		       .HasMaxLength(LengthConstraints.ConfigurationValueMaximumLength)
 		       .IsUnicode();
 
 		builder.ConfigureAuditableProperties();

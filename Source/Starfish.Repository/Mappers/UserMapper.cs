@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nerosoft.Starfish.Repository.Entities;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Mappers;
 
@@ -11,58 +12,69 @@ namespace Nerosoft.Starfish.Repository.Mappers;
 [DbContext(typeof(IdentityDataContext))]
 internal class UserMapper : IEntityTypeConfiguration<User>
 {
+	private const string TABLE_NAME = "user";
+	private const string COLUMN_USERNAME = "username";
+	private const string COLUMN_PASSWORD_HASH = "password_hash";
+	private const string COLUMN_PASSWORD_SALT = "password_salt";
+	private const string COLUMN_NICKNAME = "nickname";
+	private const string COLUMN_EMAIL = "email";
+	private const string COLUMN_PHONE = "phone";
+	private const string COLUMN_ACCESS_FAILED_COUNT = "access_failed_count";
+	private const string COLUMN_LOCKOUT_END = "lockout_end";
+	private const string COLUMN_PASSWORD_CHANGED_AT = "password_changed_at";
+
 	/// <summary>
 	/// Configures the entity of type <see cref="User"/>.
 	/// </summary>
 	/// <param name="builder"></param>
 	public void Configure(EntityTypeBuilder<User> builder)
 	{
-		builder.ToTable("user");
+		builder.ToTable(TABLE_NAME);
 		builder.HasKey(x => x.Id);
 
-		builder.HasIndex(x => x.Username).HasDatabaseName("user_idx_username");
-		builder.HasIndex(x => x.Email).HasDatabaseName("user_idx_email");
-		builder.HasIndex(x => x.Phone).HasDatabaseName("user_idx_phone");
+		builder.HasIndex(x => x.Username).HasDatabaseName($"{TABLE_NAME}_idx_{COLUMN_USERNAME}");
+		builder.HasIndex(x => x.Email).HasDatabaseName($"{TABLE_NAME}_idx_{COLUMN_EMAIL}");
+		builder.HasIndex(x => x.Phone).HasDatabaseName($"{TABLE_NAME}_idx_{COLUMN_PHONE}");
 		builder.HasTombstoneIndex();
 
 		builder.ShortUniqueId();
 
 		builder.Property(x => x.Username)
-		       .HasColumnName("username")
-		       .HasMaxLength(255)
+		       .HasColumnName(COLUMN_USERNAME)
+		       .HasMaxLength(LengthConstraints.UsernameMaximumLength)
 		       .IsRequired()
 		       .IsUnicode();
 
 		builder.Property(x => x.PasswordHash)
 		       .HasMaxLength(512)
-		       .HasColumnName("password_hash");
+		       .HasColumnName(COLUMN_PASSWORD_HASH);
 
 		builder.Property(x => x.PasswordSalt)
 		       .HasMaxLength(32)
-		       .HasColumnName("password_salt");
+		       .HasColumnName(COLUMN_PASSWORD_SALT);
 
 		builder.Property(x => x.Nickname)
-		       .HasColumnName("nickname")
-		       .HasMaxLength(50)
+		       .HasColumnName(COLUMN_NICKNAME)
+		       .HasMaxLength(LengthConstraints.NicknameMaximumLength)
 		       .IsUnicode();
 
 		builder.Property(x => x.Email)
-		       .HasColumnName("email")
-		       .HasMaxLength(255);
+		       .HasColumnName(COLUMN_EMAIL)
+		       .HasMaxLength(LengthConstraints.EmailMaximumLength);
 
 		builder.Property(x => x.Phone)
-		       .HasColumnName("phone")
-		       .HasMaxLength(32);
+		       .HasColumnName(COLUMN_PHONE)
+		       .HasMaxLength(LengthConstraints.PhoneMaximumLength);
 
 		builder.Property(x => x.AccessFailedCount)
-		       .HasColumnName("access_failed_count")
+		       .HasColumnName(COLUMN_ACCESS_FAILED_COUNT)
 		       .HasDefaultValue(0);
 
 		builder.Property(x => x.LockoutEnd)
-		       .HasColumnName("lockout_end");
+		       .HasColumnName(COLUMN_LOCKOUT_END);
 
 		builder.Property(x => x.PasswordChangedAt)
-		       .HasColumnName("password_changed_at");
+		       .HasColumnName(COLUMN_PASSWORD_CHANGED_AT);
 
 		builder.CreatedAtUtc();
 

@@ -14,7 +14,7 @@ internal class TeamMapper : IEntityTypeConfiguration<Team>
 	private const string COLUMN_NAME = "name";
 	private const string COLUMN_DESCRIPTION = "description";
 	private const string COLUMN_MEMBERS_COUNT = "members_count";
-	
+
 	public void Configure(EntityTypeBuilder<Team> builder)
 	{
 		builder.ToTable(TABLE_NAME);
@@ -26,18 +26,18 @@ internal class TeamMapper : IEntityTypeConfiguration<Team>
 
 		builder.Property(t => t.OwnerId)
 		       .HasColumnName(COLUMN_OWNER_ID)
-		       .HasMaxLength(TeamConstants.OwnerIdLength)
+		       .HasMaxLength(LengthConstraints.UserIdMaximumLength)
 		       .IsRequired();
 
 		builder.Property(t => t.Name)
 		       .HasColumnName(COLUMN_NAME)
-		       .HasMaxLength(TeamConstants.NameMaximumLength)
+		       .HasMaxLength(LengthConstraints.TeamNameMaximumLength)
 		       .IsRequired()
 		       .IsUnicode();
 
 		builder.Property(t => t.Description)
 		       .HasColumnName(COLUMN_DESCRIPTION)
-		       .HasMaxLength(TeamConstants.DescriptionMaximumLength)
+		       .HasMaxLength(LengthConstraints.DescriptionMaximumLength)
 		       .IsUnicode();
 
 		builder.Property(t => t.MembersCount)

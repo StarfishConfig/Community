@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nerosoft.Starfish.Repository.Entities;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Mappers;
 
@@ -42,12 +43,12 @@ internal sealed class AuthlogMapper : IEntityTypeConfiguration<Authlog>
 
 		builder.Property(x => x.UserId)
 		       .HasColumnName(COLUMN_USER_ID)
-		       .HasMaxLength(255)
+		       .HasMaxLength(LengthConstraints.UserIdMaximumLength)
 		       .IsRequired();
 
 		builder.Property(x => x.Username)
 		       .HasColumnName(COLUMN_USERNAME)
-		       .HasMaxLength(255);
+		       .HasMaxLength(LengthConstraints.UsernameMaximumLength);
 
 		builder.Property(x => x.GrantType)
 		       .HasColumnName(COLUMN_GRANT_TYPE)
@@ -56,11 +57,11 @@ internal sealed class AuthlogMapper : IEntityTypeConfiguration<Authlog>
 
 		builder.Property(t => t.RequestId)
 		       .HasColumnName(COLUMN_REQUEST_ID)
-		       .HasMaxLength(32);
+		       .HasMaxLength(LengthConstraints.RequestIdLength);
 
 		builder.Property(x => x.IpAddress)
 		       .HasColumnName(COLUMN_IP_ADDRESS)
-		       .HasMaxLength(15);
+		       .HasMaxLength(LengthConstraints.IpAddressMaximumLength);
 
 		builder.Property(x => x.UserAgent)
 		       .HasColumnName(COLUMN_USER_AGENT)
@@ -96,6 +97,6 @@ internal sealed class AuthlogMapper : IEntityTypeConfiguration<Authlog>
 
 		builder.Property(x => x.Remark)
 		       .HasColumnName(COLUMN_REMARK)
-		       .HasMaxLength(1024);
+		       .HasMaxLength(LengthConstraints.RemarkMaximumLength);
 	}
 }

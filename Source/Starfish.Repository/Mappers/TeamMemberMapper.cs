@@ -15,7 +15,7 @@ internal class TeamMemberMapper : IEntityTypeConfiguration<TeamMember>
 
 	public void Configure(EntityTypeBuilder<TeamMember> builder)
 	{
-		builder.ToTable(TableName.TeamMember);
+		builder.ToTable(TABLE_NAME);
 
 		builder.HasIndex(t => new { t.TeamId, t.UserId })
 		       .HasDatabaseName($"{TABLE_NAME}_idx_unique")
@@ -29,7 +29,7 @@ internal class TeamMemberMapper : IEntityTypeConfiguration<TeamMember>
 
 		builder.Property(tm => tm.UserId)
 		       .HasColumnName(COLUMN_USER_ID)
-		       .HasMaxLength(64)
+		       .HasMaxLength(LengthConstraints.UserIdMaximumLength)
 		       .IsRequired();
 
 		builder.CreatedAtUtc();

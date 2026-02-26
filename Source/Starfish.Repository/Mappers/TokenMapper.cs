@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nerosoft.Starfish.Repository.Entities;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Mappers;
 
@@ -31,6 +32,7 @@ internal class TokenMapper : IEntityTypeConfiguration<Token>
 
 		builder.Property(x => x.Subject)
 		       .HasColumnName("subject")
+		       .HasMaxLength(LengthConstraints.UserIdMaximumLength)
 		       .IsRequired();
 
 		builder.Property(x => x.Issues)
