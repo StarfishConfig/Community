@@ -1,4 +1,5 @@
 using Nerosoft.Euonia.Domain;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Domain.Commands;
 
@@ -12,9 +13,18 @@ namespace Nerosoft.Starfish.Domain.Commands;
 public class ConfigurationUpdateCommand : Command
 {
 	/// <summary>
-	/// Gets or sets the identifier of the configuration to be updated.
+	/// Initializes a new instance of the <see cref="ConfigurationUpdateCommand"/> class with the specified identifier.
 	/// </summary>
-	public long Id { get; set; }
+	/// <param name="id">The configuration identifier.</param>
+	public ConfigurationUpdateCommand(long id)
+	{
+		Id = id;
+	}
+
+	/// <summary>
+	/// Gets the identifier of the configuration to be updated.
+	/// </summary>
+	public long Id { get; }
 
 	/// <summary>
 	/// Gets or sets the vanity identifier (code) of the configuration.
@@ -30,7 +40,22 @@ public class ConfigurationUpdateCommand : Command
 	public string Name { get; set; }
 
 	/// <summary>
+	/// Gets or sets the secret value associated with the configuration, which may contain sensitive information.
+	/// </summary>
+	public string Secret { get; set; }
+	
+	/// <summary>
 	/// Gets or sets an optional description providing additional details about the configuration.
 	/// </summary>
 	public string Description { get; set; }
+	
+	/// <summary>
+	/// Gets or sets a value indicating whether the configuration can be referenced by other configurations within the same team.
+	/// </summary>
+	public bool Shared  { get; set; }
+	
+	/// <summary>
+	/// Gets or sets a dictionary mapping user IDs to their corresponding permission grant states for this configuration.
+	/// </summary>
+	public Dictionary<string, ConfigurationPermissionGrantState> Permissions { get; set; }
 }

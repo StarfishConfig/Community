@@ -9,6 +9,7 @@ namespace Nerosoft.Starfish.Domain.Aggregates;
 internal class ConfigurationItem : ObservableObject<ConfigurationItem>
 {
 	#region Properties
+
 	public static readonly PropertyInfo<string> KeyProperty = RegisterProperty<string>(p => p.Key);
 
 	public string Key

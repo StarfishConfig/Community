@@ -9,24 +9,36 @@ internal class ConfigurationPermission : ObservableObject<ConfigurationPermissio
 	public static readonly PropertyInfo<bool> AllowWriteProperty = RegisterProperty<bool>(p => p.AllowWrite);
 	public static readonly PropertyInfo<bool> AllowPublishProperty = RegisterProperty<bool>(p => p.AllowPublish);
 
+	/// <summary>
+	/// Gets the user ID associated with this configuration permission.
+	/// </summary>
 	public string UserId
 	{
 		get => GetProperty(UserIdProperty);
 		private set => SetProperty(UserIdProperty, value);
 	}
 
+	/// <summary>
+	/// Gets or sets a value indicating whether the user has permission to read the configuration.
+	/// </summary>
 	public bool AllowRead
 	{
 		get => GetProperty(AllowReadProperty);
 		set => SetProperty(AllowReadProperty, value);
 	}
 
+	/// <summary>
+	/// Gets or sets a value indicating whether the user has permission to write to the configuration.
+	/// </summary>
 	public bool AllowWrite
 	{
 		get => GetProperty(AllowWriteProperty);
 		set => SetProperty(AllowWriteProperty, value);
 	}
 
+	/// <summary>
+	/// Gets or sets a value indicating whether the user has permission to publish the configuration.
+	/// </summary>
 	public bool AllowPublish
 	{
 		get => GetProperty(AllowPublishProperty);

@@ -13,7 +13,16 @@ internal sealed class ConfigurationCommandHandler(IServiceProvider provider)
 	public Task HandleAsync(ConfigurationCreateCommand message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		return Actuator.For<Configuration>()
-		               .Create(message, cancellationToken)
+		               .Create(message.TeamId, cancellationToken)
+		               .Handle(target =>
+		               {
+			               target.SetCode(message.Code);
+			               target.SetName(message.Name);
+			               target.SetSecret(message.Secret);
+			               target.SetDescription(message.Description);
+			               target.SetShared(message.Shared);
+			               target.SetPermissions(message.Permissions);
+		               })
 		               .ExecuteAsync(cancellationToken);
 	}
 
@@ -25,7 +34,10 @@ internal sealed class ConfigurationCommandHandler(IServiceProvider provider)
 		               {
 			               target.SetCode(message.Code);
 			               target.SetName(message.Name);
+			               target.SetSecret(message.Secret);
 			               target.SetDescription(message.Description);
+			               target.SetShared(message.Shared);
+			               target.SetPermissions(message.Permissions);
 		               })
 		               .ExecuteAsync(cancellationToken);
 	}

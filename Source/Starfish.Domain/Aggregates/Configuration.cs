@@ -35,7 +35,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	public long TeamId
 	{
 		get => GetProperty(TeamIdProperty);
-		set => SetProperty(TeamIdProperty, value);
+		private set => SetProperty(TeamIdProperty, value);
 	}
 
 	/// <summary>
@@ -47,7 +47,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	public string Code
 	{
 		get => GetProperty(CodeProperty);
-		private set => SetProperty(CodeProperty, value);
+		set => SetProperty(CodeProperty, value);
 	}
 
 	/// <summary>
@@ -56,7 +56,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	public string Name
 	{
 		get => GetProperty(NameProperty);
-		private set => SetProperty(NameProperty, value);
+		set => SetProperty(NameProperty, value);
 	}
 
 	/// <summary>
@@ -85,9 +85,9 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 		get => GetProperty(StatusProperty);
 		set => SetProperty(StatusProperty, value);
 	}
-	
+
 	/// <summary>
-	/// Gets or sets a value indicating whether the configuration can be referred to other configurations.
+	/// Gets or sets a value indicating whether the configuration can be referenced by other configurations within the same team.
 	/// </summary>
 	public bool Shared
 	{
@@ -225,6 +225,20 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	}
 
 	/// <summary>
+	/// Sets whether the configuration can be shared and referenced by other configurations within the same team.
+	/// </summary>
+	/// <param name="shared"></param>
+	public void SetShared(bool shared)
+	{
+		if (Shared == shared)
+		{
+			return;
+		}
+
+		Shared = shared;
+	}
+
+	/// <summary>
 	/// Sets the permission grant states for multiple users based on the specified mapping.
 	/// </summary>
 	/// <remarks>If a user's grant state is set to None, their permissions are removed. Granting higher-level
@@ -290,8 +304,9 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	#region Factory Methods
 
 	[FactoryCreate]
-	protected override Task CreateAsync(CancellationToken cancellationToken = default)
+	private Task CreateAsync(long teamId, CancellationToken cancellationToken = default)
 	{
+		TeamId = teamId;
 		Status = ConfigurationStatus.Pending;
 		LoadProperty(PermissionsProperty, []);
 		return base.CreateAsync(cancellationToken);
@@ -327,8 +342,11 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 		{
 			TeamId = TeamId,
 			Code = Code,
-			Name = Name,
-			Description = Description
+			Name = Name, 
+			Secret = Secret, 
+			Description = Description, 
+			Shared = Shared, 
+			Status = Status
 		};
 		var repository = BusinessContext.GetRequiredService<IConfigurationRepository>();
 		var id = await repository.SaveAsync(data, cancellationToken);
@@ -342,8 +360,11 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 		{
 			TeamId = TeamId,
 			Code = Code,
-			Name = Name,
-			Description = Description
+			Name = Name, 
+			Secret = Secret, 
+			Description = Description, 
+			Shared = Shared, 
+			Status = Status
 		};
 
 		var repository = BusinessContext.GetRequiredService<IConfigurationRepository>();
