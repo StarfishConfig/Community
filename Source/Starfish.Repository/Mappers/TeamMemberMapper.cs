@@ -2,28 +2,33 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nerosoft.Starfish.Repository.Entities;
+using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Mappers;
 
 [DbContext(typeof(IdentityDataContext))]
 internal class TeamMemberMapper : IEntityTypeConfiguration<TeamMember>
 {
+	private const string TABLE_NAME = "team_member";
+	private const string COLUMN_TEAM_ID = "team_id";
+	private const string COLUMN_USER_ID = "user_id";
+
 	public void Configure(EntityTypeBuilder<TeamMember> builder)
 	{
-		builder.ToTable("team_member");
+		builder.ToTable(TableName.TeamMember);
 
 		builder.HasIndex(t => new { t.TeamId, t.UserId })
-		       .HasDatabaseName("idx_team_member_unique")
+		       .HasDatabaseName($"{TABLE_NAME}_idx_unique")
 		       .IsUnique();
 
 		builder.SnowflakeId();
 
 		builder.Property(tm => tm.TeamId)
-		       .HasColumnName("team_id")
+		       .HasColumnName(COLUMN_TEAM_ID)
 		       .IsRequired();
 
 		builder.Property(tm => tm.UserId)
-		       .HasColumnName("user_id")
+		       .HasColumnName(COLUMN_USER_ID)
 		       .HasMaxLength(64)
 		       .IsRequired();
 
