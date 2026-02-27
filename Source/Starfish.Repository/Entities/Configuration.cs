@@ -18,6 +18,16 @@ internal sealed class Configuration : Entity<long>, IAuditable
 	public long TeamId { get; set; }
 
 	/// <summary>
+	/// Gets or sets the optional identifier of the forked configuration, if this configuration was created by forking another configuration.
+	/// </summary>
+	public long? ForkId { get; set; }
+
+	/// <summary>
+	/// Gets or sets the optional tags associated with this configuration, stored as a comma-separated string.
+	/// </summary>
+	public string Tags { get; set; }
+
+	/// <summary>
 	/// Gets or sets the machine-friendly code that uniquely identifies the configuration.
 	/// </summary>
 	public string Code { get; set; }

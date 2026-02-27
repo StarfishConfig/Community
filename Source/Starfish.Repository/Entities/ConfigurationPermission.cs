@@ -23,17 +23,17 @@ internal class ConfigurationPermission : Entity<long>
 	public string UserId { get; set; }
 
 	/// <summary>
-	/// Gets or sets a value indicating whether the user has read access.
+	/// Gets or sets a value indicating whether the user has the permission to view a configuration or not.
 	/// </summary>
 	public bool Read { get; set; }
 
 	/// <summary>
-	/// Gets or sets a value indicating whether the user has write access.
+	/// Gets or sets a value indicating whether the user has the permission to modify a configuration or not.
 	/// </summary>
 	public bool Write { get; set; }
 
 	/// <summary>
-	/// Gets or sets a value indicating whether the user can publish changes.
+	/// Gets or sets a value indicating whether the user has the permission to publish a configuration or not.
 	/// </summary>
 	public bool Publish { get; set; }
 
