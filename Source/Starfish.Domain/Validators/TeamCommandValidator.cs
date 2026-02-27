@@ -10,10 +10,10 @@ internal class TeamCreateCommandValidator : AbstractValidator<TeamCreateCommand>
 	{
 		RuleFor(x => x.Name)
 			.NotEmpty().WithMessage(TeamResources.IDS_ERROR_NAME_REQUIRED)
-			.MaximumLength(TeamConstants.NameMaximumLength).WithMessage("Team name cannot exceed 100 characters.");
+			.MaximumLength(LengthConstraints.TeamNameMaximumLength).WithMessage("Team name cannot exceed 100 characters.");
 
 		RuleFor(x => x.Description)
-			.MaximumLength(TeamConstants.DescriptionMaximumLength).WithMessage("Team description cannot exceed 500 characters.");
+			.MaximumLength(LengthConstraints.DescriptionMaximumLength).WithMessage("Team description cannot exceed 500 characters.");
 	}
 }
 
@@ -23,9 +23,9 @@ internal class TeamUpdateCommandValidator : AbstractValidator<TeamUpdateCommand>
 	{
 		RuleFor(x => x.Name)
 			.NotEmpty().WithMessage(TeamResources.IDS_ERROR_NAME_REQUIRED)
-			.MaximumLength(TeamConstants.NameMaximumLength).WithMessage("Team name cannot exceed 100 characters.");
+			.MaximumLength(LengthConstraints.TeamNameMaximumLength).WithMessage("Team name cannot exceed 100 characters.");
 
 		RuleFor(x => x.Description)
-			.MaximumLength(TeamConstants.DescriptionMaximumLength).WithMessage("Team description cannot exceed 500 characters.");
+			.MaximumLength(LengthConstraints.DescriptionMaximumLength).WithMessage("Team description cannot exceed 500 characters.");
 	}
 }
