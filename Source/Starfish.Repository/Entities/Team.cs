@@ -1,8 +1,6 @@
-using Nerosoft.Euonia.Repository;
-
 namespace Nerosoft.Starfish.Repository.Entities;
 
-internal class Team : Entity<long>, IAuditable
+internal class Team : AuditableEntity<long>
 {
 	public string OwnerId { get; set; }
 
@@ -11,20 +9,6 @@ internal class Team : Entity<long>, IAuditable
 	public int MembersCount { get; set; }
 	
 	public string Description { get; set; }
-
-	public DateTime CreatedAt { get; set; }
-
-	public DateTime UpdatedAt { get; set; }
-
-	public DateTime? DeletedAt { get; set; }
-
-	public bool IsDeleted { get; set; }
-
-	public string CreatedBy { get; set; }
-
-	public string UpdatedBy { get; set; }
-
-	public string DeletedBy { get; set; }
 
 	public HashSet<TeamMember> Members { get; set; }
 }

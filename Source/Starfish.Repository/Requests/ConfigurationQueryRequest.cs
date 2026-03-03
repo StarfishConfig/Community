@@ -43,6 +43,13 @@ public record ConfigurationSearchQuery(IList<long> TeamScope, string Keyword, lo
 /// </remarks>
 public record ConfigurationCountQuery(IList<long> TeamScope, string Keyword, long TeamId) : IRequest<int>;
 
+/// <summary>
+/// Represents a query to retrieve detailed configuration information for a specific identifier within the context of
+/// one or more teams.
+/// </summary>
+/// <param name="TeamScope">A list of team identifiers that define the scope of the query. Only configuration details associated with these
+/// teams will be considered.</param>
+/// <param name="Id">The unique identifier of the configuration to retrieve details for.</param>
 public record ConfigurationDetailQuery(IList<long> TeamScope, long Id) : IRequest<ConfigurationDetailModel>;
 
 /// <summary>

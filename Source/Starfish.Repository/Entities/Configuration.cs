@@ -1,4 +1,3 @@
-using Nerosoft.Euonia.Repository;
 using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Entities;
@@ -10,7 +9,7 @@ namespace Nerosoft.Starfish.Repository.Entities;
 /// Holds identifying metadata, audit information and related child collections such as
 /// environments, permissions and items. Instances are persisted by the repository layer.
 /// </remarks>
-internal sealed class Configuration : Entity<long>, IAuditable
+internal sealed class Configuration : AuditableEntity<long>
 {
 	/// <summary>
 	/// Gets or sets the identifier of the owning team.
@@ -59,47 +58,6 @@ internal sealed class Configuration : Entity<long>, IAuditable
 	/// Gets or sets a value indicating whether the configuration can be referenced by other configurations within the same team.
 	/// </summary>
 	public bool Shared { get; set; }
-
-	/// <summary>
-	/// Gets or sets the creation timestamp (UTC) for the configuration.
-	/// </summary>
-	/// <remarks>
-	/// Timestamps are intended to be stored and interpreted as UTC.
-	/// </remarks>
-	public DateTime CreatedAt { get; set; }
-
-	/// <summary>
-	/// Gets or sets the last update timestamp (UTC) for the configuration.
-	/// </summary>
-	/// <remarks>
-	/// Timestamps are intended to be stored and interpreted as UTC.
-	/// </remarks>
-	public DateTime UpdatedAt { get; set; }
-
-	/// <summary>
-	/// Gets or sets the deletion timestamp (UTC), if the entity was soft-deleted.
-	/// </summary>
-	public DateTime? DeletedAt { get; set; }
-
-	/// <summary>
-	/// Gets or sets a value indicating whether the entity has been soft-deleted.
-	/// </summary>
-	public bool IsDeleted { get; set; }
-
-	/// <summary>
-	/// Gets or sets the identifier of the principal that created the entity.
-	/// </summary>
-	public string CreatedBy { get; set; }
-
-	/// <summary>
-	/// Gets or sets the identifier of the principal that last updated the entity.
-	/// </summary>
-	public string UpdatedBy { get; set; }
-
-	/// <summary>
-	/// Gets or sets the identifier of the principal that deleted the entity.
-	/// </summary>
-	public string DeletedBy { get; set; }
 
 	/// <summary>
 	/// Gets or sets the collection of permissions associated with this configuration.

@@ -1,12 +1,11 @@
-﻿using Nerosoft.Euonia.Repository;
-using Nerosoft.Starfish.Shared;
+﻿using Nerosoft.Starfish.Shared;
 
 namespace Nerosoft.Starfish.Repository.Entities;
 
 /// <summary>
 /// Represents a message template entity.
 /// </summary>
-internal class Template : Entity<long>, IAuditable
+internal class Template : AuditableEntity<long>
 {
 	/// <summary>
 	/// Gets or sets the name of the template.
@@ -51,39 +50,4 @@ internal class Template : Entity<long>, IAuditable
 	/// Gets or sets a value indicating whether the template is active.
 	/// </summary>
 	public bool Active { get; set; }
-
-	/// <summary>
-	/// Gets or sets the creation time of the template.
-	/// </summary>
-	public DateTime CreatedAt { get; set; }
-
-	/// <summary>
-	/// Gets or sets the user who created the template.
-	/// </summary>
-	public string CreatedBy { get; set; }
-
-	/// <summary>
-	/// Gets or sets the last update time of the template.
-	/// </summary>
-	public DateTime UpdatedAt { get; set; }
-
-	/// <summary>
-	/// Gets or sets the user who last updated the template.
-	/// </summary>
-	public string UpdatedBy { get; set; }
-
-	/// <summary>
-	/// Gets or sets a value indicating whether the template is deleted.
-	/// </summary>
-	public bool IsDeleted { get; set; }
-
-	/// <summary>
-	/// Gets or sets the deletion time of the template.
-	/// </summary>
-	public DateTime? DeletedAt { get; set; }
-
-	/// <summary>
-	/// Gets or sets the user who deleted the template.
-	/// </summary>
-	public string DeletedBy { get; set; }
 }
