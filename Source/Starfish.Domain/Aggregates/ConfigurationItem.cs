@@ -6,7 +6,7 @@ namespace Nerosoft.Starfish.Domain.Aggregates;
 /// <summary>
 /// Represents a configuration item.
 /// </summary>
-internal class ConfigurationItem : ObservableObject<ConfigurationItem>
+internal class ConfigurationItem : EditableObjectBase<ConfigurationItem, long>
 {
 	#region Properties
 

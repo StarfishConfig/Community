@@ -22,8 +22,8 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	public static readonly PropertyInfo<string> DescriptionProperty = RegisterProperty<string>(p => p.Description);
 	public static readonly PropertyInfo<ConfigurationStatus> StatusProperty = RegisterProperty<ConfigurationStatus>(p => p.Status);
 	public static readonly PropertyInfo<bool> SharedProperty = RegisterProperty<bool>(p => p.Shared);
-	public static readonly PropertyInfo<ObservableList<ConfigurationPermission>> PermissionsProperty = RegisterProperty<ObservableList<ConfigurationPermission>>(p => p.Permissions);
-	public static readonly PropertyInfo<ObservableList<ConfigurationItem>> ItemsProperty = RegisterProperty<ObservableList<ConfigurationItem>>(p => p.Items);
+	public static readonly PropertyInfo<Dictionary<string, ConfigurationPermissionGrantState>> PermissionsProperty = RegisterProperty<Dictionary<string, ConfigurationPermissionGrantState>>(p => p.Permissions);
+	public static readonly PropertyInfo<Dictionary<string, string>> ItemsProperty = RegisterProperty<Dictionary<string, string>>(p => p.Items);
 
 	/// <summary>
 	/// Gets or sets the team identifier associated with the configuration.
@@ -98,7 +98,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	/// <summary>
 	/// Gets the collection of configuration permissions associated with the current instance.
 	/// </summary>
-	public ObservableList<ConfigurationPermission> Permissions
+	public Dictionary<string, ConfigurationPermissionGrantState> Permissions
 	{
 		get => GetProperty(PermissionsProperty);
 		set => SetProperty(PermissionsProperty, value);
@@ -110,7 +110,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	/// <remarks>The returned collection is observable and will notify listeners of changes. The property is
 	/// read-only; items can be added or removed from the collection, but the collection reference itself cannot be
 	/// replaced externally.</remarks>
-	public ObservableList<ConfigurationItem> Items
+	public Dictionary<string, string> Items
 	{
 		get => GetProperty(ItemsProperty);
 		set => SetProperty(ItemsProperty, value);
@@ -247,41 +247,42 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	/// permissions to assign or remove for the corresponding user.</param>
 	public void SetPermissions(Dictionary<string, ConfigurationPermissionGrantState> permissions)
 	{
-		var factory = BusinessContext.GetRequiredService<IObjectFactory>();
-
-		foreach (var (userId, state) in permissions)
-		{
-			var permission = Permissions.FirstOrDefault(p => p.UserId == userId);
-			if (permission == null && state != ConfigurationPermissionGrantState.None)
-			{
-				permission = factory.Create<ConfigurationPermission>(userId);
-			}
-
-			if (state == ConfigurationPermissionGrantState.None)
-			{
-				Permissions.Remove(permission);
-			}
-			else
-			{
-				if (state.HasFlag(ConfigurationPermissionGrantState.Publish))
-				{
-					permission.AllowPublish = true;
-					permission.AllowWrite = true;
-					permission.AllowRead = true;
-				}
-
-				if (state.HasFlag(ConfigurationPermissionGrantState.Write))
-				{
-					permission.AllowWrite = true;
-					permission.AllowRead = true;
-				}
-
-				if (state.HasFlag(ConfigurationPermissionGrantState.Read))
-				{
-					permission.AllowRead = true;
-				}
-			}
-		}
+		Permissions = permissions;
+		// var factory = BusinessContext.GetRequiredService<IObjectFactory>();
+		//
+		// foreach (var (userId, state) in permissions)
+		// {
+		// 	var permission = Permissions.FirstOrDefault(p => p.UserId == userId);
+		// 	if (permission == null && state != ConfigurationPermissionGrantState.None)
+		// 	{
+		// 		permission = factory.Create<ConfigurationPermission>(userId);
+		// 	}
+		//
+		// 	if (state == ConfigurationPermissionGrantState.None)
+		// 	{
+		// 		Permissions.Remove(permission);
+		// 	}
+		// 	else
+		// 	{
+		// 		if (state.HasFlag(ConfigurationPermissionGrantState.Publish))
+		// 		{
+		// 			permission.AllowPublish = true;
+		// 			permission.AllowWrite = true;
+		// 			permission.AllowRead = true;
+		// 		}
+		//
+		// 		if (state.HasFlag(ConfigurationPermissionGrantState.Write))
+		// 		{
+		// 			permission.AllowWrite = true;
+		// 			permission.AllowRead = true;
+		// 		}
+		//
+		// 		if (state.HasFlag(ConfigurationPermissionGrantState.Read))
+		// 		{
+		// 			permission.AllowRead = true;
+		// 		}
+		// 	}
+		// }
 	}
 
 	/// <summary>
@@ -292,11 +293,12 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	/// <param name="userId">The unique identifier of the user whose permission should be removed. Cannot be null.</param>
 	public void RemovePermission(string userId)
 	{
-		var permission = Permissions.FirstOrDefault(p => p.UserId == userId);
-		if (permission != null)
-		{
-			Permissions.Remove(permission);
-		}
+		Permissions.Remove(userId);
+		// var permission = Permissions.FirstOrDefault(p => p.UserId == userId);
+		// if (permission != null)
+		// {
+		// 	Permissions.Remove(permission);
+		// }
 	}
 
 	#endregion
@@ -318,7 +320,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 		var repository = BusinessContext.GetRequiredService<IConfigurationRepository>();
 		var factory = BusinessContext.GetRequiredService<IObjectFactory>();
 		return repository.GetAsync(id, cancellationToken)
-		                 .ContinueWith(async task =>
+		                 .ContinueWith(task =>
 		                 {
 			                 task.WaitAndUnwrapException(cancellationToken);
 			                 var result = task.Result;
@@ -342,10 +344,10 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 		{
 			TeamId = TeamId,
 			Code = Code,
-			Name = Name, 
-			Secret = Secret, 
-			Description = Description, 
-			Shared = Shared, 
+			Name = Name,
+			Secret = Secret,
+			Description = Description,
+			Shared = Shared,
 			Status = Status
 		};
 		var repository = BusinessContext.GetRequiredService<IConfigurationRepository>();
@@ -360,10 +362,10 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 		{
 			TeamId = TeamId,
 			Code = Code,
-			Name = Name, 
-			Secret = Secret, 
-			Description = Description, 
-			Shared = Shared, 
+			Name = Name,
+			Secret = Secret,
+			Description = Description,
+			Shared = Shared,
 			Status = Status
 		};
 

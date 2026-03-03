@@ -76,10 +76,10 @@ public class ConfigurationData : Persistent<long>
 	/// <summary>
 	/// Gets or sets the collection of configuration items associated with this configuration.
 	/// </summary>
-	public ICollection<ConfigurationItemData> Items { get; set; }
+	public Dictionary<string, string> Items { get; set; }
 
 	/// <summary>
 	/// Gets or sets the collection of permissions associated with this configuration.
 	/// </summary>
-	public ICollection<ConfigurationPermissionData> Permissions { get; set; }
+	public Dictionary<string, ConfigurationPermissionGrantState> Permissions { get; set; }
 }
