@@ -23,8 +23,7 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 	public static readonly PropertyInfo<ConfigurationStatus> StatusProperty = RegisterProperty<ConfigurationStatus>(p => p.Status);
 	public static readonly PropertyInfo<bool> SharedProperty = RegisterProperty<bool>(p => p.Shared);
 	public static readonly PropertyInfo<Dictionary<string, ConfigurationPermissionGrantState>> PermissionsProperty = RegisterProperty<Dictionary<string, ConfigurationPermissionGrantState>>(p => p.Permissions);
-	public static readonly PropertyInfo<Dictionary<string, string>> ItemsProperty = RegisterProperty<Dictionary<string, string>>(p => p.Items);
-
+	
 	/// <summary>
 	/// Gets or sets the team identifier associated with the configuration.
 	/// </summary>
@@ -103,19 +102,6 @@ internal class Configuration : EditableObjectBase<Configuration, long>
 		get => GetProperty(PermissionsProperty);
 		set => SetProperty(PermissionsProperty, value);
 	}
-
-	/// <summary>
-	/// Gets the collection of configuration items associated with this instance.
-	/// </summary>
-	/// <remarks>The returned collection is observable and will notify listeners of changes. The property is
-	/// read-only; items can be added or removed from the collection, but the collection reference itself cannot be
-	/// replaced externally.</remarks>
-	public Dictionary<string, string> Items
-	{
-		get => GetProperty(ItemsProperty);
-		set => SetProperty(ItemsProperty, value);
-	}
-
 	#endregion
 
 	#region Rules
